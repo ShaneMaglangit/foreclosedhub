@@ -2,15 +2,16 @@
 // versions:
 //   sqlc v1.28.0
 
-package sqlc
+package db
 
 import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Listing struct {
-	ID        int64
-	Address   string
-	FloorArea pgtype.Numeric
-	Price     int64
+	ID         int64
+	ExternalID string
+	Address    string
+	FloorArea  pgtype.Numeric
+	Price      int64
 }

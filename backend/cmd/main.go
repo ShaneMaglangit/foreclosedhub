@@ -1,13 +1,12 @@
 package main
 
 import (
+	"github.com/joho/godotenv"
 	"homagochi/internal/cron"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -18,7 +17,7 @@ func main() {
 
 	c := cron.Start()
 	defer c.Stop()
-	
+
 	sigChan := make(chan os.Signal, 1)
 
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
