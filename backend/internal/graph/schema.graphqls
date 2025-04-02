@@ -1,0 +1,13 @@
+scalar Int64
+
+type Listing {
+    id: Int64!
+    externalId: String!
+    address: String!
+    floorArea: Float!
+    price: Int64!
+}
+
+type Query {
+  listings(limit: Int! = 20): [Listing!]!
+}

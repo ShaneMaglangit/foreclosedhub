@@ -6,13 +6,13 @@ import (
 )
 
 type ListingsRepository interface {
-	GetListings(ctx context.Context, limit int32) ([]Listing, error)
-	InsertListings(ctx context.Context, listings []Listing) error
+	GetListings(ctx context.Context, limit int32) ([]*Listing, error)
+	InsertListings(ctx context.Context, listings []*Listing) error
 }
 
 type ListingsRepositoryImpl struct{}
 
-func (l ListingsRepositoryImpl) GetListings(ctx context.Context, limit int32) ([]Listing, error) {
+func (l ListingsRepositoryImpl) GetListings(ctx context.Context, limit int32) ([]*Listing, error) {
 	_, queries, err := connect(ctx)
 	if err != nil {
 		return nil, err
@@ -21,7 +21,7 @@ func (l ListingsRepositoryImpl) GetListings(ctx context.Context, limit int32) ([
 	return queries.GetListings(ctx, limit)
 }
 
-func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, listings []Listing) error {
+func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, listings []*Listing) error {
 	_, queries, err := connect(ctx)
 	if err != nil {
 		return err

@@ -17,8 +17,8 @@ type Listing struct {
 
 type Listings []Listing
 
-func (listings Listings) toDbListings() ([]db.Listing, error) {
-	var dbListings []db.Listing
+func (listings Listings) toDbListings() ([]*db.Listing, error) {
+	var dbListings []*db.Listing
 
 	for _, listing := range listings {
 		floorArea, err := parseNumeric(listing.FloorArea)
@@ -26,7 +26,7 @@ func (listings Listings) toDbListings() ([]db.Listing, error) {
 			return nil, err
 		}
 
-		dbListings = append(dbListings, db.Listing{
+		dbListings = append(dbListings, &db.Listing{
 			ExternalID: fmt.Sprintf("pagibig-%s", listing.ID),
 			Address:    listing.Location,
 			FloorArea:  floorArea,

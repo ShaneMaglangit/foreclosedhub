@@ -17,13 +17,13 @@ FROM listings
 LIMIT $1::int
 `
 
-func (q *Queries) GetListings(ctx context.Context, rowLimit int32) ([]Listing, error) {
+func (q *Queries) GetListings(ctx context.Context, rowLimit int32) ([]*Listing, error) {
 	rows, err := q.db.Query(ctx, getListings, rowLimit)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Listing
+	var items []*Listing
 	for rows.Next() {
 		var i Listing
 		if err := rows.Scan(
@@ -35,7 +35,7 @@ func (q *Queries) GetListings(ctx context.Context, rowLimit int32) ([]Listing, e
 		); err != nil {
 			return nil, err
 		}
-		items = append(items, i)
+		items = append(items, &i)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
