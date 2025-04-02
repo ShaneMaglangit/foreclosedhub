@@ -5,13 +5,9 @@ import (
 	"homagochi/internal/db"
 )
 
-type Scraper struct{}
+type Job struct{}
 
-func New() Scraper {
-	return Scraper{}
-}
-
-func (scraper Scraper) Start() error {
+func (job *Job) Run() error {
 	batches, err := getBatches()
 	if err != nil {
 		return err

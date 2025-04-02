@@ -1,35 +1,41 @@
 package cron
 
 import (
-	"fmt"
+	"homagochi/internal/scraper/pagibig"
 	"log"
 
 	"github.com/robfig/cron/v3"
 )
 
-type Job struct {
-	Name     string
-	Schedule string
-	Run      func()
+type Job interface {
+	Run() error
 }
 
-var jobRegistry = []Job{
-	Job{"Hello World", "0 0 * * *", HelloWorld},
+type JobEntry struct {
+	name     string
+	schedule string
+	factory  func() Job
+}
+
+var jobEntries = []JobEntry{
+	{name: "Pagibig", schedule: "0 0 * * *", factory: func() Job { return &pagibig.Job{} }},
 }
 
 func Start() *cron.Cron {
 	c := cron.New()
 
-	for _, job := range jobRegistry {
-		job := job
+	for _, entry := range jobEntries {
+		job := entry.factory()
 
-		_, err := c.AddFunc(job.Schedule, func() {
-			log.Printf("Running %s Scraper Job...", job.Name)
-			job.Run()
+		_, err := c.AddFunc(entry.schedule, func() {
+			log.Printf("Running %s Scraper Job...", entry.name)
+			if err := job.Run(); err != nil {
+				log.Fatal(err)
+			}
 		})
 
 		if err != nil {
-			log.Printf("Error scheduling %s job: %v", job.Name, err)
+			log.Printf("Error scheduling %s job: %v", entry.name, err)
 		}
 	}
 
@@ -37,8 +43,4 @@ func Start() *cron.Cron {
 	c.Start()
 
 	return c
-}
-
-func HelloWorld() {
-	fmt.Println("Hello world")
 }
