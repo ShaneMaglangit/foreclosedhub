@@ -6,6 +6,7 @@ type Listing {
     address: String!
     floorArea: Float!
     price: Int64!
+    occupied: Boolean!
 }
 
 type Query {
