@@ -1,0 +1,17 @@
+# Terraform files
+*.tfstate
+*.tfstate.backup
+.terraform/
+terraform.tfvars
+*.auto.tfvars.json
+*.auto.tfvars
+
+# Crash log files
+crash.log
+
+# Ignore all .tflock files
+*.tflock
+
+# Temporary files
+*~
+\#*#
