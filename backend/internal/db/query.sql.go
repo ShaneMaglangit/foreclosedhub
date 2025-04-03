@@ -12,7 +12,7 @@ import (
 )
 
 const getListings = `-- name: GetListings :many
-SELECT id, external_id, address, floor_area, price
+SELECT id, external_id, address, floor_area, price, occupied
 FROM listings
 LIMIT $1::int
 `
@@ -32,6 +32,7 @@ func (q *Queries) GetListings(ctx context.Context, rowLimit int32) ([]*Listing, 
 			&i.Address,
 			&i.FloorArea,
 			&i.Price,
+			&i.Occupied,
 		); err != nil {
 			return nil, err
 		}
@@ -44,15 +45,17 @@ func (q *Queries) GetListings(ctx context.Context, rowLimit int32) ([]*Listing, 
 }
 
 const insertListings = `-- name: InsertListings :exec
-INSERT INTO listings (external_id, address, floor_area, price)
+INSERT INTO listings (external_id, address, floor_area, price, occupied)
 VALUES (unnest($1::text[]),
         unnest($2::text[]),
         unnest($3::numeric(8, 2)[]),
-        unnest($4::bigint[]))
+        unnest($4::bigint[]),
+        unnest($5::boolean[]))
 ON CONFLICT (external_id) DO UPDATE
     SET address    = EXCLUDED.address,
         floor_area = EXCLUDED.floor_area,
-        price      = EXCLUDED.price
+        price      = EXCLUDED.price,
+        occupied   = EXCLUDED.occupied
 `
 
 type InsertListingsParams struct {
@@ -60,6 +63,7 @@ type InsertListingsParams struct {
 	Addresses   []string
 	FloorAreas  []pgtype.Numeric
 	Prices      []int64
+	Occupied    []bool
 }
 
 func (q *Queries) InsertListings(ctx context.Context, arg InsertListingsParams) error {
@@ -68,6 +72,7 @@ func (q *Queries) InsertListings(ctx context.Context, arg InsertListingsParams) 
 		arg.Addresses,
 		arg.FloorAreas,
 		arg.Prices,
+		arg.Occupied,
 	)
 	return err
 }

@@ -6,12 +6,14 @@ import (
 	"homagochi/internal/db"
 	"math/big"
 	"strconv"
+	"strings"
 )
 
 type Listing struct {
 	ID        string `json:"ropa_id"`
 	Location  string `json:"prop_location"`
 	FloorArea string `json:"floor_area"`
+	Remarks   string `json:"remarks"`
 	Price     int64  `json:"min_sellprice"`
 }
 
@@ -31,6 +33,7 @@ func (listings Listings) toDbListings() ([]*db.Listing, error) {
 			Address:    listing.Location,
 			FloorArea:  floorArea,
 			Price:      listing.Price,
+			Occupied:   isOccupied(listing.Remarks),
 		})
 	}
 
@@ -44,4 +47,8 @@ func parseNumeric(raw string) (pgtype.Numeric, error) {
 	}
 
 	return pgtype.Numeric{Int: big.NewInt(int64(floorArea * 100)), Exp: -2, Valid: true}, nil
+}
+
+func isOccupied(remarks string) bool {
+	return !strings.Contains(remarks, "UNOCCUPIED")
 }

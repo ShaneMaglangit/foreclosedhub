@@ -14,4 +14,5 @@ type Listing struct {
 	Address    string
 	FloorArea  pgtype.Numeric
 	Price      int64
+	Occupied   bool
 }
