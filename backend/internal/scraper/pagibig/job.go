@@ -5,9 +5,9 @@ import (
 	"homagochi/internal/db"
 )
 
-type Job struct{}
+type ScrapeListingJob struct{}
 
-func (job *Job) Run() error {
+func (job *ScrapeListingJob) Run() error {
 	batches, err := getBatches()
 	if err != nil {
 		return err
@@ -27,4 +27,10 @@ func (job *Job) Run() error {
 	listingsRepository := db.NewListingsRepository()
 
 	return listingsRepository.InsertListings(ctx, dbListings)
+}
+
+type ScrapeImageJob struct{}
+
+func (job *ScrapeImageJob) Run() error {
+
 }

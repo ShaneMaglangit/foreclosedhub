@@ -3,6 +3,12 @@ SELECT id, source, external_id, address, floor_area, price, occupied
 FROM listings
 LIMIT @row_limit::int;
 
+-- name: GetListingIDNoLoadedImage :one
+SELECT id
+    FROM listings
+        WHERE source =
+
+
 -- name: InsertListings :exec
 INSERT INTO listings (source, external_id, address, floor_area, price, occupied)
 VALUES (unnest(@sources::source[]),

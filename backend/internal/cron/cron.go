@@ -18,7 +18,7 @@ type JobEntry struct {
 }
 
 var jobEntries = []JobEntry{
-	{name: "Pagibig", schedule: "0 0 * * *", factory: func() Job { return &pagibig.Job{} }},
+	{name: "Pagibig", schedule: "0 0 * * *", factory: func() Job { return &pagibig.ScrapeListingJob{} }},
 }
 
 func Start() *cron.Cron {
@@ -28,7 +28,7 @@ func Start() *cron.Cron {
 		job := entry.factory()
 
 		_, err := c.AddFunc(entry.schedule, func() {
-			log.Printf("Running %s Scraper Job...", entry.name)
+			log.Printf("Running %s Scraper ScrapeListingJob...", entry.name)
 			if err := job.Run(); err != nil {
 				log.Fatal(err)
 			}
