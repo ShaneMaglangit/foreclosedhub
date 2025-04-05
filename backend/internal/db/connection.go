@@ -10,15 +10,10 @@ import (
 )
 
 func connect(ctx context.Context) (*pgxpool.Pool, *Queries, error) {
-	url := os.Getenv("DATABASE_URL")
-
-	config, err := pgxpool.ParseConfig(url)
+	config, err := createConfig()
 	if err != nil {
-		return nil, nil, fmt.Errorf("unable to parse database URL: %v", err)
+		return nil, nil, err
 	}
-
-	// Ensure the AfterConnect callback is set before the pool is created
-	config.AfterConnect = registerEnums
 
 	pool, err := pgxpool.NewWithConfig(ctx, config)
 	if err != nil {
@@ -35,6 +30,21 @@ func connect(ctx context.Context) (*pgxpool.Pool, *Queries, error) {
 	return pool, queries, nil
 }
 
+func createConfig() (*pgxpool.Config, error) {
+	url := os.Getenv("DATABASE_URL")
+
+	config, err := pgxpool.ParseConfig(url)
+	if err != nil {
+		return nil, err
+	}
+
+	config.AfterConnect = registerEnums
+
+	return config, nil
+}
+
+// SQLC does not have a built-in compatibility support for custom enums with query parameters
+// See https://github.com/jackc/pgx/discussions/1559
 func registerEnums(ctx context.Context, conn *pgx.Conn) error {
 	enumNames := []string{"source", "_source"}
 	enumTypes, err := conn.LoadTypes(ctx, enumNames)
