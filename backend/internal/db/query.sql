@@ -3,7 +3,7 @@ SELECT *
 FROM listings
 LIMIT @row_limit::int;
 
--- name: GetListingNoImageLoaded :one
+-- name: GetListingByImageNotLoaded :one
 SELECT id, external_id
 FROM listings
 WHERE source = @source::source
@@ -28,6 +28,11 @@ ON CONFLICT (source, external_id) DO UPDATE
 UPDATE listings
 SET image_loaded = @image_loaded::boolean
 WHERE listings.id = @id::bigint;
+
+-- name: GetListingImagesByListingIds :many
+SELECT listing_id, url
+FROM listing_images
+WHERE id IN (@ids::bigint[]);
 
 -- name: InsertListingImages :exec
 INSERT INTO listing_images (listing_id, url)

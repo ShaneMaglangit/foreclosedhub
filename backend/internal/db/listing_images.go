@@ -5,6 +5,7 @@ import (
 )
 
 type ListingImagesRepository interface {
+	GetListingImagesByListingIds(ctx context.Context, dbtx DBTX, listingIds []int64) ([]*GetListingImagesByListingIdsRow, error)
 	InsertListingImages(ctx context.Context, dbtx DBTX, listingId int64, urls []string) error
 }
 
@@ -20,6 +21,10 @@ func (l ListingImagesRepositoryImpl) InsertListingImages(ctx context.Context, db
 		ListingIds: listingIds,
 		Urls:       urls,
 	})
+}
+
+func (l ListingImagesRepositoryImpl) GetListingImagesByListingIds(ctx context.Context, dbtx DBTX, listingIds []int64) ([]*GetListingImagesByListingIdsRow, error) {
+	return New(dbtx).GetListingImagesByListingIds(ctx, listingIds)
 }
 
 func NewListingImagesRepository() ListingImagesRepository {

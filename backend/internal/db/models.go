@@ -66,5 +66,5 @@ type Listing struct {
 type ListingImage struct {
 	ID        int64
 	ListingID int64
-	Filename  string
+	Url       string
 }

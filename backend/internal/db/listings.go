@@ -7,7 +7,7 @@ import (
 
 type ListingsRepository interface {
 	GetListings(ctx context.Context, dbtx DBTX, limit int32) ([]*Listing, error)
-	GetListingNoImageLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingNoImageLoadedRow, error)
+	GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error)
 	InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error
 	UpdateListingsImageLoaded(ctx context.Context, dbtx DBTX, id int64, imageLoaded bool) error
 }
@@ -18,8 +18,8 @@ func (l ListingsRepositoryImpl) GetListings(ctx context.Context, dbtx DBTX, limi
 	return New(dbtx).GetListings(ctx, limit)
 }
 
-func (l ListingsRepositoryImpl) GetListingNoImageLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingNoImageLoadedRow, error) {
-	return New(dbtx).GetListingNoImageLoaded(ctx, source)
+func (l ListingsRepositoryImpl) GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error) {
+	return New(dbtx).GetListingByImageNotLoaded(ctx, source)
 }
 
 func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error {

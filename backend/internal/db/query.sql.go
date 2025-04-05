@@ -11,7 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const getListingNoImageLoaded = `-- name: GetListingNoImageLoaded :one
+const getListingByImageNotLoaded = `-- name: GetListingByImageNotLoaded :one
 SELECT id, external_id
 FROM listings
 WHERE source = $1::source
@@ -19,16 +19,47 @@ WHERE source = $1::source
 LIMIT 1
 `
 
-type GetListingNoImageLoadedRow struct {
+type GetListingByImageNotLoadedRow struct {
 	ID         int64
 	ExternalID string
 }
 
-func (q *Queries) GetListingNoImageLoaded(ctx context.Context, source Source) (*GetListingNoImageLoadedRow, error) {
-	row := q.db.QueryRow(ctx, getListingNoImageLoaded, source)
-	var i GetListingNoImageLoadedRow
+func (q *Queries) GetListingByImageNotLoaded(ctx context.Context, source Source) (*GetListingByImageNotLoadedRow, error) {
+	row := q.db.QueryRow(ctx, getListingByImageNotLoaded, source)
+	var i GetListingByImageNotLoadedRow
 	err := row.Scan(&i.ID, &i.ExternalID)
 	return &i, err
+}
+
+const getListingImagesByListingIds = `-- name: GetListingImagesByListingIds :many
+SELECT listing_id, url
+FROM listing_images
+WHERE id IN ($1::bigint[])
+`
+
+type GetListingImagesByListingIdsRow struct {
+	ListingID int64
+	Url       string
+}
+
+func (q *Queries) GetListingImagesByListingIds(ctx context.Context, ids []int64) ([]*GetListingImagesByListingIdsRow, error) {
+	rows, err := q.db.Query(ctx, getListingImagesByListingIds, ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetListingImagesByListingIdsRow
+	for rows.Next() {
+		var i GetListingImagesByListingIdsRow
+		if err := rows.Scan(&i.ListingID, &i.Url); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getListings = `-- name: GetListings :many

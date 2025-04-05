@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package homagochi;
+
+option go_package = "gitlab.com/shanemaglangit/homagochi/backend/internal/pb";
+
+message Listing {
+  int64 id = 1;
+  string source = 2;
+  string external_id = 3;
+  string address = 4;
+  double floor_area = 5;
+  int64 price = 6;
+  bool occupied = 7;
+  bool image_loaded = 8;
+  repeated string image_urls = 9;
+}
+
+message GetListingsRequest {}
+
+message GetListingsResponse {
+  repeated Listing listings = 1;
+}
+
+service ListingService {
+  rpc GetListings (GetListingsRequest) returns (GetListingsResponse);
+}

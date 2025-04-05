@@ -48,7 +48,7 @@ func (job *ScrapeListingImageJob) Run() error {
 	defer pool.Close()
 
 	listingsRepository := db.NewListingsRepository()
-	listing, err := listingsRepository.GetListingNoImageLoaded(ctx, pool, db.SourcePagibig)
+	listing, err := listingsRepository.GetListingByImageNotLoaded(ctx, pool, db.SourcePagibig)
 	if err != nil {
 		return err
 	}

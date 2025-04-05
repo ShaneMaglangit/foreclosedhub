@@ -3,10 +3,8 @@ package main
 import (
 	"github.com/joho/godotenv"
 	"homagochi/internal/cron"
+	"homagochi/internal/grpc"
 	"log"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 func main() {
@@ -19,12 +17,8 @@ func main() {
 	c := cron.Start()
 	defer c.Stop()
 
-	// Keep the server running
-	sigChan := make(chan os.Signal, 1)
-
-	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
-	sig := <-sigChan
-
-	log.Printf("Received signal: %v. Shutting down...", sig)
-	os.Exit(0)
+	// Start GRPC server
+	if err = grpc.Serve(); err != nil {
+		log.Fatal(err)
+	}
 }

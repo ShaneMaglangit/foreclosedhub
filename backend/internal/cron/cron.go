@@ -29,7 +29,6 @@ func Start() *cron.Cron {
 		job := entry.factory()
 
 		_, err := c.AddFunc(entry.schedule, func() {
-			log.Printf("Running %s Scraper ScrapeListingJob...", entry.name)
 			if err := job.Run(); err != nil {
 				log.Fatal(err)
 			}
