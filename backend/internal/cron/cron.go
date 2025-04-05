@@ -1,7 +1,7 @@
 package cron
 
 import (
-	"homagochi/internal/scraper/pagibig"
+	"homagochi/internal/source/pagibig"
 	"log"
 
 	"github.com/robfig/cron/v3"
