@@ -11,8 +11,23 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const getListingIDNoLoadedImage = `-- name: GetListingIDNoLoadedImage :one
+SELECT id
+FROM listings
+WHERE source = $1::source
+  AND image_loaded = FALSE
+LIMIT 1
+`
+
+func (q *Queries) GetListingIDNoLoadedImage(ctx context.Context, source Source) (int64, error) {
+	row := q.db.QueryRow(ctx, getListingIDNoLoadedImage, source)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
+}
+
 const getListings = `-- name: GetListings :many
-SELECT id, source, external_id, address, floor_area, price, occupied
+SELECT id, source, external_id, address, floor_area, price, occupied, image_loaded
 FROM listings
 LIMIT $1::int
 `
@@ -34,6 +49,7 @@ func (q *Queries) GetListings(ctx context.Context, rowLimit int32) ([]*Listing, 
 			&i.FloorArea,
 			&i.Price,
 			&i.Occupied,
+			&i.ImageLoaded,
 		); err != nil {
 			return nil, err
 		}
@@ -43,6 +59,21 @@ func (q *Queries) GetListings(ctx context.Context, rowLimit int32) ([]*Listing, 
 		return nil, err
 	}
 	return items, nil
+}
+
+const insertListingImages = `-- name: InsertListingImages :exec
+INSERT INTO listing_images (listing_id, url)
+VALUES (unnest($1::bigint[]), unnest($2::text[]))
+`
+
+type InsertListingImagesParams struct {
+	ListingIds []int64
+	Urls       []string
+}
+
+func (q *Queries) InsertListingImages(ctx context.Context, arg InsertListingImagesParams) error {
+	_, err := q.db.Exec(ctx, insertListingImages, arg.ListingIds, arg.Urls)
+	return err
 }
 
 const insertListings = `-- name: InsertListings :exec
@@ -78,5 +109,21 @@ func (q *Queries) InsertListings(ctx context.Context, arg InsertListingsParams) 
 		arg.Prices,
 		arg.Occupied,
 	)
+	return err
+}
+
+const updateListingsImageLoaded = `-- name: UpdateListingsImageLoaded :exec
+UPDATE listings
+SET image_loaded = $1::boolean
+WHERE listings.id = $2::bigint
+`
+
+type UpdateListingsImageLoadedParams struct {
+	ImageLoaded bool
+	ID          int64
+}
+
+func (q *Queries) UpdateListingsImageLoaded(ctx context.Context, arg UpdateListingsImageLoadedParams) error {
+	_, err := q.db.Exec(ctx, updateListingsImageLoaded, arg.ImageLoaded, arg.ID)
 	return err
 }

@@ -1,13 +1,14 @@
 -- name: GetListings :many
-SELECT id, source, external_id, address, floor_area, price, occupied
+SELECT *
 FROM listings
 LIMIT @row_limit::int;
 
 -- name: GetListingIDNoLoadedImage :one
 SELECT id
-    FROM listings
-        WHERE source =
-
+FROM listings
+WHERE source = @source::source
+  AND image_loaded = FALSE
+LIMIT 1;
 
 -- name: InsertListings :exec
 INSERT INTO listings (source, external_id, address, floor_area, price, occupied)
@@ -22,3 +23,12 @@ ON CONFLICT (source, external_id) DO UPDATE
         floor_area = EXCLUDED.floor_area,
         price      = EXCLUDED.price,
         occupied   = EXCLUDED.occupied;
+
+-- name: UpdateListingsImageLoaded :exec
+UPDATE listings
+SET image_loaded = @image_loaded::boolean
+WHERE listings.id = @id::bigint;
+
+-- name: InsertListingImages :exec
+INSERT INTO listing_images (listing_id, url)
+VALUES (unnest(@listing_ids::bigint[]), unnest(@urls::text[]));

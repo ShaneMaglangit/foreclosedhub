@@ -53,11 +53,18 @@ func (ns NullSource) Value() (driver.Value, error) {
 }
 
 type Listing struct {
-	ID         int64
-	Source     Source
-	ExternalID string
-	Address    string
-	FloorArea  pgtype.Numeric
-	Price      int64
-	Occupied   bool
+	ID          int64
+	Source      Source
+	ExternalID  string
+	Address     string
+	FloorArea   pgtype.Numeric
+	Price       int64
+	Occupied    bool
+	ImageLoaded bool
+}
+
+type ListingImage struct {
+	ID        int64
+	ListingID int64
+	Url       string
 }

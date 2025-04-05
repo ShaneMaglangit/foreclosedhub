@@ -28,9 +28,3 @@ func (job *ScrapeListingJob) Run() error {
 
 	return listingsRepository.InsertListings(ctx, dbListings)
 }
-
-type ScrapeImageJob struct{}
-
-func (job *ScrapeImageJob) Run() error {
-
-}

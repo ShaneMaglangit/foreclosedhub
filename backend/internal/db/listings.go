@@ -7,7 +7,9 @@ import (
 
 type ListingsRepository interface {
 	GetListings(ctx context.Context, limit int32) ([]*Listing, error)
+	GetListingIdNoImageLoaded(ctx context.Context, source Source) (int64, error)
 	InsertListings(ctx context.Context, listings []*Listing) error
+	UpdateListingsImageLoaded(ctx context.Context, id int64, imageLoaded bool) error
 }
 
 type ListingsRepositoryImpl struct{}
@@ -19,6 +21,15 @@ func (l ListingsRepositoryImpl) GetListings(ctx context.Context, limit int32) ([
 	}
 
 	return queries.GetListings(ctx, limit)
+}
+
+func (l ListingsRepositoryImpl) GetListingIdNoImageLoaded(ctx context.Context, source Source) (int64, error) {
+	_, queries, err := connect(ctx)
+	if err != nil {
+		return 0, err
+	}
+
+	return queries.GetListingIDNoLoadedImage(ctx, source)
 }
 
 func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, listings []*Listing) error {
@@ -50,6 +61,18 @@ func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, listings []*
 		FloorAreas:  floorAreas,
 		Prices:      prices,
 		Occupied:    occupied,
+	})
+}
+
+func (l ListingsRepositoryImpl) UpdateListingsImageLoaded(ctx context.Context, id int64, imageLoaded bool) error {
+	_, queries, err := connect(ctx)
+	if err != nil {
+		return err
+	}
+
+	return queries.UpdateListingsImageLoaded(ctx, UpdateListingsImageLoadedParams{
+		ID:          id,
+		ImageLoaded: imageLoaded,
 	})
 }
 
