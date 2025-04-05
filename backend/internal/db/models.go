@@ -5,11 +5,56 @@
 package db
 
 import (
+	"database/sql/driver"
+	"fmt"
+
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Source string
+
+const (
+	SourcePagibig Source = "pagibig"
+)
+
+func (e *Source) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = Source(s)
+	case string:
+		*e = Source(s)
+	default:
+		return fmt.Errorf("unsupported scan type for Source: %T", src)
+	}
+	return nil
+}
+
+type NullSource struct {
+	Source Source
+	Valid  bool // Valid is true if Source is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullSource) Scan(value interface{}) error {
+	if value == nil {
+		ns.Source, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.Source.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullSource) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.Source), nil
+}
+
 type Listing struct {
 	ID         int64
+	Source     Source
 	ExternalID string
 	Address    string
 	FloorArea  pgtype.Numeric

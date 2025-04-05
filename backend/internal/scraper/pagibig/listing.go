@@ -1,7 +1,6 @@
 package pagibig
 
 import (
-	"fmt"
 	"github.com/jackc/pgx/v5/pgtype"
 	"homagochi/internal/db"
 	"math/big"
@@ -29,7 +28,8 @@ func (listings Listings) toDbListings() ([]*db.Listing, error) {
 		}
 
 		dbListings = append(dbListings, &db.Listing{
-			ExternalID: fmt.Sprintf("pagibig-%s", listing.ID),
+			Source:     db.SourcePagibig,
+			ExternalID: listing.ID,
 			Address:    listing.Location,
 			FloorArea:  floorArea,
 			Price:      listing.Price,

@@ -1,0 +1,1 @@
+CREATE TYPE source AS ENUM ('pagibig');

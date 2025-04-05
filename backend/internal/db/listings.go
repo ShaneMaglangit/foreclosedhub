@@ -27,6 +27,7 @@ func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, listings []*
 		return err
 	}
 
+	sources := make([]Source, len(listings))
 	externalIDs := make([]string, len(listings))
 	addresses := make([]string, len(listings))
 	floorAreas := make([]pgtype.Numeric, len(listings))
@@ -34,6 +35,7 @@ func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, listings []*
 	occupied := make([]bool, len(listings))
 
 	for i, listing := range listings {
+		sources[i] = listing.Source
 		externalIDs[i] = listing.ExternalID
 		addresses[i] = listing.Address
 		floorAreas[i] = listing.FloorArea
@@ -42,6 +44,7 @@ func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, listings []*
 	}
 
 	return queries.InsertListings(ctx, InsertListingsParams{
+		Sources:     sources,
 		ExternalIds: externalIDs,
 		Addresses:   addresses,
 		FloorAreas:  floorAreas,

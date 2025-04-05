@@ -1,7 +1,12 @@
 scalar Int64
 
+enum Source {
+    Pagibig
+}
+
 type Listing {
     id: Int64!
+    source: Source!,
     externalId: String!
     address: String!
     floorArea: Float!

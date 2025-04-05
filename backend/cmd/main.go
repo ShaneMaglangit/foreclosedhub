@@ -10,6 +10,7 @@ import (
 	"github.com/vektah/gqlparser/v2/ast"
 	"homagochi/internal/cron"
 	"homagochi/internal/graph"
+	"homagochi/internal/scraper/pagibig"
 	"log"
 	"net/http"
 	"os"
@@ -21,6 +22,10 @@ func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
+	}
+
+	if err = (&pagibig.Job{}).Run(); err != nil {
+		log.Fatal(err)
 	}
 
 	// Schedule cron jobs

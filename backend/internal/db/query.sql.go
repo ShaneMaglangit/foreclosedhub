@@ -12,7 +12,7 @@ import (
 )
 
 const getListings = `-- name: GetListings :many
-SELECT id, external_id, address, floor_area, price, occupied
+SELECT id, source, external_id, address, floor_area, price, occupied
 FROM listings
 LIMIT $1::int
 `
@@ -28,6 +28,7 @@ func (q *Queries) GetListings(ctx context.Context, rowLimit int32) ([]*Listing, 
 		var i Listing
 		if err := rows.Scan(
 			&i.ID,
+			&i.Source,
 			&i.ExternalID,
 			&i.Address,
 			&i.FloorArea,
@@ -45,13 +46,14 @@ func (q *Queries) GetListings(ctx context.Context, rowLimit int32) ([]*Listing, 
 }
 
 const insertListings = `-- name: InsertListings :exec
-INSERT INTO listings (external_id, address, floor_area, price, occupied)
-VALUES (unnest($1::text[]),
+INSERT INTO listings (source, external_id, address, floor_area, price, occupied)
+VALUES (unnest($1::source[]),
         unnest($2::text[]),
-        unnest($3::numeric(8, 2)[]),
-        unnest($4::bigint[]),
-        unnest($5::boolean[]))
-ON CONFLICT (external_id) DO UPDATE
+        unnest($3::text[]),
+        unnest($4::numeric(8, 2)[]),
+        unnest($5::bigint[]),
+        unnest($6::boolean[]))
+ON CONFLICT (source, external_id) DO UPDATE
     SET address    = EXCLUDED.address,
         floor_area = EXCLUDED.floor_area,
         price      = EXCLUDED.price,
@@ -59,6 +61,7 @@ ON CONFLICT (external_id) DO UPDATE
 `
 
 type InsertListingsParams struct {
+	Sources     []Source
 	ExternalIds []string
 	Addresses   []string
 	FloorAreas  []pgtype.Numeric
@@ -68,6 +71,7 @@ type InsertListingsParams struct {
 
 func (q *Queries) InsertListings(ctx context.Context, arg InsertListingsParams) error {
 	_, err := q.db.Exec(ctx, insertListings,
+		arg.Sources,
 		arg.ExternalIds,
 		arg.Addresses,
 		arg.FloorAreas,

@@ -54,6 +54,7 @@ type ComplexityRoot struct {
 		ID         func(childComplexity int) int
 		Occupied   func(childComplexity int) int
 		Price      func(childComplexity int) int
+		Source     func(childComplexity int) int
 	}
 
 	Query struct {
@@ -128,6 +129,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Listing.Price(childComplexity), true
+
+	case "Listing.source":
+		if e.complexity.Listing.Source == nil {
+			break
+		}
+
+		return e.complexity.Listing.Source(childComplexity), true
 
 	case "Query.listings":
 		if e.complexity.Query.Listings == nil {
@@ -439,6 +447,50 @@ func (ec *executionContext) fieldContext_Listing_id(_ context.Context, field gra
 	return fc, nil
 }
 
+func (ec *executionContext) _Listing_source(ctx context.Context, field graphql.CollectedField, obj *db.Listing) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Listing_source(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Source, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(db.Source)
+	fc.Result = res
+	return ec.marshalNSource2homagochiᚋinternalᚋdbᚐSource(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Listing_source(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Listing",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Source does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Listing_externalId(ctx context.Context, field graphql.CollectedField, obj *db.Listing) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Listing_externalId(ctx, field)
 	if err != nil {
@@ -700,6 +752,8 @@ func (ec *executionContext) fieldContext_Query_listings(ctx context.Context, fie
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Listing_id(ctx, field)
+			case "source":
+				return ec.fieldContext_Listing_source(ctx, field)
 			case "externalId":
 				return ec.fieldContext_Listing_externalId(ctx, field)
 			case "address":
@@ -2834,6 +2888,11 @@ func (ec *executionContext) _Listing(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "source":
+			out.Values[i] = ec._Listing_source(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "externalId":
 			out.Values[i] = ec._Listing_externalId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -3432,6 +3491,22 @@ func (ec *executionContext) marshalNListing2ᚖhomagochiᚋinternalᚋdbᚐListi
 		return graphql.Null
 	}
 	return ec._Listing(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNSource2homagochiᚋinternalᚋdbᚐSource(ctx context.Context, v any) (db.Source, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := db.Source(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNSource2homagochiᚋinternalᚋdbᚐSource(ctx context.Context, sel ast.SelectionSet, v db.Source) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v any) (string, error) {
