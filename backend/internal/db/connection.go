@@ -9,25 +9,23 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func connect(ctx context.Context) (*pgxpool.Pool, *Queries, error) {
+func Connect(ctx context.Context) (*pgxpool.Pool, error) {
 	config, err := createConfig()
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	pool, err := pgxpool.NewWithConfig(ctx, config)
 	if err != nil {
-		return nil, nil, fmt.Errorf("unable to connect to database: %v", err)
+		return nil, fmt.Errorf("unable to connect to database: %v", err)
 	}
 
 	err = pool.Ping(context.Background())
 	if err != nil {
-		return nil, nil, fmt.Errorf("unable to ping the database: %v", err)
+		return nil, fmt.Errorf("unable to ping the database: %v", err)
 	}
 
-	queries := New(pool)
-
-	return pool, queries, nil
+	return pool, nil
 }
 
 func createConfig() (*pgxpool.Config, error) {

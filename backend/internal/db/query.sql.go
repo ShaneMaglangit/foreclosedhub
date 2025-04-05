@@ -11,19 +11,24 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const getListingIDNoLoadedImage = `-- name: GetListingIDNoLoadedImage :one
-SELECT id
+const getListingNoImageLoaded = `-- name: GetListingNoImageLoaded :one
+SELECT id, external_id
 FROM listings
 WHERE source = $1::source
   AND image_loaded = FALSE
 LIMIT 1
 `
 
-func (q *Queries) GetListingIDNoLoadedImage(ctx context.Context, source Source) (int64, error) {
-	row := q.db.QueryRow(ctx, getListingIDNoLoadedImage, source)
-	var id int64
-	err := row.Scan(&id)
-	return id, err
+type GetListingNoImageLoadedRow struct {
+	ID         int64
+	ExternalID string
+}
+
+func (q *Queries) GetListingNoImageLoaded(ctx context.Context, source Source) (*GetListingNoImageLoadedRow, error) {
+	row := q.db.QueryRow(ctx, getListingNoImageLoaded, source)
+	var i GetListingNoImageLoadedRow
+	err := row.Scan(&i.ID, &i.ExternalID)
+	return &i, err
 }
 
 const getListings = `-- name: GetListings :many

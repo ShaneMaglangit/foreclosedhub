@@ -21,8 +21,14 @@ func (r *listingResolver) FloorArea(ctx context.Context, obj *db.Listing) (float
 
 // Listings is the resolver for the listings field.
 func (r *queryResolver) Listings(ctx context.Context, limit int32) ([]*db.Listing, error) {
+	pool, err := db.Connect(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer pool.Close()
+
 	repository := db.NewListingsRepository()
-	return repository.GetListings(ctx, limit)
+	return repository.GetListings(ctx, pool, limit)
 }
 
 // Listing returns ListingResolver implementation.

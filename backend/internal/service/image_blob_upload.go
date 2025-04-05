@@ -1,4 +1,4 @@
-package upload
+package service
 
 import (
 	"context"
@@ -12,38 +12,45 @@ import (
 )
 
 type ImageBlobUploadService struct {
-	listingId int64
-	blob      string
+	blobs []string
 }
 
-func NewImageBlobUploadService(listingId int64, blob string) *ImageBlobUploadService {
+func NewImageBlobUploadService(blobs []string) *ImageBlobUploadService {
 	return &ImageBlobUploadService{
-		listingId: listingId,
-		blob:      blob,
+		blobs: blobs,
 	}
 }
 
-func (service *ImageBlobUploadService) Upload() (string, error) {
+func (service *ImageBlobUploadService) Execute() (string, error) {
+	panic("Not implemented")
+}
+
+func (service *ImageBlobUploadService) ExecuteBatch() ([]string, error) {
 	ctx := context.Background()
 
 	client, err := storage.NewClient(ctx)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer client.Close()
 
-	object := createObject(client)
-	if err = uploadImage(ctx, object, service.blob); err != nil {
-		return "", err
+	var urls []string
+	for _, blob := range service.blobs {
+		object := createObject(client)
+		if err = uploadImage(ctx, object, blob); err != nil {
+			return nil, err
+		}
+
+		url := fmt.Sprintf("https://storage.googleapis.com/%s/%s", object.BucketName(), object.ObjectName())
+		urls = append(urls, url)
 	}
 
-	return fmt.Sprintf("https://storage.googleapis.com/%s/%s", object.BucketName(), object.ObjectName()), nil
+	return urls, nil
 }
 
 func createObject(client *storage.Client) *storage.ObjectHandle {
 	bucketName := os.Getenv("GCP_BUCKET_NAME")
 	objectName := fmt.Sprintf("%v.jpg", uuid.New())
-
 	return client.Bucket(bucketName).Object(objectName)
 }
 
@@ -52,7 +59,6 @@ func uploadImage(ctx context.Context, object *storage.ObjectHandle, blob string)
 	defer cancel()
 
 	writer := object.NewWriter(ctx)
-	defer writer.Close()
 
 	data, err := base64.StdEncoding.DecodeString(blob)
 	if err != nil {
@@ -60,6 +66,10 @@ func uploadImage(ctx context.Context, object *storage.ObjectHandle, blob string)
 	}
 
 	if _, err = writer.Write(data); err != nil {
+		return err
+	}
+
+	if err = writer.Close(); err != nil {
 		return err
 	}
 

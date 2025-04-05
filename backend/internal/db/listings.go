@@ -6,38 +6,23 @@ import (
 )
 
 type ListingsRepository interface {
-	GetListings(ctx context.Context, limit int32) ([]*Listing, error)
-	GetListingIdNoImageLoaded(ctx context.Context, source Source) (int64, error)
-	InsertListings(ctx context.Context, listings []*Listing) error
-	UpdateListingsImageLoaded(ctx context.Context, id int64, imageLoaded bool) error
+	GetListings(ctx context.Context, dbtx DBTX, limit int32) ([]*Listing, error)
+	GetListingNoImageLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingNoImageLoadedRow, error)
+	InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error
+	UpdateListingsImageLoaded(ctx context.Context, dbtx DBTX, id int64, imageLoaded bool) error
 }
 
 type ListingsRepositoryImpl struct{}
 
-func (l ListingsRepositoryImpl) GetListings(ctx context.Context, limit int32) ([]*Listing, error) {
-	_, queries, err := connect(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return queries.GetListings(ctx, limit)
+func (l ListingsRepositoryImpl) GetListings(ctx context.Context, dbtx DBTX, limit int32) ([]*Listing, error) {
+	return New(dbtx).GetListings(ctx, limit)
 }
 
-func (l ListingsRepositoryImpl) GetListingIdNoImageLoaded(ctx context.Context, source Source) (int64, error) {
-	_, queries, err := connect(ctx)
-	if err != nil {
-		return 0, err
-	}
-
-	return queries.GetListingIDNoLoadedImage(ctx, source)
+func (l ListingsRepositoryImpl) GetListingNoImageLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingNoImageLoadedRow, error) {
+	return New(dbtx).GetListingNoImageLoaded(ctx, source)
 }
 
-func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, listings []*Listing) error {
-	_, queries, err := connect(ctx)
-	if err != nil {
-		return err
-	}
-
+func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error {
 	sources := make([]Source, len(listings))
 	externalIDs := make([]string, len(listings))
 	addresses := make([]string, len(listings))
@@ -54,7 +39,7 @@ func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, listings []*
 		occupied[i] = listing.Occupied
 	}
 
-	return queries.InsertListings(ctx, InsertListingsParams{
+	return New(dbtx).InsertListings(ctx, InsertListingsParams{
 		Sources:     sources,
 		ExternalIds: externalIDs,
 		Addresses:   addresses,
@@ -64,16 +49,13 @@ func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, listings []*
 	})
 }
 
-func (l ListingsRepositoryImpl) UpdateListingsImageLoaded(ctx context.Context, id int64, imageLoaded bool) error {
-	_, queries, err := connect(ctx)
-	if err != nil {
-		return err
-	}
-
-	return queries.UpdateListingsImageLoaded(ctx, UpdateListingsImageLoadedParams{
+func (l ListingsRepositoryImpl) UpdateListingsImageLoaded(ctx context.Context, dbtx DBTX, id int64, imageLoaded bool) error {
+	params := UpdateListingsImageLoadedParams{
 		ID:          id,
 		ImageLoaded: imageLoaded,
-	})
+	}
+
+	return New(dbtx).UpdateListingsImageLoaded(ctx, params)
 }
 
 func NewListingsRepository() ListingsRepository {

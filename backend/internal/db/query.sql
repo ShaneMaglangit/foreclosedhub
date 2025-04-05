@@ -3,8 +3,8 @@ SELECT *
 FROM listings
 LIMIT @row_limit::int;
 
--- name: GetListingIDNoLoadedImage :one
-SELECT id
+-- name: GetListingNoImageLoaded :one
+SELECT id, external_id
 FROM listings
 WHERE source = @source::source
   AND image_loaded = FALSE

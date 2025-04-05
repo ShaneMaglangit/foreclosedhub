@@ -18,7 +18,8 @@ type JobEntry struct {
 }
 
 var jobEntries = []JobEntry{
-	{name: "Pagibig", schedule: "0 0 * * *", factory: func() Job { return &pagibig.ScrapeListingJob{} }},
+	{name: "PagibigScrapeListing", schedule: "0 0 * * *", factory: func() Job { return &pagibig.ScrapeListingJob{} }},
+	{name: "PagibigScrapeListingImages", schedule: "* * * * *", factory: func() Job { return &pagibig.ScrapeListingImageJob{} }},
 }
 
 func Start() *cron.Cron {

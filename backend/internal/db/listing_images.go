@@ -5,19 +5,19 @@ import (
 )
 
 type ListingImagesRepository interface {
-	InsertListingImages(ctx context.Context, listing_ids []int64, urls []string) error
+	InsertListingImages(ctx context.Context, dbtx DBTX, listingId int64, urls []string) error
 }
 
 type ListingImagesRepositoryImpl struct{}
 
-func (l ListingImagesRepositoryImpl) InsertListingImages(ctx context.Context, listing_ids []int64, urls []string) error {
-	_, queries, err := connect(ctx)
-	if err != nil {
-		return err
+func (l ListingImagesRepositoryImpl) InsertListingImages(ctx context.Context, dbtx DBTX, listingId int64, urls []string) error {
+	listingIds := make([]int64, len(urls))
+	for i := range len(listingIds) {
+		listingIds[i] = listingId
 	}
 
-	return queries.InsertListingImages(ctx, InsertListingImagesParams{
-		ListingIds: listing_ids,
+	return New(dbtx).InsertListingImages(ctx, InsertListingImagesParams{
+		ListingIds: listingIds,
 		Urls:       urls,
 	})
 }

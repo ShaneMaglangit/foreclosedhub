@@ -33,10 +33,6 @@ func (batch Batch) getListings() (Listings, error) {
 		return nil, err
 	}
 
-	for _, Property := range listings {
-		Property.ID = fmt.Sprintf("pagibig-%s", Property.ID)
-	}
-
 	return listings, nil
 }
 
