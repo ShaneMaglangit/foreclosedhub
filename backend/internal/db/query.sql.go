@@ -34,7 +34,7 @@ func (q *Queries) GetListingByImageNotLoaded(ctx context.Context, source Source)
 const getListingImagesByListingIds = `-- name: GetListingImagesByListingIds :many
 SELECT listing_id, url
 FROM listing_images
-WHERE id = ANY($1::bigint[])
+WHERE listing_id = ANY($1::bigint[])
 `
 
 type GetListingImagesByListingIdsRow struct {
