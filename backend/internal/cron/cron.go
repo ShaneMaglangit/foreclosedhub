@@ -30,7 +30,7 @@ func Start() *cron.Cron {
 
 		_, err := c.AddFunc(entry.schedule, func() {
 			if err := job.Run(); err != nil {
-				log.Fatal(err)
+				log.Println(err)
 			}
 		})
 

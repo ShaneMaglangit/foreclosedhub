@@ -5,7 +5,12 @@ export default async function Page() {
     return (
         <ul>
             {listings.map((listing) => (
-                <li key={listing.id}>{listing.address}</li>
+                <li key={listing.id}>
+                    <span>{listing.address} - {listing.price}</span>
+                    {listing.imageUrls?.map((url, index) => (
+                        <img key={index} src={url}/>
+                    ))}
+                </li>
             ))}
         </ul>
     )

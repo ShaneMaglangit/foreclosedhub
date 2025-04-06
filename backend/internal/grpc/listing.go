@@ -65,6 +65,11 @@ func buildListingsWithImages(listings []*db.Listing, imagesLookup map[int64][]st
 			return nil, err
 		}
 
+		imageUrls := make([]string, 0)
+		if listingImages := imagesLookup[listing.ID]; listingImages != nil {
+			imageUrls = listingImages
+		}
+
 		listingsWithImages = append(listingsWithImages, &protobuf.Listing{
 			Id:         listing.ID,
 			Source:     string(listing.Source),
@@ -73,7 +78,7 @@ func buildListingsWithImages(listings []*db.Listing, imagesLookup map[int64][]st
 			FloorArea:  floorArea.Float64,
 			Price:      listing.Price,
 			Occupied:   listing.Occupied,
-			ImageUrls:  imagesLookup[listing.ID],
+			ImageUrls:  imageUrls,
 		})
 	}
 

@@ -9,7 +9,6 @@ import {GetListingsResponse__Output} from "web/protobuf/listing/GetListingsRespo
 const PROTO_PATH = path.join(process.cwd(), '../proto/listing_service.proto');
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
-    keepCase: true,
     longs: String,
     enums: String,
     defaults: true,
