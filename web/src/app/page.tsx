@@ -1,7 +1,7 @@
-import {Spinner} from "web/components/spinner";
+import {Button} from "web/components/button";
 
 export default function Page() {
     return (
-        <Spinner/>
+        <Button>Hello world</Button>
     )
 }

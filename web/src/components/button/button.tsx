@@ -17,8 +17,8 @@ const baseStyle = clsx(
 const colorStyles = {
   default: {
     default:
-      "text-black hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800",
-    text: "text-black hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800",
+      "text-black hover:bg-gray-150 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800",
+    text: "text-black hover:bg-gray-150 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800",
   },
   primary: {
     default: "bg-primary-500 text-white hover:bg-primary-800",
@@ -32,8 +32,8 @@ const colorStyles = {
 
 const activeStyles = {
   default: {
-    default: "bg-gray-100 dark:bg-gray-800",
-    text: "bg-gray-100 dark:bg-gray-800",
+    default: "bg-gray-150 dark:bg-gray-800",
+    text: "bg-gray-150 dark:bg-gray-800",
   },
   primary: {
     default: "bg-primary-800",
