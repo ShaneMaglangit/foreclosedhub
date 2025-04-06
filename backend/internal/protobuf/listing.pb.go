@@ -4,7 +4,7 @@
 // 	protoc        v5.29.3
 // source: listing.proto
 
-package pb
+package protobuf
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -129,91 +129,11 @@ func (x *Listing) GetImageUrls() []string {
 	return nil
 }
 
-type GetListingsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetListingsRequest) Reset() {
-	*x = GetListingsRequest{}
-	mi := &file_listing_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetListingsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetListingsRequest) ProtoMessage() {}
-
-func (x *GetListingsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_listing_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetListingsRequest.ProtoReflect.Descriptor instead.
-func (*GetListingsRequest) Descriptor() ([]byte, []int) {
-	return file_listing_proto_rawDescGZIP(), []int{1}
-}
-
-type GetListingsResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Listings      []*Listing             `protobuf:"bytes,1,rep,name=listings,proto3" json:"listings,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetListingsResponse) Reset() {
-	*x = GetListingsResponse{}
-	mi := &file_listing_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetListingsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetListingsResponse) ProtoMessage() {}
-
-func (x *GetListingsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_listing_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetListingsResponse.ProtoReflect.Descriptor instead.
-func (*GetListingsResponse) Descriptor() ([]byte, []int) {
-	return file_listing_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *GetListingsResponse) GetListings() []*Listing {
-	if x != nil {
-		return x.Listings
-	}
-	return nil
-}
-
 var File_listing_proto protoreflect.FileDescriptor
 
 const file_listing_proto_rawDesc = "" +
 	"\n" +
-	"\rlisting.proto\x12\thomagochi\"\xff\x01\n" +
+	"\rlisting.proto\x12\alisting\"\xff\x01\n" +
 	"\aListing\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x16\n" +
 	"\x06source\x18\x02 \x01(\tR\x06source\x12\x1f\n" +
@@ -226,12 +146,7 @@ const file_listing_proto_rawDesc = "" +
 	"\boccupied\x18\a \x01(\bR\boccupied\x12!\n" +
 	"\fimage_loaded\x18\b \x01(\bR\vimageLoaded\x12\x1d\n" +
 	"\n" +
-	"image_urls\x18\t \x03(\tR\timageUrls\"\x14\n" +
-	"\x12GetListingsRequest\"E\n" +
-	"\x13GetListingsResponse\x12.\n" +
-	"\blistings\x18\x01 \x03(\v2\x12.homagochi.ListingR\blistings2^\n" +
-	"\x0eListingService\x12L\n" +
-	"\vGetListings\x12\x1d.homagochi.GetListingsRequest\x1a\x1e.homagochi.GetListingsResponseB9Z7gitlab.com/shanemaglangit/homagochi/backend/internal/pbb\x06proto3"
+	"image_urls\x18\t \x03(\tR\timageUrlsB?Z=gitlab.com/shanemaglangit/homagochi/backend/internal/protobufb\x06proto3"
 
 var (
 	file_listing_proto_rawDescOnce sync.Once
@@ -245,21 +160,16 @@ func file_listing_proto_rawDescGZIP() []byte {
 	return file_listing_proto_rawDescData
 }
 
-var file_listing_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_listing_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_listing_proto_goTypes = []any{
-	(*Listing)(nil),             // 0: homagochi.Listing
-	(*GetListingsRequest)(nil),  // 1: homagochi.GetListingsRequest
-	(*GetListingsResponse)(nil), // 2: homagochi.GetListingsResponse
+	(*Listing)(nil), // 0: listing.Listing
 }
 var file_listing_proto_depIdxs = []int32{
-	0, // 0: homagochi.GetListingsResponse.listings:type_name -> homagochi.Listing
-	1, // 1: homagochi.ListingService.GetListings:input_type -> homagochi.GetListingsRequest
-	2, // 2: homagochi.ListingService.GetListings:output_type -> homagochi.GetListingsResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // [0:0] is the sub-list for method output_type
+	0, // [0:0] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_listing_proto_init() }
@@ -273,9 +183,9 @@ func file_listing_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_listing_proto_rawDesc), len(file_listing_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   1,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   0,
 		},
 		GoTypes:           file_listing_proto_goTypes,
 		DependencyIndexes: file_listing_proto_depIdxs,

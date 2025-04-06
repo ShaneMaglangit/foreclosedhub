@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package homagochi;
+package listing;
 
-option go_package = "gitlab.com/shanemaglangit/homagochi/backend/internal/pb";
+option go_package = "gitlab.com/shanemaglangit/homagochi/backend/internal/protobuf";
 
 message Listing {
   int64 id = 1;
@@ -14,14 +14,4 @@ message Listing {
   bool occupied = 7;
   bool image_loaded = 8;
   repeated string image_urls = 9;
-}
-
-message GetListingsRequest {}
-
-message GetListingsResponse {
-  repeated Listing listings = 1;
-}
-
-service ListingService {
-  rpc GetListings (GetListingsRequest) returns (GetListingsResponse);
 }

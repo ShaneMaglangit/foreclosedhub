@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: listing.proto
+// source: listing_service.proto
 
-package pb
+package protobuf
 
 import (
 	context "context"
@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ListingService_GetListings_FullMethodName = "/homagochi.ListingService/GetListings"
+	ListingService_GetListings_FullMethodName = "/listing.ListingService/GetListings"
 )
 
 // ListingServiceClient is the client API for ListingService service.
@@ -108,7 +108,7 @@ func _ListingService_GetListings_Handler(srv interface{}, ctx context.Context, d
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ListingService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "homagochi.ListingService",
+	ServiceName: "listing.ListingService",
 	HandlerType: (*ListingServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -117,5 +117,5 @@ var ListingService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "listing.proto",
+	Metadata: "listing_service.proto",
 }

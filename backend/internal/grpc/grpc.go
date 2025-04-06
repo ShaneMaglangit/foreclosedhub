@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"google.golang.org/grpc"
-	"homagochi/internal/pb"
+	"homagochi/internal/protobuf"
 	"log"
 	"net"
 )
@@ -16,7 +16,7 @@ func Serve() error {
 	}
 
 	server := grpc.NewServer()
-	pb.RegisterListingServiceServer(server, &ListingServiceServer{})
+	protobuf.RegisterListingServiceServer(server, &ListingServiceServer{})
 
 	log.Println("Starting gRPC server on " + DEFAULT_PORT)
 	return server.Serve(listener)

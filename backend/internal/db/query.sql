@@ -32,7 +32,7 @@ WHERE listings.id = @id::bigint;
 -- name: GetListingImagesByListingIds :many
 SELECT listing_id, url
 FROM listing_images
-WHERE id IN (@ids::bigint[]);
+WHERE id = ANY(@ids::bigint[]);
 
 -- name: InsertListingImages :exec
 INSERT INTO listing_images (listing_id, url)

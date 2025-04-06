@@ -3,14 +3,14 @@ package grpc
 import (
 	"context"
 	"homagochi/internal/db"
-	"homagochi/internal/pb"
+	"homagochi/internal/protobuf"
 )
 
 type ListingServiceServer struct {
-	pb.UnimplementedListingServiceServer
+	protobuf.UnimplementedListingServiceServer
 }
 
-func (server *ListingServiceServer) GetListings(ctx context.Context, request *pb.GetListingsRequest) (*pb.GetListingsResponse, error) {
+func (server *ListingServiceServer) GetListings(ctx context.Context, request *protobuf.GetListingsRequest) (*protobuf.GetListingsResponse, error) {
 	pool, err := db.Connect(ctx)
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (server *ListingServiceServer) GetListings(ctx context.Context, request *pb
 		return nil, err
 	}
 
-	return &pb.GetListingsResponse{Listings: listingsWithImages}, nil
+	return &protobuf.GetListingsResponse{Listings: listingsWithImages}, nil
 }
 
 func extractListingIds(listings []*db.Listing) []int64 {
@@ -56,8 +56,8 @@ func mapListingImages(images []*db.GetListingImagesByListingIdsRow) map[int64][]
 	return listingImagesLookup
 }
 
-func buildListingsWithImages(listings []*db.Listing, imagesLookup map[int64][]string) ([]*pb.Listing, error) {
-	listingsWithImages := make([]*pb.Listing, 0, len(listings))
+func buildListingsWithImages(listings []*db.Listing, imagesLookup map[int64][]string) ([]*protobuf.Listing, error) {
+	listingsWithImages := make([]*protobuf.Listing, 0, len(listings))
 
 	for _, listing := range listings {
 		floorArea, err := listing.FloorArea.Float64Value()
@@ -65,7 +65,7 @@ func buildListingsWithImages(listings []*db.Listing, imagesLookup map[int64][]st
 			return nil, err
 		}
 
-		listingsWithImages = append(listingsWithImages, &pb.Listing{
+		listingsWithImages = append(listingsWithImages, &protobuf.Listing{
 			Id:         listing.ID,
 			Source:     string(listing.Source),
 			ExternalId: listing.ExternalID,

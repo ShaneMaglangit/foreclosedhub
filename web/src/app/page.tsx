@@ -1,29 +1,7 @@
-import Image from "next/image";
+import {getListings} from "web/grpc/client";
 
 export default async function Page() {
-    const resp = await fetch(process.env.GQL_ENDPOINT ?? '', {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            query: `
-                {
-                    listings {
-                        id
-                        source
-                        externalId
-                        address
-                        floorArea
-                        price
-                    }
-                } 
-            `
-        })
-    })
-
-    const jsonData = await resp.json()
-    const listings = jsonData['data']['listings']
+    const listings = await getListings()
     return (
         <ul>
             {listings.map((listing) => (
