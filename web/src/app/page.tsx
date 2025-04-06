@@ -1,17 +1,5 @@
-import {getListings} from "web/grpc/client";
-
-export default async function Page() {
-    const listings = await getListings()
+export default function Page() {
     return (
-        <ul>
-            {listings.map((listing) => (
-                <li key={listing.id}>
-                    <span>{listing.address} - {listing.price}</span>
-                    {listing.imageUrls?.map((url, index) => (
-                        <img key={index} src={url}/>
-                    ))}
-                </li>
-            ))}
-        </ul>
+        <p>Hello world</p>
     )
 }
