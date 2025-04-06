@@ -1,7 +1,16 @@
+import {Button} from "web/components/button";
 import {getListings} from "web/grpc/client";
 
-export default async function Page() {
-    const listings = await getListings()
+export default async function Page(props: {
+    searchParams?: {
+        after?: number,
+        before?: number,
+        limit?: number,
+    }
+}) {
+    const {after = 0, before = 0, limit = 20} = props.searchParams || {}
+    const {listings, pageInfo} = await getListings({after, before, limit})
+
     return (
         <>
             {
@@ -10,15 +19,24 @@ export default async function Page() {
                         <h2 className='text-xl'>
                             <strong>₱ {formatToPhilippineNumeric(listing.price)}</strong> - {listing.address}
                         </h2>
-                        <div className="grid grid-cols-4 gap-2">
+                        <div className="grid grid-cols-8 gap-2">
                             {listing.imageUrls.map((url, index) => (
                                 <img key={index} src={url} alt="property preview"/>
-
                             ))}
                         </div>
                     </div>
                 ))
             }
+            {pageInfo?.hasPrevPage && (
+                <Button as='link' href={`/?before=${pageInfo?.startCursor}&limit=${limit}`}>
+                    Previous
+                </Button>
+            )}
+            {pageInfo?.hasNextPage && (
+                <Button as='link' href={`/?after=${pageInfo?.endCursor}&limit=${limit}`}>
+                    Next
+                </Button>
+            )}
         </>
     )
 }

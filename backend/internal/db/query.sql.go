@@ -62,14 +62,63 @@ func (q *Queries) GetListingImagesByListingIds(ctx context.Context, ids []int64)
 	return items, nil
 }
 
-const getListings = `-- name: GetListings :many
+const getListingsNextPage = `-- name: GetListingsNextPage :many
 SELECT id, source, external_id, address, floor_area, price, occupied, image_loaded
 FROM listings
-LIMIT $1::int
+WHERE id > $1::bigint
+ORDER BY id
+LIMIT $2::int
 `
 
-func (q *Queries) GetListings(ctx context.Context, rowLimit int32) ([]*Listing, error) {
-	rows, err := q.db.Query(ctx, getListings, rowLimit)
+type GetListingsNextPageParams struct {
+	After    int64
+	RowLimit int32
+}
+
+func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPageParams) ([]*Listing, error) {
+	rows, err := q.db.Query(ctx, getListingsNextPage, arg.After, arg.RowLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*Listing
+	for rows.Next() {
+		var i Listing
+		if err := rows.Scan(
+			&i.ID,
+			&i.Source,
+			&i.ExternalID,
+			&i.Address,
+			&i.FloorArea,
+			&i.Price,
+			&i.Occupied,
+			&i.ImageLoaded,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getListingsPreviousPage = `-- name: GetListingsPreviousPage :many
+SELECT id, source, external_id, address, floor_area, price, occupied, image_loaded
+FROM listings
+WHERE id < $1::bigint
+ORDER BY id DESC
+LIMIT $2::int
+`
+
+type GetListingsPreviousPageParams struct {
+	Before   int64
+	RowLimit int32
+}
+
+func (q *Queries) GetListingsPreviousPage(ctx context.Context, arg GetListingsPreviousPageParams) ([]*Listing, error) {
+	rows, err := q.db.Query(ctx, getListingsPreviousPage, arg.Before, arg.RowLimit)
 	if err != nil {
 		return nil, err
 	}

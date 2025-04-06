@@ -4,12 +4,18 @@ package listing;
 
 option go_package = "gitlab.com/shanemaglangit/homagochi/backend/internal/protobuf";
 
+import "common.proto";
 import "listing.proto";
 
-message GetListingsRequest {}
+message GetListingsRequest {
+  int64 after = 1;
+  int64 before = 2;
+  int32 limit = 3;
+}
 
 message GetListingsResponse {
   repeated Listing listings = 1;
+  common.PageInfo pageInfo = 2;
 }
 
 service ListingService {

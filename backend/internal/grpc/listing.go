@@ -2,8 +2,11 @@ package grpc
 
 import (
 	"context"
+	"fmt"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"homagochi/internal/db"
 	"homagochi/internal/protobuf"
+	"slices"
 )
 
 type ListingServiceServer struct {
@@ -11,14 +14,27 @@ type ListingServiceServer struct {
 }
 
 func (server *ListingServiceServer) GetListings(ctx context.Context, request *protobuf.GetListingsRequest) (*protobuf.GetListingsResponse, error) {
+	hasNextParameter := request.After != 0
+	hasPrevParameter := request.Before != 0
+	if hasNextParameter && hasPrevParameter {
+		return nil, fmt.Errorf("after and before are mutually exclusive parameters")
+	}
+
 	pool, err := db.Connect(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer pool.Close()
 
-	listingsRepository := db.NewListingsRepository()
-	listings, err := listingsRepository.GetListings(ctx, pool, 20)
+	var listings []*db.Listing
+	var pageInfo *protobuf.PageInfo
+
+	if hasPrevParameter {
+		listings, pageInfo, err = getPrevListingsWithPageInfo(ctx, pool, request.Before, request.Limit)
+	} else {
+		listings, pageInfo, err = getNextListingsWithPageInfo(ctx, pool, request.After, request.Limit)
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +53,71 @@ func (server *ListingServiceServer) GetListings(ctx context.Context, request *pr
 		return nil, err
 	}
 
-	return &protobuf.GetListingsResponse{Listings: listingsWithImages}, nil
+	return &protobuf.GetListingsResponse{
+		Listings: listingsWithImages,
+		PageInfo: pageInfo,
+	}, nil
+}
+
+func getNextListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, after int64, limit int32) ([]*db.Listing, *protobuf.PageInfo, error) {
+	listingsRepository := db.NewListingsRepository()
+	listings, err := listingsRepository.GetListingsNextPage(ctx, pool, after, limit+1)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	currentPageListings := listings[:min(len(listings), int(limit))]
+
+	var startCursor int64
+	if len(currentPageListings) > 0 {
+		startCursor = currentPageListings[0].ID
+	}
+
+	var endCursor int64
+	if len(currentPageListings) > 0 {
+		endCursor = currentPageListings[len(currentPageListings)-1].ID
+	}
+
+	pageInfo := &protobuf.PageInfo{
+		StartCursor: startCursor,
+		EndCursor:   endCursor,
+		HasNextPage: len(listings) > int(limit),
+		// When fetching for the next page (cursor > 0), assume that a previous page exist.
+		HasPrevPage: after > 0,
+	}
+
+	return currentPageListings, pageInfo, nil
+}
+
+func getPrevListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, before int64, limit int32) ([]*db.Listing, *protobuf.PageInfo, error) {
+	listingsRepository := db.NewListingsRepository()
+	listings, err := listingsRepository.GetListingsPreviousPage(ctx, pool, before, limit+1)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	slices.Reverse(listings)
+	currentPageListings := listings[:min(len(listings), int(limit))]
+
+	var startCursor int64
+	if len(currentPageListings) > 0 {
+		startCursor = currentPageListings[0].ID
+	}
+
+	var endCursor int64
+	if len(currentPageListings) > 0 {
+		endCursor = currentPageListings[len(currentPageListings)-1].ID
+	}
+
+	pageInfo := &protobuf.PageInfo{
+		StartCursor: startCursor,
+		EndCursor:   endCursor,
+		// When fetching for the previous page, assume that the "next page" exist that starts with the "before" cursor.
+		HasNextPage: true,
+		HasPrevPage: len(currentPageListings) > int(limit),
+	}
+
+	return currentPageListings, pageInfo, nil
 }
 
 func extractListingIds(listings []*db.Listing) []int64 {

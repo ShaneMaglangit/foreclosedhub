@@ -6,7 +6,8 @@ import (
 )
 
 type ListingsRepository interface {
-	GetListings(ctx context.Context, dbtx DBTX, limit int32) ([]*Listing, error)
+	GetListingsNextPage(ctx context.Context, dbtx DBTX, after int64, limit int32) ([]*Listing, error)
+	GetListingsPreviousPage(ctx context.Context, dbtx DBTX, before int64, limit int32) ([]*Listing, error)
 	GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error)
 	InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error
 	UpdateListingsImageLoaded(ctx context.Context, dbtx DBTX, id int64, imageLoaded bool) error
@@ -14,8 +15,12 @@ type ListingsRepository interface {
 
 type ListingsRepositoryImpl struct{}
 
-func (l ListingsRepositoryImpl) GetListings(ctx context.Context, dbtx DBTX, limit int32) ([]*Listing, error) {
-	return New(dbtx).GetListings(ctx, limit)
+func (l ListingsRepositoryImpl) GetListingsNextPage(ctx context.Context, dbtx DBTX, after int64, limit int32) ([]*Listing, error) {
+	return New(dbtx).GetListingsNextPage(ctx, GetListingsNextPageParams{After: after, RowLimit: limit})
+}
+
+func (l ListingsRepositoryImpl) GetListingsPreviousPage(ctx context.Context, dbtx DBTX, before int64, limit int32) ([]*Listing, error) {
+	return New(dbtx).GetListingsPreviousPage(ctx, GetListingsPreviousPageParams{Before: before, RowLimit: limit})
 }
 
 func (l ListingsRepositoryImpl) GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error) {

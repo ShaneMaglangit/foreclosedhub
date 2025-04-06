@@ -1,6 +1,15 @@
--- name: GetListings :many
+-- name: GetListingsNextPage :many
 SELECT *
 FROM listings
+WHERE id > @after::bigint
+ORDER BY id
+LIMIT @row_limit::int;
+
+-- name: GetListingsPreviousPage :many
+SELECT *
+FROM listings
+WHERE id < @before::bigint
+ORDER BY id DESC
 LIMIT @row_limit::int;
 
 -- name: GetListingByImageNotLoaded :one

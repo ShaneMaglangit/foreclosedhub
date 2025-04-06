@@ -6,6 +6,7 @@ import {ProtoGrpcType} from "web/protobuf/listing_service";
 import {Listing__Output} from "web/protobuf/listing/Listing";
 import {GetListingsResponse__Output} from "web/protobuf/listing/GetListingsResponse";
 import {env} from "web/env";
+import {GetListingsRequest} from "web/protobuf/listing/GetListingsRequest";
 
 const PROTO_PATH = path.join(process.cwd(), '../proto/listing_service.proto');
 
@@ -18,17 +19,14 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 
 const proto = grpc.loadPackageDefinition(packageDefinition) as unknown as ProtoGrpcType;
 
-const client = new proto.listing.ListingService(
-    env.GRPC_ADDRESS,
-    grpc.credentials.createInsecure()
-);
+const client = new proto.listing.ListingService(env.GRPC_ADDRESS, grpc.credentials.createInsecure());
 
-export function getListings(): Promise<Listing__Output[]> {
+export function getListings(request: GetListingsRequest): Promise<GetListingsResponse__Output> {
     return new Promise((resolve, reject) => {
-        client.GetListings({}, (err: ServiceError | null, response: GetListingsResponse__Output | undefined) => {
+        client.GetListings(request, (err: ServiceError | null, response: GetListingsResponse__Output | undefined) => {
             if (err) return reject(err);
             if (!response) return reject({reason: 'Empty response'})
-            resolve(response.listings);
+            resolve(response)
         });
     });
 }

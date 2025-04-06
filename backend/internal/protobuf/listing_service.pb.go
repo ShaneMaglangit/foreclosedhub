@@ -23,6 +23,9 @@ const (
 
 type GetListingsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	After         int64                  `protobuf:"varint,1,opt,name=after,proto3" json:"after,omitempty"`
+	Before        int64                  `protobuf:"varint,2,opt,name=before,proto3" json:"before,omitempty"`
+	Limit         int32                  `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -57,9 +60,31 @@ func (*GetListingsRequest) Descriptor() ([]byte, []int) {
 	return file_listing_service_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *GetListingsRequest) GetAfter() int64 {
+	if x != nil {
+		return x.After
+	}
+	return 0
+}
+
+func (x *GetListingsRequest) GetBefore() int64 {
+	if x != nil {
+		return x.Before
+	}
+	return 0
+}
+
+func (x *GetListingsRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
 type GetListingsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Listings      []*Listing             `protobuf:"bytes,1,rep,name=listings,proto3" json:"listings,omitempty"`
+	PageInfo      *PageInfo              `protobuf:"bytes,2,opt,name=pageInfo,proto3" json:"pageInfo,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -101,14 +126,25 @@ func (x *GetListingsResponse) GetListings() []*Listing {
 	return nil
 }
 
+func (x *GetListingsResponse) GetPageInfo() *PageInfo {
+	if x != nil {
+		return x.PageInfo
+	}
+	return nil
+}
+
 var File_listing_service_proto protoreflect.FileDescriptor
 
 const file_listing_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15listing_service.proto\x12\alisting\x1a\rlisting.proto\"\x14\n" +
-	"\x12GetListingsRequest\"C\n" +
+	"\x15listing_service.proto\x12\alisting\x1a\fcommon.proto\x1a\rlisting.proto\"X\n" +
+	"\x12GetListingsRequest\x12\x14\n" +
+	"\x05after\x18\x01 \x01(\x03R\x05after\x12\x16\n" +
+	"\x06before\x18\x02 \x01(\x03R\x06before\x12\x14\n" +
+	"\x05limit\x18\x03 \x01(\x05R\x05limit\"q\n" +
 	"\x13GetListingsResponse\x12,\n" +
-	"\blistings\x18\x01 \x03(\v2\x10.listing.ListingR\blistings2Z\n" +
+	"\blistings\x18\x01 \x03(\v2\x10.listing.ListingR\blistings\x12,\n" +
+	"\bpageInfo\x18\x02 \x01(\v2\x10.common.PageInfoR\bpageInfo2Z\n" +
 	"\x0eListingService\x12H\n" +
 	"\vGetListings\x12\x1b.listing.GetListingsRequest\x1a\x1c.listing.GetListingsResponseB?Z=gitlab.com/shanemaglangit/homagochi/backend/internal/protobufb\x06proto3"
 
@@ -129,16 +165,18 @@ var file_listing_service_proto_goTypes = []any{
 	(*GetListingsRequest)(nil),  // 0: listing.GetListingsRequest
 	(*GetListingsResponse)(nil), // 1: listing.GetListingsResponse
 	(*Listing)(nil),             // 2: listing.Listing
+	(*PageInfo)(nil),            // 3: common.PageInfo
 }
 var file_listing_service_proto_depIdxs = []int32{
 	2, // 0: listing.GetListingsResponse.listings:type_name -> listing.Listing
-	0, // 1: listing.ListingService.GetListings:input_type -> listing.GetListingsRequest
-	1, // 2: listing.ListingService.GetListings:output_type -> listing.GetListingsResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	3, // 1: listing.GetListingsResponse.pageInfo:type_name -> common.PageInfo
+	0, // 2: listing.ListingService.GetListings:input_type -> listing.GetListingsRequest
+	1, // 3: listing.ListingService.GetListings:output_type -> listing.GetListingsResponse
+	3, // [3:4] is the sub-list for method output_type
+	2, // [2:3] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_listing_service_proto_init() }
@@ -146,6 +184,7 @@ func file_listing_service_proto_init() {
 	if File_listing_service_proto != nil {
 		return
 	}
+	file_common_proto_init()
 	file_listing_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
