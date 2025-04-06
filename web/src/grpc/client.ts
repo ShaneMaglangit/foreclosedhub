@@ -3,7 +3,6 @@ import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 import {ServiceError} from "@grpc/grpc-js";
 import {ProtoGrpcType} from "web/protobuf/listing_service";
-import {Listing__Output} from "web/protobuf/listing/Listing";
 import {GetListingsResponse__Output} from "web/protobuf/listing/GetListingsResponse";
 import {env} from "web/env";
 import {GetListingsRequest} from "web/protobuf/listing/GetListingsRequest";
