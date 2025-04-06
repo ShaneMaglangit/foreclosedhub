@@ -1,6 +1,4 @@
-import {Button} from "@web/components/button";
 import {getListings} from "@web/grpc/client";
-import Link from "next/link";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from "@web/components/carousel";
 
 type Props = {
@@ -16,58 +14,38 @@ export default async function Page(props: Props) {
     const {listings, pageInfo} = await getListings({after, before, limit})
 
     return (
-        <>
-            {pageInfo?.hasPrevPage && (
-                <Button asChild>
-                    <Link href={`/?before=${pageInfo?.startCursor}&limit=${limit}`}>
-                        Previous
-                    </Link>
-                </Button>
-            )}
-            {pageInfo?.hasNextPage && (
-                <Button asChild>
-                    <Link href={`/?after=${pageInfo?.endCursor}&limit=${limit}`}>
-                        Next
-                    </Link>
-                </Button>
-            )}
-            <div className="grid grid-cols-5 gap-4 p-4">
-                {
-                    listings.map((listing) => (
-                        <div key={listing.id}>
-                            <h2 className='text-xl'>
-                                <strong>₱ {formatToPhilippineNumeric(listing.price)}</strong> - {listing.address}
-                            </h2>
-                            <Carousel>
-                                <CarouselContent>
-                                    {listing.imageUrls.map((url, index) => (
-                                        <CarouselItem key={index}>
-                                            <img src={url} alt="property preview"/>
-                                        </CarouselItem>
-                                    ))}
-                                </CarouselContent>
-                                <CarouselPrevious variant="primary"/>
-                                <CarouselNext variant="primary"/>
-                            </Carousel>
-                        </div>
-                    ))
-                }
-            </div>
-        </>
+        <div className="grid grid-cols-3 gap-6 p-6">
+            {listings.map((listing) => (
+                <div key={listing.id} className="flex flex-col gap-2">
+                    <Carousel className="rounded-lg overflow-hidden">
+                        <CarouselContent>
+                            {listing.imageUrls.map((url, index) => (
+                                <CarouselItem key={index}>
+                                    <img src={url} alt="property preview"/>
+                                </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                        <CarouselPrevious/>
+                        <CarouselNext/>
+                    </Carousel>
+                    <h4 className="font-semibold truncate">{listing.address}</h4>
+                    <p className="font-semibold">₱ {formatToPhilippineNumeric(listing.price)}</p>
+                </div>
+            ))}
+        </div>
     )
 }
 
 function formatToPhilippineNumeric(
     input: string | number,
-    decimals: number = 2
 ): string {
     const cleaned = input.toString().replace(/[^0-9.-]/g, "");
 
     const number = parseFloat(cleaned);
-    if (isNaN(number)) return "0.00";
+    if (isNaN(number)) return "0";
 
     return number.toLocaleString("en-PH", {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
     });
 }

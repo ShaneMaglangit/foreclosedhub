@@ -15,7 +15,7 @@ const buttonVariants = cva(
     {
         variants: {
             variant: {
-                default: "text-black hover:bg-gray-150 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800",
+                default: "text-black bg-bg hover:bg-gray-150 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800",
                 primary: "bg-primary-500 text-white hover:bg-primary-800",
                 danger: "bg-danger-500 text-white hover:bg-danger-800",
             },
@@ -38,11 +38,11 @@ export interface ButtonProps
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-    ({className, variant, asChild = false, ...props}, ref) => {
+    ({className, variant, size, asChild = false, ...props}, ref) => {
         const Comp = asChild ? Slot : "button"
         return (
             <Comp
-                className={cn(buttonVariants({variant, className}))}
+                className={cn(buttonVariants({variant, size, className}))}
                 ref={ref}
                 {...props}
             />
