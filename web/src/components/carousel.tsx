@@ -220,7 +220,7 @@ const CarouselPrevious = forwardRef<
             onClick={scrollPrev}
             {...props}
         >
-            <ChevronLeft/>
+            <ChevronLeft className="h-6 w-6 mr-0.5"/>
             <span className="sr-only">Previous slide</span>
         </Button>
     )
@@ -247,7 +247,7 @@ const CarouselNext = forwardRef<
             onClick={scrollNext}
             {...props}
         >
-            <ChevronRight/>
+            <ChevronRight className="h-6 w-6 ml-0.5"/>
             <span className="sr-only">Next slide</span>
         </Button>
     )
