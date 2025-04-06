@@ -64,7 +64,7 @@
 
     --z-modal: 1000;
 
-    --animate-writhe: write 1.5s infinite ease both;
+    --animate-writhe: writhe 1.5s infinite ease both;
     @keyframes writhe {
         0%,
         100% {
