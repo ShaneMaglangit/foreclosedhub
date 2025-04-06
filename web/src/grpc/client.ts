@@ -5,6 +5,7 @@ import {ServiceError} from "@grpc/grpc-js";
 import {ProtoGrpcType} from "web/protobuf/listing_service";
 import {Listing__Output} from "web/protobuf/listing/Listing";
 import {GetListingsResponse__Output} from "web/protobuf/listing/GetListingsResponse";
+import {env} from "web/env";
 
 const PROTO_PATH = path.join(process.cwd(), '../proto/listing_service.proto');
 
@@ -18,7 +19,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 const proto = grpc.loadPackageDefinition(packageDefinition) as unknown as ProtoGrpcType;
 
 const client = new proto.listing.ListingService(
-    'localhost:8080',
+    env.GRPC_ADDRESS,
     grpc.credentials.createInsecure()
 );
 
