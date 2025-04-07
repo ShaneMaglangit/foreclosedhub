@@ -1,7 +1,7 @@
-import {forwardRef, HTMLAttributes} from "react";
-import {cn} from "@web/util";
-import {cva, type VariantProps} from "class-variance-authority";
 import * as React from "react";
+import {forwardRef, HTMLAttributes} from "react";
+import {cva, type VariantProps} from "class-variance-authority";
+import {cn} from "@web/lib/utils";
 
 const spinnerVariants = cva(
     "inline animate-spin",
@@ -9,9 +9,6 @@ const spinnerVariants = cva(
         variants: {
             variant: {
                 default: "text-black dark:text-white",
-                primary: "text-primary-500",
-                danger: "text-danger-500",
-                light: "text-white",
             },
             size: {
                 default: "h-8 w-8",
