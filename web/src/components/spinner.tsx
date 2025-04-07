@@ -8,7 +8,7 @@ const spinnerVariants = cva(
     {
         variants: {
             variant: {
-                default: "text-black dark:text-white",
+                default: "text-primary",
             },
             size: {
                 default: "h-8 w-8",
