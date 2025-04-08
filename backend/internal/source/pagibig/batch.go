@@ -20,7 +20,7 @@ type Batch struct {
 }
 
 func (batch Batch) getListings() (Listings, error) {
-	url := fmt.Sprintf(pagibigListingsEndpoint, batch.Number, batch.DisposalFlag)
+	url := fmt.Sprintf(pagibigListingsEndpoint, batch.Number)
 
 	resp, err := http.Get(url)
 	if err != nil {

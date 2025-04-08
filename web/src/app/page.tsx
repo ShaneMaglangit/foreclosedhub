@@ -25,12 +25,24 @@ type Props = {
     after?: number;
     before?: number;
     limit?: number;
+    search?: string;
   };
 };
 
 export default async function Page({ searchParams }: Props) {
-  const { after = 0, before = 0, limit = 20 } = (await searchParams) || {};
-  const { listings, pageInfo } = await getListings({ after, before, limit });
+  const {
+    after = 0,
+    before = 0,
+    limit = 20,
+    search,
+  } = (await searchParams) || {};
+
+  const { listings, pageInfo } = await getListings({
+    after,
+    before,
+    limit,
+    search,
+  });
 
   const processedListings = listings.map((listing) => {
     if (listing.imageUrls.length) return listing;

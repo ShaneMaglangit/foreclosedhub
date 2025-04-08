@@ -26,6 +26,7 @@ type GetListingsRequest struct {
 	After         int64                  `protobuf:"varint,1,opt,name=after,proto3" json:"after,omitempty"`
 	Before        int64                  `protobuf:"varint,2,opt,name=before,proto3" json:"before,omitempty"`
 	Limit         int32                  `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	Search        string                 `protobuf:"bytes,4,opt,name=search,proto3" json:"search,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -79,6 +80,13 @@ func (x *GetListingsRequest) GetLimit() int32 {
 		return x.Limit
 	}
 	return 0
+}
+
+func (x *GetListingsRequest) GetSearch() string {
+	if x != nil {
+		return x.Search
+	}
+	return ""
 }
 
 type GetListingsResponse struct {
@@ -137,11 +145,12 @@ var File_listing_service_proto protoreflect.FileDescriptor
 
 const file_listing_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15listing_service.proto\x12\alisting\x1a\fcommon.proto\x1a\rlisting.proto\"X\n" +
+	"\x15listing_service.proto\x12\alisting\x1a\fcommon.proto\x1a\rlisting.proto\"p\n" +
 	"\x12GetListingsRequest\x12\x14\n" +
 	"\x05after\x18\x01 \x01(\x03R\x05after\x12\x16\n" +
 	"\x06before\x18\x02 \x01(\x03R\x06before\x12\x14\n" +
-	"\x05limit\x18\x03 \x01(\x05R\x05limit\"q\n" +
+	"\x05limit\x18\x03 \x01(\x05R\x05limit\x12\x16\n" +
+	"\x06search\x18\x04 \x01(\tR\x06search\"q\n" +
 	"\x13GetListingsResponse\x12,\n" +
 	"\blistings\x18\x01 \x03(\v2\x10.listing.ListingR\blistings\x12,\n" +
 	"\bpageInfo\x18\x02 \x01(\v2\x10.common.PageInfoR\bpageInfo2Z\n" +

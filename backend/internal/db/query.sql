@@ -2,6 +2,7 @@
 SELECT *
 FROM listings
 WHERE id > @after::bigint
+  AND address ILIKE @search::text
 ORDER BY id
 LIMIT @row_limit::int;
 
@@ -9,6 +10,7 @@ LIMIT @row_limit::int;
 SELECT *
 FROM listings
 WHERE id < @before::bigint
+  AND address ILIKE @search::text
 ORDER BY id DESC
 LIMIT @row_limit::int;
 
@@ -41,7 +43,7 @@ WHERE listings.id = @id::bigint;
 -- name: GetListingImagesByListingIds :many
 SELECT listing_id, url
 FROM listing_images
-WHERE listing_id = ANY(@ids::bigint[]);
+WHERE listing_id = ANY (@ids::bigint[]);
 
 -- name: InsertListingImages :exec
 INSERT INTO listing_images (listing_id, url)

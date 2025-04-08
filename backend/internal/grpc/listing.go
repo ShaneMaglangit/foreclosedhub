@@ -30,9 +30,9 @@ func (server *ListingServiceServer) GetListings(ctx context.Context, request *pr
 	var pageInfo *protobuf.PageInfo
 
 	if hasPrevParameter {
-		listings, pageInfo, err = getPrevListingsWithPageInfo(ctx, pool, request.Before, request.Limit)
+		listings, pageInfo, err = getPrevListingsWithPageInfo(ctx, pool, request.Search, request.Before, request.Limit)
 	} else {
-		listings, pageInfo, err = getNextListingsWithPageInfo(ctx, pool, request.After, request.Limit)
+		listings, pageInfo, err = getNextListingsWithPageInfo(ctx, pool, request.Search, request.After, request.Limit)
 	}
 
 	if err != nil {
@@ -59,9 +59,9 @@ func (server *ListingServiceServer) GetListings(ctx context.Context, request *pr
 	}, nil
 }
 
-func getNextListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, after int64, limit int32) ([]*db.Listing, *protobuf.PageInfo, error) {
+func getNextListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, search string, after int64, limit int32) ([]*db.Listing, *protobuf.PageInfo, error) {
 	listingsRepository := db.NewListingsRepository()
-	listings, err := listingsRepository.GetListingsNextPage(ctx, pool, after, limit+1)
+	listings, err := listingsRepository.GetListingsNextPage(ctx, pool, search, after, limit+1)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -89,9 +89,9 @@ func getNextListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, after 
 	return currentPageListings, pageInfo, nil
 }
 
-func getPrevListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, before int64, limit int32) ([]*db.Listing, *protobuf.PageInfo, error) {
+func getPrevListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, search string, before int64, limit int32) ([]*db.Listing, *protobuf.PageInfo, error) {
 	listingsRepository := db.NewListingsRepository()
-	listings, err := listingsRepository.GetListingsPreviousPage(ctx, pool, before, limit+1)
+	listings, err := listingsRepository.GetListingsPreviousPage(ctx, pool, search, before, limit+1)
 	if err != nil {
 		return nil, nil, err
 	}
