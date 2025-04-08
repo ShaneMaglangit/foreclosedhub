@@ -96,8 +96,8 @@ func getPrevListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, before
 		return nil, nil, err
 	}
 
-	slices.Reverse(listings)
 	currentPageListings := listings[:min(len(listings), int(limit))]
+	slices.Reverse(currentPageListings)
 
 	var startCursor int64
 	if len(currentPageListings) > 0 {
@@ -114,7 +114,7 @@ func getPrevListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, before
 		EndCursor:   endCursor,
 		// When fetching for the previous page, assume that the "next page" exist that starts with the "before" cursor.
 		HasNextPage: true,
-		HasPrevPage: len(currentPageListings) > int(limit),
+		HasPrevPage: len(listings) > int(limit),
 	}
 
 	return currentPageListings, pageInfo, nil

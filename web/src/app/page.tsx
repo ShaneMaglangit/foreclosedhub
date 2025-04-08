@@ -16,6 +16,9 @@ import {
 } from "@web/components/carousel";
 import Image from "next/image";
 import { formatNumeric } from "@web/lib/utils";
+import { Button } from "@web/components/common/button";
+import Link from "next/link";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 type Props = {
   searchParams?: {
@@ -33,19 +36,37 @@ export default async function Page({ searchParams }: Props) {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="bg-background sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b px-4">
+        <header className="bg-background sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b px-4 z-10">
           <SidebarTrigger className="-ml-1" />
           <Separator
             orientation="vertical"
             className="mr-2 data-[orientation=vertical]:h-4"
           />
-          <SearchForm className="w-96" />
+          <div className="flex-1">
+            <SearchForm className="w-96" />
+          </div>
+          <div className="flex gap-1">
+            {pageInfo?.hasPrevPage && (
+              <Button asChild size="sm">
+                <Link href={`/?before=${pageInfo?.startCursor}&limit=${limit}`}>
+                  <ArrowLeft />
+                </Link>
+              </Button>
+            )}
+            {pageInfo?.hasNextPage && (
+              <Button asChild size="sm">
+                <Link href={`/?after=${pageInfo?.endCursor}&limit=${limit}`}>
+                  <ArrowRight />
+                </Link>
+              </Button>
+            )}
+          </div>
         </header>
-        <div className="grid auto-rows-min md:grid-cols-5">
+        <div className="grid auto-rows-min md:grid-cols-5 -m-[0.5px]">
           {listings.map((listing) => (
             <div
               key={listing.id}
-              className="bg-muted/50 border-r border-b overflow-hidden "
+              className="bg-muted/50 border-[0.5px] overflow-hidden "
             >
               <div className="flex flex-col gap-2 p-2">
                 <h6 className="font-medium truncate capitalize">
@@ -53,15 +74,16 @@ export default async function Page({ searchParams }: Props) {
                 </h6>
                 <p>₱ {formatNumeric(listing.price)}</p>
               </div>
-              <Carousel>
+              <Separator />
+              <Carousel className="bg-accent h-full">
                 <CarouselContent>
                   {listing.imageUrls.map((url, index) => (
-                    <CarouselItem key={index} className="border-t">
+                    <CarouselItem key={index}>
                       <Image
                         src={url}
                         style={{
                           width: "100%",
-                          height: "auto",
+                          height: "300px",
                         }}
                         width={500}
                         height={300}

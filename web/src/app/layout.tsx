@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./global.css";
 import { ReactNode } from "react";
 import { Inter } from "next/font/google";
+import { cn } from "@web/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +17,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.className}>
+    <html lang="en" className={cn(inter.className, "overflow-x-hidden")}>
       <body>{children}</body>
     </html>
   );
