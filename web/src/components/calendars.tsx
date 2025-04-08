@@ -1,11 +1,11 @@
-import * as React from "react"
-import { Check, ChevronRight } from "lucide-react"
+import * as React from "react";
+import { Check, ChevronRight } from "lucide-react";
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@web/components/common/collapsible"
+} from "@web/components/common/collapsible";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -14,15 +14,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
-} from "@web/components/common/sidebar"
+} from "@web/components/common/sidebar";
 
 export function Calendars({
   calendars,
 }: {
   calendars: {
-    name: string
-    items: string[]
-  }[]
+    name: string;
+    items: string[];
+  }[];
 }) {
   return (
     <>
@@ -67,5 +67,5 @@ export function Calendars({
         </React.Fragment>
       ))}
     </>
-  )
+  );
 }
