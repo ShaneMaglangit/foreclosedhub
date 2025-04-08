@@ -4,6 +4,7 @@ import {SidebarIcon} from "lucide-react"
 import {Button} from "@web/components/common/button"
 import {Separator} from "@web/components/common/separator"
 import {useSidebar} from "@web/components/common/sidebar"
+import {SearchForm} from "@web/components/search-form";
 
 export function SiteHeader() {
     const {toggleSidebar} = useSidebar()
@@ -19,10 +20,11 @@ export function SiteHeader() {
                 >
                     <SidebarIcon/>
                 </Button>
-                <Separator orientation="vertical" className="mr-2 h-4"/>
-                <div className="flex-1 relative">
+                <Separator orientation="vertical" className="h-4"/>
+                <div className="hidden md:block flex-1 px-2">
                     <span className="leading-none font-medium">Homagochi</span>
                 </div>
+                <SearchForm className="w-96"/>
             </div>
         </header>
     )
