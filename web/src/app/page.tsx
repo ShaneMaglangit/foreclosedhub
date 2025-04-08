@@ -32,6 +32,11 @@ export default async function Page({ searchParams }: Props) {
   const { after = 0, before = 0, limit = 20 } = (await searchParams) || {};
   const { listings, pageInfo } = await getListings({ after, before, limit });
 
+  const processedListings = listings.map((listing) => {
+    if (listing.imageUrls.length) return listing;
+    return { ...listing, imageUrls: ["/placeholder.png"] };
+  });
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -63,7 +68,7 @@ export default async function Page({ searchParams }: Props) {
           </div>
         </header>
         <div className="grid auto-rows-min md:grid-cols-5 -m-[0.5px]">
-          {listings.map((listing) => (
+          {processedListings.map((listing) => (
             <div
               key={listing.id}
               className="bg-muted/50 border-[0.5px] overflow-hidden "
