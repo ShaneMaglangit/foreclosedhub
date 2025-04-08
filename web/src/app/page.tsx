@@ -7,6 +7,15 @@ import {
 import { AppSidebar } from "@web/components/app-sidebar";
 import { Separator } from "@web/components/common/separator";
 import { SearchForm } from "@web/components/search-form";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@web/components/carousel";
+import Image from "next/image";
+import { formatNumeric } from "@web/lib/utils";
 
 type Props = {
   searchParams?: {
@@ -32,12 +41,40 @@ export default async function Page({ searchParams }: Props) {
           />
           <SearchForm className="w-96" />
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-5">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <div key={i} className="bg-muted/50 aspect-square rounded-xl" />
-            ))}
-          </div>
+        <div className="grid auto-rows-min md:grid-cols-5">
+          {listings.map((listing) => (
+            <div
+              key={listing.id}
+              className="bg-muted/50 border-r border-b overflow-hidden "
+            >
+              <div className="flex flex-col gap-2 p-2">
+                <h6 className="font-medium truncate capitalize">
+                  {listing.address.toLowerCase()}
+                </h6>
+                <p>₱ {formatNumeric(listing.price)}</p>
+              </div>
+              <Carousel>
+                <CarouselContent>
+                  {listing.imageUrls.map((url, index) => (
+                    <CarouselItem key={index} className="border-t">
+                      <Image
+                        src={url}
+                        style={{
+                          width: "100%",
+                          height: "auto",
+                        }}
+                        width={500}
+                        height={300}
+                        alt="property image"
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            </div>
+          ))}
         </div>
       </SidebarInset>
     </SidebarProvider>
