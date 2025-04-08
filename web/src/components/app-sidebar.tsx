@@ -1,121 +1,68 @@
-"use client"
-
 import * as React from "react"
-import {BookOpen, Bot, Send, Settings2, SquareTerminal,} from "lucide-react"
-import {NavSecondary} from "@web/components/nav-secondary"
-import {Sidebar, SidebarContent,} from "@web/components/common/sidebar"
 
+import {Calendars} from "@web/components/calendars"
+import {DatePicker} from "@web/components/date-picker"
+import {NavUser} from "@web/components/nav-user"
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarRail,
+    SidebarSeparator,
+} from "@web/components/common/sidebar"
+import {Send} from "lucide-react";
+
+// This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
+    user: {
+        name: "shadcn",
+        email: "m@example.com",
+        avatar: "/avatars/shadcn.jpg",
     },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
+    calendars: [
         {
-          title: "Genesis",
-          url: "#",
+            name: "My Calendars",
+            items: ["Personal", "Work", "Family"],
         },
         {
-          title: "Explorer",
-          url: "#",
+            name: "Favorites",
+            items: ["Holidays", "Birthdays"],
         },
         {
-          title: "Quantum",
-          url: "#",
+            name: "Other",
+            items: ["Travel", "Reminders", "Deadlines"],
         },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
-  ],
+    ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  return (
-    <Sidebar
-      className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
-      {...props}
-    >
-      <SidebarContent>
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
-      </SidebarContent>
-    </Sidebar>
-  )
+export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
+    return (
+        <Sidebar {...props}>
+            <SidebarHeader className="border-sidebar-border h-16 border-b">
+                <NavUser user={data.user}/>
+            </SidebarHeader>
+            <SidebarContent>
+                <DatePicker/>
+                <SidebarSeparator className="mx-0"/>
+                <Calendars calendars={data.calendars}/>
+            </SidebarContent>
+            <SidebarFooter>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton asChild>
+                            <a href="https://gitlab.com/ShaneMaglangit/homagochi/-/issues/new" target="_blank">
+                                <Send/>
+                                <span>Feedback</span>
+                            </a>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarFooter>
+            <SidebarRail/>
+        </Sidebar>
+    )
 }

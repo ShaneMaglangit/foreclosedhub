@@ -1,8 +1,19 @@
 "use client"
 
-import {BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles,} from "lucide-react"
+import {
+  BadgeCheck,
+  Bell,
+  ChevronsUpDown,
+  CreditCard,
+  LogOut,
+  Sparkles,
+} from "lucide-react"
 
-import {Avatar, AvatarFallback, AvatarImage,} from "@web/components/common/avatar"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@web/components/common/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +23,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@web/components/common/dropdown-menu"
-import {SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,} from "@web/components/common/sidebar"
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@web/components/common/sidebar"
 
 export function NavUser({
   user,
@@ -48,7 +64,7 @@ export function NavUser({
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
-            align="end"
+            align="start"
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal">

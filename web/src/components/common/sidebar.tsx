@@ -1,18 +1,29 @@
 "use client"
 
 import * as React from "react"
-import {Slot} from "@radix-ui/react-slot"
-import {cva, VariantProps} from "class-variance-authority"
-import {PanelLeftIcon} from "lucide-react"
+import { Slot } from "@radix-ui/react-slot"
+import { VariantProps, cva } from "class-variance-authority"
+import { PanelLeftIcon } from "lucide-react"
 
-import {useIsMobile} from "@web/hooks/use-mobile"
-import {cn} from "@web/lib/utils"
-import {Button} from "@web/components/common/button"
-import {Input} from "@web/components/common/input"
-import {Separator} from "@web/components/common/separator"
-import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle,} from "@web/components/common/sheet"
-import {Skeleton} from "@web/components/common/skeleton"
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,} from "@web/components/common/tooltip"
+import { useIsMobile } from "@web/hooks/use-mobile"
+import { cn } from "@web/lib/utils"
+import { Button } from "@web/components/common/button"
+import { Input } from "@web/components/common/input"
+import { Separator } from "@web/components/common/separator"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@web/components/common/sheet"
+import { Skeleton } from "@web/components/common/skeleton"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@web/components/common/tooltip"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
