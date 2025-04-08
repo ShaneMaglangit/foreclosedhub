@@ -1,10 +1,7 @@
 import {getListings} from "@web/grpc/client";
-import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious} from "@web/components/carousel";
-import Image from "next/image"
-import {Card, CardContent, CardDescription, CardTitle} from "@web/components/card";
-import {formatNumeric} from "@web/lib/utils";
-import {Button} from "@web/components/button";
-import Link from "next/link";
+import {SidebarInset, SidebarProvider} from "@web/components/common/sidebar";
+import {SiteHeader} from "@web/components/site-header";
+import {AppSidebar} from "@web/components/app-sidebar";
 
 type Props = {
     searchParams?: {
@@ -19,70 +16,23 @@ export default async function Page({searchParams}: Props) {
     const {listings, pageInfo} = await getListings({after, before, limit})
 
     return (
-        <>
-            <header
-                className="sticky top-0 z-10 bg-sidebar flex shrink-0 items-center justify-end gap-3 p-3 border-b transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                <div className="flex gap-1">
-                    {pageInfo?.hasPrevPage && (
-                        <Button asChild size="sm">
-                            <Link href={`/?before=${pageInfo?.startCursor}&limit=${limit}`}>
-                                Back
-                            </Link>
-                        </Button>
-                    )}
-                    {pageInfo?.hasNextPage && (
-                        <Button asChild size="sm">
-                            <Link href={`/?after=${pageInfo?.endCursor}&limit=${limit}`}>
-                                Next
-                            </Link>
-                        </Button>
-                    )}
+        <div className="[--header-height:calc(--spacing(14))]">
+            <SidebarProvider className="flex flex-col">
+                <SiteHeader/>
+                <div className="flex flex-1">
+                    <AppSidebar/>
+                    <SidebarInset>
+                        <div className="flex flex-1 flex-col gap-4 p-4">
+                            <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+                                <div className="bg-muted/50 aspect-video rounded-xl"/>
+                                <div className="bg-muted/50 aspect-video rounded-xl"/>
+                                <div className="bg-muted/50 aspect-video rounded-xl"/>
+                            </div>
+                            <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min"/>
+                        </div>
+                    </SidebarInset>
                 </div>
-            </header>
-            <div className="grid grid-cols-5 gap-3 p-3">
-                {listings.map((listing) => (
-                    <Card key={listing.id}>
-                        <Carousel>
-                            <CarouselContent>
-                                {listing.imageUrls.map((url, index) => (
-                                    <CarouselItem key={index}>
-                                        <Image
-                                            src={url}
-                                            style={{
-                                                width: '100%',
-                                                height: '300px',
-                                            }}
-                                            width={500}
-                                            height={300}
-                                            alt="property image"
-                                        />
-                                    </CarouselItem>
-                                ))}
-                                {listing.imageUrls.length === 0 && (
-                                    <CarouselItem>
-                                        <Image
-                                            src="/placeholder.png"
-                                            style={{
-                                                width: '100%',
-                                                height: '300px',
-                                            }}
-                                            width={500}
-                                            height={300}
-                                            alt="property image"
-                                        />
-                                    </CarouselItem>
-                                )}
-                            </CarouselContent>
-                            <CarouselPrevious/>
-                            <CarouselNext/>
-                        </Carousel>
-                        <CardContent className="flex flex-col gap-1">
-                            <CardTitle className="capitalize truncate">{listing.address.toLowerCase()}</CardTitle>
-                            <CardDescription>₱ {formatNumeric(listing.price)}</CardDescription>
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
-        </>
+            </SidebarProvider>
+        </div>
     )
 }
