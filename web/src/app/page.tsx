@@ -2,7 +2,7 @@ import {getListings} from "@web/grpc/client";
 import {SidebarInset, SidebarProvider, SidebarTrigger} from "@web/components/common/sidebar";
 import {AppSidebar} from "@web/components/app-sidebar";
 import {Separator} from "@web/components/common/separator";
-import {Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage} from "@web/components/common/breadcrumb";
+import {SearchForm} from "@web/components/search-form";
 
 type Props = {
     searchParams?: {
@@ -26,13 +26,7 @@ export default async function Page({searchParams}: Props) {
                         orientation="vertical"
                         className="mr-2 data-[orientation=vertical]:h-4"
                     />
-                    <Breadcrumb>
-                        <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>October 2024</BreadcrumbPage>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
+                    <SearchForm className="w-96"/>
                 </header>
                 <div className="flex flex-1 flex-col gap-4 p-4">
                     <div className="grid auto-rows-min gap-4 md:grid-cols-5">

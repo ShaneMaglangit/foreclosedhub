@@ -1,28 +1,11 @@
 import * as React from "react"
 
-import {Calendars} from "@web/components/calendars"
-import {DatePicker} from "@web/components/date-picker"
-import {NavUser} from "@web/components/nav-user"
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarRail,
-    SidebarSeparator,
-} from "@web/components/common/sidebar"
-import {Send} from "lucide-react";
+import {Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail,} from "@web/components/common/sidebar"
+import {Brand} from "@web/components/brand";
+import {NavUtility} from "@web/components/nav-utility";
+import {Filters} from "@web/components/filters";
 
-// This is sample data.
 const data = {
-    user: {
-        name: "shadcn",
-        email: "m@example.com",
-        avatar: "/avatars/shadcn.jpg",
-    },
     calendars: [
         {
             name: "My Calendars",
@@ -42,25 +25,14 @@ const data = {
 export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
     return (
         <Sidebar {...props}>
-            <SidebarHeader className="border-sidebar-border h-16 border-b">
-                <NavUser user={data.user}/>
+            <SidebarHeader className="border-sidebar-border h-16 border-b justify-center">
+                <Brand/>
             </SidebarHeader>
             <SidebarContent>
-                <DatePicker/>
-                <SidebarSeparator className="mx-0"/>
-                <Calendars calendars={data.calendars}/>
+                <Filters />
             </SidebarContent>
             <SidebarFooter>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                            <a href="https://gitlab.com/ShaneMaglangit/homagochi/-/issues/new" target="_blank">
-                                <Send/>
-                                <span>Feedback</span>
-                            </a>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                <NavUtility/>
             </SidebarFooter>
             <SidebarRail/>
         </Sidebar>
