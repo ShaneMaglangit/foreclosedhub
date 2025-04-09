@@ -32,7 +32,7 @@ function ListingCard({ listing }: { listing: Listing__Output }) {
     <div key={listing.id} className="bg-background border">
       <ListingCarousel listing={listing} />
       <Separator />
-      <div className="flex flex-col gap-2 p-2">
+      <div className="flex flex-col p-2">
         <h6 className="font-medium truncate capitalize">
           {listing.address.toLowerCase()}
         </h6>

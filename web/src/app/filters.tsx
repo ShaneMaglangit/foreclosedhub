@@ -72,6 +72,7 @@ export function Filters({ initialFilters }: { initialFilters: ListingParam }) {
         currentValues={filters.occupancyStatuses}
         onCheckChanged={handleOccupancyStatusChange}
       />
+      <SidebarSeparator className="mx-0" />
     </>
   );
 }
@@ -85,7 +86,7 @@ function SourceFilters({
 }) {
   return (
     <SidebarGroup>
-      <Collapsible defaultOpen className="group/collapsible">
+      <Collapsible className="group/collapsible">
         <SidebarGroupLabel
           asChild
           className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full text-sm"
@@ -130,7 +131,7 @@ function OccupancyStatusFilters({
 }) {
   return (
     <SidebarGroup>
-      <Collapsible defaultOpen className="group/collapsible">
+      <Collapsible className="group/collapsible">
         <SidebarGroupLabel
           asChild
           className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full text-sm"
