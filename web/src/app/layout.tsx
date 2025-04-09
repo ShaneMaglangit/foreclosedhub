@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./global.css";
 import { ReactNode } from "react";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { cn } from "@web/lib/utils";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -17,10 +16,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={cn(plusJakartaSans.className, "overflow-x-hidden")}
-    >
+    <html lang="en" className={plusJakartaSans.className}>
       <body>{children}</body>
     </html>
   );

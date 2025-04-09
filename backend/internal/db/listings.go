@@ -17,7 +17,6 @@ type ListingsRepository interface {
 type ListingsRepositoryImpl struct{}
 
 func (l ListingsRepositoryImpl) GetListingsNextPage(ctx context.Context, dbtx DBTX, params GetListingsNextPageParams) ([]*Listing, error) {
-	fmt.Println(params)
 	params.Search = fmt.Sprintf("%%%s%%", params.Search)
 	return New(dbtx).GetListingsNextPage(ctx, params)
 }
