@@ -30,9 +30,17 @@ func (server *ListingServiceServer) GetListings(ctx context.Context, request *pr
 	var pageInfo *protobuf.PageInfo
 
 	if hasPrevParameter {
-		listings, pageInfo, err = getPrevListingsWithPageInfo(ctx, pool, request.Search, request.Before, request.Limit)
+		listings, pageInfo, err = getPrevListingsWithPageInfo(ctx, pool, db.GetListingsPreviousPageParams{
+			Search:   request.Search,
+			Before:   request.Before,
+			RowLimit: request.Limit,
+		})
 	} else {
-		listings, pageInfo, err = getNextListingsWithPageInfo(ctx, pool, request.Search, request.After, request.Limit)
+		listings, pageInfo, err = getNextListingsWithPageInfo(ctx, pool, db.GetListingsNextPageParams{
+			Search:   request.Search,
+			After:    request.After,
+			RowLimit: request.Limit,
+		})
 	}
 
 	if err != nil {
@@ -59,14 +67,17 @@ func (server *ListingServiceServer) GetListings(ctx context.Context, request *pr
 	}, nil
 }
 
-func getNextListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, search string, after int64, limit int32) ([]*db.Listing, *protobuf.PageInfo, error) {
+func getNextListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, params db.GetListingsNextPageParams) ([]*db.Listing, *protobuf.PageInfo, error) {
+	pageSize := int(params.RowLimit)
+	params.RowLimit += 1 // Extra row is used to derived if there are more items for the next page.
+
 	listingsRepository := db.NewListingsRepository()
-	listings, err := listingsRepository.GetListingsNextPage(ctx, pool, search, after, limit+1)
+	listings, err := listingsRepository.GetListingsNextPage(ctx, pool, params)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	currentPageListings := listings[:min(len(listings), int(limit))]
+	currentPageListings := listings[:min(len(listings), pageSize)]
 
 	var startCursor int64
 	if len(currentPageListings) > 0 {
@@ -81,22 +92,25 @@ func getNextListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, search
 	pageInfo := &protobuf.PageInfo{
 		StartCursor: startCursor,
 		EndCursor:   endCursor,
-		HasNextPage: len(listings) > int(limit),
+		HasNextPage: len(listings) > pageSize,
 		// When fetching for the next page (cursor > 0), assume that a previous page exist.
-		HasPrevPage: after > 0,
+		HasPrevPage: params.After > 0,
 	}
 
 	return currentPageListings, pageInfo, nil
 }
 
-func getPrevListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, search string, before int64, limit int32) ([]*db.Listing, *protobuf.PageInfo, error) {
+func getPrevListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, params db.GetListingsPreviousPageParams) ([]*db.Listing, *protobuf.PageInfo, error) {
+	pageSize := int(params.RowLimit)
+	params.RowLimit += 1 // Extra row is used to derived if there are more items for the next page.
+
 	listingsRepository := db.NewListingsRepository()
-	listings, err := listingsRepository.GetListingsPreviousPage(ctx, pool, search, before, limit+1)
+	listings, err := listingsRepository.GetListingsPreviousPage(ctx, pool, params)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	currentPageListings := listings[:min(len(listings), int(limit))]
+	currentPageListings := listings[:min(len(listings), pageSize)]
 	slices.Reverse(currentPageListings)
 
 	var startCursor int64
@@ -114,7 +128,7 @@ func getPrevListingsWithPageInfo(ctx context.Context, pool *pgxpool.Pool, search
 		EndCursor:   endCursor,
 		// When fetching for the previous page, assume that the "next page" exist that starts with the "before" cursor.
 		HasNextPage: true,
-		HasPrevPage: len(listings) > int(limit),
+		HasPrevPage: len(listings) > pageSize,
 	}
 
 	return currentPageListings, pageInfo, nil
