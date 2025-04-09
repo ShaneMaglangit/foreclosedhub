@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"fmt"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"homagochi/internal/db"
 	"homagochi/internal/protobuf"
 	"homagochi/internal/service"
@@ -106,5 +107,8 @@ func convertListing(listing *db.ListingWithImages) (*protobuf.Listing, error) {
 		OccupancyStatus: string(listing.OccupancyStatus),
 		ImageLoaded:     listing.ImageLoaded,
 		ImageUrls:       imageUrls,
+		CreatedAt:       timestamppb.New(listing.CreatedAt.Time),
+		UpdatedAt:       timestamppb.New(listing.UpdatedAt.Time),
+		Payload:         string(listing.Payload),
 	}, nil
 }

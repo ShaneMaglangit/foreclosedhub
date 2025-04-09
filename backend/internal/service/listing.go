@@ -157,6 +157,9 @@ func buildListingsWithImages(listings []*db.Listing, imagesLookup map[int64][]*d
 			OccupancyStatus: listing.OccupancyStatus,
 			ImageLoaded:     listing.ImageLoaded,
 			Images:          imagesLookup[listing.ID],
+			CreatedAt:       listing.CreatedAt,
+			UpdatedAt:       listing.UpdatedAt,
+			Payload:         listing.Payload,
 		})
 	}
 

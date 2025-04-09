@@ -1,6 +1,5 @@
 import { cn, formatNumeric } from "@web/lib/utils";
 import { Listing__Output } from "@web/protobuf/listing/Listing";
-import { Separator } from "@web/components/common/separator";
 import {
   Carousel,
   CarouselContent,
@@ -16,6 +15,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { Button } from "@web/components/common/button";
+import { Separator } from "@web/components/common/separator";
 
 export function Listing({ listings }: { listings: Listing__Output[] }) {
   return (
@@ -35,6 +35,8 @@ export function Listing({ listings }: { listings: Listing__Output[] }) {
 }
 
 function ListingCard({ listing }: { listing: Listing__Output }) {
+  const rawPayload = JSON.parse(listing.payload);
+
   return (
     <div key={listing.id} className="bg-background border">
       <ListingCarousel listing={listing} />
@@ -51,47 +53,44 @@ function ListingCard({ listing }: { listing: Listing__Output }) {
           <LandPlot className="h-4 w-4" />
           <span>{listing.floorArea} sqm</span>
         </div>
-        {listing.source === "pagibig" &&
-          listing.occupancyStatus !== "unknown" && (
-            <div className="flex items-center gap-2 ">
-              <UserRound className="h-4 w-4" />
-              <span className="capitalize">{listing.occupancyStatus}</span>
-            </div>
-          )}
-        <form
-          method="POST"
-          action="https://www.pagibigfundservices.com/OnlinePublicAuction/Bidding/Login"
-          target="_blank"
-        >
-          <input type="hidden" name="batchNo" />
-          <input type="hidden" name="ropaId" />
-          <input type="hidden" name="flag" />
-          <input type="hidden" name="hbc" />
-          <Button variant="link" className="has-[>svg]:p-0">
-            <ExternalLink /> Submit offer
-          </Button>
-        </form>
+        {listing.occupancyStatus !== "unknown" && (
+          <div className="flex items-center gap-2 ">
+            <UserRound className="h-4 w-4" />
+            <span className="capitalize">{listing.occupancyStatus}</span>
+          </div>
+        )}
+        {listing.source === "pagibig" && (
+          <form
+            method="POST"
+            action="https://www.pagibigfundservices.com/OnlinePublicAuction/Bidding/Login"
+            target="_blank"
+          >
+            <input
+              type="hidden"
+              name="batchNo"
+              value={rawPayload.batch_number}
+            />
+            <input type="hidden" name="ropaId" value={listing.id} />
+            {/*// This is derived from the Pagibig's site source code. No clue why is this hardcoded.*/}
+            <input type="hidden" name="flag" value={3} />
+            <input
+              type="hidden"
+              name="hbc"
+              value={
+                rawPayload.status === "1" || rawPayload.status === "2"
+                  ? rawPayload.batch_number.substring(3, 5)
+                  : rawPayload.batch_number.substring(0, 2)
+              }
+            />
+            <Button variant="link" className="has-[>svg]:p-0">
+              <ExternalLink /> Submit offer
+            </Button>
+          </form>
+        )}
       </div>
     </div>
   );
 }
-
-// var ropaid = options.data.ropa_id;
-// var flag = '3';
-// var hbc = '';
-//
-// if (disposalFlag == '1' || disposalFlag == '2') {
-//     hbc = batchNo.substring(3, 5);
-// } else {
-//     hbc = batchNo.toString().substring(0, 2);
-// }
-//
-// $("#submitOffer input[name='batchNo']").val(batchNo);
-// $("#submitOffer input[name='ropaId']").val(ropaid);
-// $("#submitOffer input[name='flag']").val(flag);
-// $("#submitOffer input[name='hbc']").val(hbc);
-//
-// $("#submitOffer").submit();
 
 function ListingCarousel({ listing }: { listing: Listing__Output }) {
   return (

@@ -1,6 +1,8 @@
 package db
 
-import "github.com/jackc/pgx/v5/pgtype"
+import (
+	"github.com/jackc/pgx/v5/pgtype"
+)
 
 type ListingWithImages struct {
 	ID              int64
@@ -12,4 +14,7 @@ type ListingWithImages struct {
 	OccupancyStatus OccupancyStatus
 	ImageLoaded     bool
 	Images          []*ListingImage
+	CreatedAt       pgtype.Timestamptz
+	UpdatedAt       pgtype.Timestamptz
+	Payload         []byte
 }
