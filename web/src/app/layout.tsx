@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import "./global.css";
 import { ReactNode } from "react";
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { cn } from "@web/lib/utils";
 
-const inter = Inter({ subsets: ["latin"] });
+const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Homagochi",
@@ -17,7 +17,10 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn(inter.className, "overflow-x-hidden")}>
+    <html
+      lang="en"
+      className={cn(plusJakartaSans.className, "overflow-x-hidden")}
+    >
       <body>{children}</body>
     </html>
   );
