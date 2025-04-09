@@ -35,8 +35,6 @@ export function Listing({ listings }: { listings: Listing__Output[] }) {
 }
 
 function ListingCard({ listing }: { listing: Listing__Output }) {
-  const rawPayload = JSON.parse(listing.payload);
-
   return (
     <div key={listing.id} className="bg-background border">
       <ListingCarousel listing={listing} />
@@ -53,42 +51,41 @@ function ListingCard({ listing }: { listing: Listing__Output }) {
           <LandPlot className="h-4 w-4" />
           <span>{listing.floorArea} sqm</span>
         </div>
-        {listing.occupancyStatus !== "unknown" && (
-          <div className="flex items-center gap-2 ">
-            <UserRound className="h-4 w-4" />
-            <span className="capitalize">{listing.occupancyStatus}</span>
-          </div>
-        )}
+        <div className="flex items-center gap-2 ">
+          <UserRound className="h-4 w-4" />
+          <span className="capitalize">{listing.occupancyStatus}</span>
+        </div>
         {listing.source === "pagibig" && (
-          <form
-            method="POST"
-            action="https://www.pagibigfundservices.com/OnlinePublicAuction/Bidding/Login"
-            target="_blank"
-          >
-            <input
-              type="hidden"
-              name="batchNo"
-              value={rawPayload.batch_number}
-            />
-            <input type="hidden" name="ropaId" value={listing.id} />
-            {/*// This is derived from the Pagibig's site source code. No clue why is this hardcoded.*/}
-            <input type="hidden" name="flag" value={3} />
-            <input
-              type="hidden"
-              name="hbc"
-              value={
-                rawPayload.status === "1" || rawPayload.status === "2"
-                  ? rawPayload.batch_number.substring(3, 5)
-                  : rawPayload.batch_number.substring(0, 2)
-              }
-            />
-            <Button variant="link" className="has-[>svg]:p-0">
-              <ExternalLink /> Submit offer
-            </Button>
-          </form>
+          <PagibigFormButton listing={listing} />
         )}
       </div>
     </div>
+  );
+}
+
+function PagibigFormButton({ listing }: { listing: Listing__Output }) {
+  const rawPayload = JSON.parse(listing.payload);
+  const batchNumber = rawPayload.batch_number;
+  const flag = "3"; // I have no clue what does mean, this was derived straight from PagibigFund's source code.
+  const hbc =
+    rawPayload.status === "1" || rawPayload.status === "2"
+      ? batchNumber.substring(3, 5)
+      : batchNumber.substring(0, 2);
+
+  return (
+    <form
+      method="POST"
+      action="https://www.pagibigfundservices.com/OnlinePublicAuction/Bidding/Login"
+      target="_blank"
+    >
+      <input type="hidden" name="batchNo" value={batchNumber} />
+      <input type="hidden" name="ropaId" value={listing.id} />
+      <input type="hidden" name="flag" value={flag} />
+      <input type="hidden" name="hbc" value={hbc} />
+      <Button variant="link" className="has-[>svg]:p-0">
+        <ExternalLink /> Submit offer
+      </Button>
+    </form>
   );
 }
 
