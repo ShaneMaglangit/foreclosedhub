@@ -37,16 +37,16 @@ function ListingCard({ listing }: { listing: Listing__Output }) {
         {listing.address.toLowerCase()}
       </h6>
       <div className="grid grid-cols-2 px-2 pb-2 gap-2">
-        <div className="flex items-center gap-2 text-md">
+        <div className="flex items-center gap-2 ">
           <PhilippinePeso className="h-4 w-4" />
           <span>{formatNumeric(listing.price)}</span>
         </div>
-        <div className="flex items-center gap-2 text-md">
+        <div className="flex items-center gap-2 ">
           <LandPlot className="h-4 w-4" />
           <span>{listing.floorArea} sqm</span>
         </div>
         {listing.occupancyStatus !== "unknown" && (
-          <div className="flex items-center gap-2 text-md">
+          <div className="flex items-center gap-2 ">
             <UserRound className="h-4 w-4" />
             <span className="capitalize">{listing.occupancyStatus}</span>
           </div>

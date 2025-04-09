@@ -89,7 +89,7 @@ function SourceFilters({
       <Collapsible className="group/collapsible">
         <SidebarGroupLabel
           asChild
-          className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full text-sm"
+          className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full "
         >
           <CollapsibleTrigger>
             Source
@@ -134,7 +134,7 @@ function OccupancyStatusFilters({
       <Collapsible className="group/collapsible">
         <SidebarGroupLabel
           asChild
-          className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full text-sm"
+          className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full "
         >
           <CollapsibleTrigger>
             Occupancy Status
