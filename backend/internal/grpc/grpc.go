@@ -10,7 +10,7 @@ import (
 )
 
 func Serve() error {
-	port := fmt.Sprintf(":%s", os.Getenv("PORT"))
+	port := fmt.Sprintf(":%s", os.Getenv("GRPC_PORT"))
 
 	listener, err := net.Listen("tcp", port)
 	if err != nil {

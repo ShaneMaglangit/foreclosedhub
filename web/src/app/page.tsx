@@ -39,8 +39,8 @@ const stringOrArraySchema = z
 
 export default async function Page({ searchParams }: Props) {
   const {
-    after = 0,
-    before = 0,
+    after,
+    before,
     limit = 20,
     search,
     sources = ["pagibig"],

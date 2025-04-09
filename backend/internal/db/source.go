@@ -4,7 +4,7 @@ func ParseSources(items []string) ([]Source, error) {
 	sources := make([]Source, 0, len(items))
 
 	for _, item := range items {
-		source, err := parseSource(item)
+		source, err := ParseSource(item)
 		if err != nil {
 			return nil, err
 		}
