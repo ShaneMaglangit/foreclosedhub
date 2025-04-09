@@ -24,6 +24,7 @@ type Listing struct {
 	CityMuni       string  `json:"city_muni"`
 	InspectionDate string  `json:"inspection_date"`
 	InsRemarks     string  `json:"ins_remarks"`
+	BatchNumber    string  `json:"batch_number"`
 }
 
 type Listings []Listing

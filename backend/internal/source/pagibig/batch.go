@@ -33,6 +33,10 @@ func (b Batch) getListings() (Listings, error) {
 		return nil, err
 	}
 
+	for i := range listings {
+		listings[i].BatchNumber = b.Number
+	}
+
 	return listings, nil
 }
 
