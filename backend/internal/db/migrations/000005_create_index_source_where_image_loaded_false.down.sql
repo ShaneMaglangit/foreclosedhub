@@ -1,1 +1,0 @@
-DROP INDEX CONCURRENTLY index_source_where_image_loaded_false;

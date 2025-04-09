@@ -14,8 +14,8 @@ type ListingServiceServer struct {
 }
 
 func (server *ListingServiceServer) GetListings(ctx context.Context, request *protobuf.GetListingsRequest) (*protobuf.GetListingsResponse, error) {
-	hasNextParameter := request.After != 0
-	hasPrevParameter := request.Before != 0
+	hasNextParameter := request.After != nil
+	hasPrevParameter := request.Before != nil
 	if hasNextParameter && hasPrevParameter {
 		return nil, fmt.Errorf("after and before are mutually exclusive parameters")
 	}
@@ -39,7 +39,7 @@ func (server *ListingServiceServer) GetListings(ctx context.Context, request *pr
 			Search:   request.Search,
 			Occupied: request.Occupied,
 			Sources:  sources,
-			Before:   request.Before,
+			Before:   request.GetBefore(),
 			RowLimit: request.Limit,
 		})
 	} else {
@@ -47,7 +47,7 @@ func (server *ListingServiceServer) GetListings(ctx context.Context, request *pr
 			Search:   request.Search,
 			Occupied: request.Occupied,
 			Sources:  sources,
-			After:    request.After,
+			After:    request.GetAfter(),
 			RowLimit: request.Limit,
 		})
 	}

@@ -9,15 +9,19 @@ export interface GetListingsRequest {
   'search'?: (string);
   'sources'?: (string)[];
   'occupied'?: (boolean);
+  '_after'?: "after";
+  '_before'?: "before";
   '_occupied'?: "occupied";
 }
 
 export interface GetListingsRequest__Output {
-  'after': (string);
-  'before': (string);
+  'after'?: (string);
+  'before'?: (string);
   'limit': (number);
   'search': (string);
   'sources': (string)[];
   'occupied'?: (boolean);
+  '_after': "after";
+  '_before': "before";
   '_occupied': "occupied";
 }
