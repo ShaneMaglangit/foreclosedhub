@@ -9,6 +9,7 @@ import {
   CarouselPrevious,
 } from "@web/components/common/carousel";
 import Image from "next/image";
+import { LandPlot, PhilippinePeso, UserRound } from "lucide-react";
 
 export function Listing({ listings }: { listings: Listing__Output[] }) {
   return (
@@ -32,11 +33,24 @@ function ListingCard({ listing }: { listing: Listing__Output }) {
     <div key={listing.id} className="bg-background border">
       <ListingCarousel listing={listing} />
       <Separator />
-      <div className="flex flex-col p-2">
-        <h6 className="font-medium truncate capitalize">
-          {listing.address.toLowerCase()}
-        </h6>
-        <p>₱ {formatNumeric(listing.price)}</p>
+      <h6 className="font-medium truncate capitalize p-2">
+        {listing.address.toLowerCase()}
+      </h6>
+      <div className="grid grid-cols-2 px-2 pb-2 gap-2">
+        <div className="flex items-center gap-2 text-md">
+          <PhilippinePeso className="h-4 w-4" />
+          <span>{formatNumeric(listing.price)}</span>
+        </div>
+        <div className="flex items-center gap-2 text-md">
+          <LandPlot className="h-4 w-4" />
+          <span>{listing.floorArea} sqm</span>
+        </div>
+        {listing.occupancyStatus !== "unknown" && (
+          <div className="flex items-center gap-2 text-md">
+            <UserRound className="h-4 w-4" />
+            <span className="capitalize">{listing.occupancyStatus}</span>
+          </div>
+        )}
       </div>
     </div>
   );

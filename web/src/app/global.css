@@ -42,6 +42,8 @@
 }
 
 :root {
+  font-size: 14px;
+
   --radius: 0.5rem;
 
   --primary: oklch(0.25 0.1583 264.2);
