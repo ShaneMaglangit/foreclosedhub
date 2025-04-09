@@ -14,10 +14,16 @@ export function Pagination({
   const searchParams = useSearchParams();
 
   const prevParams = new URLSearchParams(searchParams);
-  if (pageInfo?.hasPrevPage) prevParams.set("before", pageInfo.startCursor);
+  if (pageInfo?.hasPrevPage) {
+    prevParams.set("before", pageInfo.startCursor);
+    prevParams.delete("after");
+  }
 
   const nextParams = new URLSearchParams(searchParams);
-  if (pageInfo?.hasNextPage) nextParams.set("after", pageInfo.endCursor);
+  if (pageInfo?.hasNextPage) {
+    nextParams.set("after", pageInfo.endCursor);
+    nextParams.delete("before");
+  }
 
   return (
     <div className="flex gap-1">
