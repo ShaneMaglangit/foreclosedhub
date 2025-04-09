@@ -148,15 +148,15 @@ func buildListingsWithImages(listings []*db.Listing, imagesLookup map[int64][]*d
 
 	for _, listing := range listings {
 		listingsWithImages = append(listingsWithImages, &db.ListingWithImages{
-			ID:          listing.ID,
-			Source:      listing.Source,
-			ExternalID:  listing.ExternalID,
-			Address:     listing.Address,
-			FloorArea:   listing.FloorArea,
-			Price:       listing.Price,
-			Occupied:    listing.Occupied,
-			ImageLoaded: listing.ImageLoaded,
-			Images:      imagesLookup[listing.ID],
+			ID:              listing.ID,
+			Source:          listing.Source,
+			ExternalID:      listing.ExternalID,
+			Address:         listing.Address,
+			FloorArea:       listing.FloorArea,
+			Price:           listing.Price,
+			OccupancyStatus: listing.OccupancyStatus,
+			ImageLoaded:     listing.ImageLoaded,
+			Images:          imagesLookup[listing.ID],
 		})
 	}
 

@@ -28,12 +28,12 @@ func (listings Listings) toDbListings() ([]*db.Listing, error) {
 		}
 
 		dbListings = append(dbListings, &db.Listing{
-			Source:     db.SourcePagibig,
-			ExternalID: listing.ID,
-			Address:    listing.Location,
-			FloorArea:  floorArea,
-			Price:      listing.Price,
-			Occupied:   isOccupied(listing.Remarks),
+			Source:          db.SourcePagibig,
+			ExternalID:      listing.ID,
+			Address:         listing.Location,
+			FloorArea:       floorArea,
+			Price:           listing.Price,
+			OccupancyStatus: getOccupancyStatus(listing.Remarks),
 		})
 	}
 
@@ -49,6 +49,9 @@ func parseNumeric(raw string) (pgtype.Numeric, error) {
 	return pgtype.Numeric{Int: big.NewInt(int64(floorArea * 100)), Exp: -2, Valid: true}, nil
 }
 
-func isOccupied(remarks string) bool {
-	return !strings.Contains(remarks, "UNOCCUPIED")
+func getOccupancyStatus(remarks string) db.OccupancyStatus {
+	if strings.Contains(remarks, "UNOCCUPIED") {
+		return db.OccupancyStatusUnoccupied
+	}
+	return db.OccupancyStatusOccupied
 }

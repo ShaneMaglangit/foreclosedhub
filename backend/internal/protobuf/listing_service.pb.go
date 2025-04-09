@@ -22,15 +22,15 @@ const (
 )
 
 type GetListingsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	After         *int64                 `protobuf:"varint,1,opt,name=after,proto3,oneof" json:"after,omitempty"`
-	Before        *int64                 `protobuf:"varint,2,opt,name=before,proto3,oneof" json:"before,omitempty"`
-	Limit         int32                  `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
-	Search        string                 `protobuf:"bytes,4,opt,name=search,proto3" json:"search,omitempty"`
-	Sources       []string               `protobuf:"bytes,5,rep,name=sources,proto3" json:"sources,omitempty"`
-	Occupied      *bool                  `protobuf:"varint,6,opt,name=occupied,proto3,oneof" json:"occupied,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	After             *int64                 `protobuf:"varint,1,opt,name=after,proto3,oneof" json:"after,omitempty"`
+	Before            *int64                 `protobuf:"varint,2,opt,name=before,proto3,oneof" json:"before,omitempty"`
+	Limit             int32                  `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	Search            string                 `protobuf:"bytes,4,opt,name=search,proto3" json:"search,omitempty"`
+	Sources           []string               `protobuf:"bytes,5,rep,name=sources,proto3" json:"sources,omitempty"`
+	OccupancyStatuses []string               `protobuf:"bytes,6,rep,name=occupancy_statuses,json=occupancyStatuses,proto3" json:"occupancy_statuses,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *GetListingsRequest) Reset() {
@@ -98,11 +98,11 @@ func (x *GetListingsRequest) GetSources() []string {
 	return nil
 }
 
-func (x *GetListingsRequest) GetOccupied() bool {
-	if x != nil && x.Occupied != nil {
-		return *x.Occupied
+func (x *GetListingsRequest) GetOccupancyStatuses() []string {
+	if x != nil {
+		return x.OccupancyStatuses
 	}
-	return false
+	return nil
 }
 
 type GetListingsResponse struct {
@@ -161,17 +161,16 @@ var File_listing_service_proto protoreflect.FileDescriptor
 
 const file_listing_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15listing_service.proto\x12\alisting\x1a\fcommon.proto\x1a\rlisting.proto\"\xd7\x01\n" +
+	"\x15listing_service.proto\x12\alisting\x1a\fcommon.proto\x1a\rlisting.proto\"\xd8\x01\n" +
 	"\x12GetListingsRequest\x12\x19\n" +
 	"\x05after\x18\x01 \x01(\x03H\x00R\x05after\x88\x01\x01\x12\x1b\n" +
 	"\x06before\x18\x02 \x01(\x03H\x01R\x06before\x88\x01\x01\x12\x14\n" +
 	"\x05limit\x18\x03 \x01(\x05R\x05limit\x12\x16\n" +
 	"\x06search\x18\x04 \x01(\tR\x06search\x12\x18\n" +
-	"\asources\x18\x05 \x03(\tR\asources\x12\x1f\n" +
-	"\boccupied\x18\x06 \x01(\bH\x02R\boccupied\x88\x01\x01B\b\n" +
+	"\asources\x18\x05 \x03(\tR\asources\x12-\n" +
+	"\x12occupancy_statuses\x18\x06 \x03(\tR\x11occupancyStatusesB\b\n" +
 	"\x06_afterB\t\n" +
-	"\a_beforeB\v\n" +
-	"\t_occupied\"q\n" +
+	"\a_before\"q\n" +
 	"\x13GetListingsResponse\x12,\n" +
 	"\blistings\x18\x01 \x03(\v2\x10.listing.ListingR\blistings\x12,\n" +
 	"\bpageInfo\x18\x02 \x01(\v2\x10.common.PageInfoR\bpageInfo2Z\n" +

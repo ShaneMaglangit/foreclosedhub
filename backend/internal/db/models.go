@@ -11,6 +11,49 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type OccupancyStatus string
+
+const (
+	OccupancyStatusOccupied   OccupancyStatus = "occupied"
+	OccupancyStatusUnoccupied OccupancyStatus = "unoccupied"
+	OccupancyStatusUnknown    OccupancyStatus = "unknown"
+)
+
+func (e *OccupancyStatus) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = OccupancyStatus(s)
+	case string:
+		*e = OccupancyStatus(s)
+	default:
+		return fmt.Errorf("unsupported scan type for OccupancyStatus: %T", src)
+	}
+	return nil
+}
+
+type NullOccupancyStatus struct {
+	OccupancyStatus OccupancyStatus
+	Valid           bool // Valid is true if OccupancyStatus is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullOccupancyStatus) Scan(value interface{}) error {
+	if value == nil {
+		ns.OccupancyStatus, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.OccupancyStatus.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullOccupancyStatus) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.OccupancyStatus), nil
+}
+
 type Source string
 
 const (
@@ -53,14 +96,14 @@ func (ns NullSource) Value() (driver.Value, error) {
 }
 
 type Listing struct {
-	ID          int64
-	Source      Source
-	ExternalID  string
-	Address     string
-	FloorArea   pgtype.Numeric
-	Price       int64
-	Occupied    bool
-	ImageLoaded bool
+	ID              int64
+	Source          Source
+	ExternalID      string
+	Address         string
+	FloorArea       pgtype.Numeric
+	Price           int64
+	ImageLoaded     bool
+	OccupancyStatus OccupancyStatus
 }
 
 type ListingImage struct {

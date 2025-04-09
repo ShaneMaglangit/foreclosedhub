@@ -13,7 +13,7 @@ message GetListingsRequest {
   int32 limit = 3;
   string search = 4;
   repeated string sources = 5;
-  bool occupied = 6;
+  repeated string occupancy_statuses = 6;
 }
 
 message GetListingsResponse {

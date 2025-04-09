@@ -8,10 +8,9 @@ export interface GetListingsRequest {
   'limit'?: (number);
   'search'?: (string);
   'sources'?: (string)[];
-  'occupied'?: (boolean);
+  'occupancyStatuses'?: (string)[];
   '_after'?: "after";
   '_before'?: "before";
-  '_occupied'?: "occupied";
 }
 
 export interface GetListingsRequest__Output {
@@ -20,8 +19,7 @@ export interface GetListingsRequest__Output {
   'limit': (number);
   'search': (string);
   'sources': (string)[];
-  'occupied'?: (boolean);
+  'occupancyStatuses': (string)[];
   '_after': "after";
   '_before': "before";
-  '_occupied': "occupied";
 }

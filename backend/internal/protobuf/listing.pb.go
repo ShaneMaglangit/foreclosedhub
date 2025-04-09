@@ -22,18 +22,18 @@ const (
 )
 
 type Listing struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Source        string                 `protobuf:"bytes,2,opt,name=source,proto3" json:"source,omitempty"`
-	ExternalId    string                 `protobuf:"bytes,3,opt,name=external_id,json=externalId,proto3" json:"external_id,omitempty"`
-	Address       string                 `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`
-	FloorArea     float64                `protobuf:"fixed64,5,opt,name=floor_area,json=floorArea,proto3" json:"floor_area,omitempty"`
-	Price         int64                  `protobuf:"varint,6,opt,name=price,proto3" json:"price,omitempty"`
-	Occupied      bool                   `protobuf:"varint,7,opt,name=occupied,proto3" json:"occupied,omitempty"`
-	ImageLoaded   bool                   `protobuf:"varint,8,opt,name=image_loaded,json=imageLoaded,proto3" json:"image_loaded,omitempty"`
-	ImageUrls     []string               `protobuf:"bytes,9,rep,name=image_urls,json=imageUrls,proto3" json:"image_urls,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Id              int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Source          string                 `protobuf:"bytes,2,opt,name=source,proto3" json:"source,omitempty"`
+	ExternalId      string                 `protobuf:"bytes,3,opt,name=external_id,json=externalId,proto3" json:"external_id,omitempty"`
+	Address         string                 `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`
+	FloorArea       float64                `protobuf:"fixed64,5,opt,name=floor_area,json=floorArea,proto3" json:"floor_area,omitempty"`
+	Price           int64                  `protobuf:"varint,6,opt,name=price,proto3" json:"price,omitempty"`
+	OccupancyStatus string                 `protobuf:"bytes,7,opt,name=occupancy_status,json=occupancyStatus,proto3" json:"occupancy_status,omitempty"`
+	ImageLoaded     bool                   `protobuf:"varint,8,opt,name=image_loaded,json=imageLoaded,proto3" json:"image_loaded,omitempty"`
+	ImageUrls       []string               `protobuf:"bytes,9,rep,name=image_urls,json=imageUrls,proto3" json:"image_urls,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *Listing) Reset() {
@@ -108,11 +108,11 @@ func (x *Listing) GetPrice() int64 {
 	return 0
 }
 
-func (x *Listing) GetOccupied() bool {
+func (x *Listing) GetOccupancyStatus() string {
 	if x != nil {
-		return x.Occupied
+		return x.OccupancyStatus
 	}
-	return false
+	return ""
 }
 
 func (x *Listing) GetImageLoaded() bool {
@@ -133,7 +133,7 @@ var File_listing_proto protoreflect.FileDescriptor
 
 const file_listing_proto_rawDesc = "" +
 	"\n" +
-	"\rlisting.proto\x12\alisting\"\xff\x01\n" +
+	"\rlisting.proto\x12\alisting\"\x8e\x02\n" +
 	"\aListing\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x16\n" +
 	"\x06source\x18\x02 \x01(\tR\x06source\x12\x1f\n" +
@@ -142,8 +142,8 @@ const file_listing_proto_rawDesc = "" +
 	"\aaddress\x18\x04 \x01(\tR\aaddress\x12\x1d\n" +
 	"\n" +
 	"floor_area\x18\x05 \x01(\x01R\tfloorArea\x12\x14\n" +
-	"\x05price\x18\x06 \x01(\x03R\x05price\x12\x1a\n" +
-	"\boccupied\x18\a \x01(\bR\boccupied\x12!\n" +
+	"\x05price\x18\x06 \x01(\x03R\x05price\x12)\n" +
+	"\x10occupancy_status\x18\a \x01(\tR\x0foccupancyStatus\x12!\n" +
 	"\fimage_loaded\x18\b \x01(\bR\vimageLoaded\x12\x1d\n" +
 	"\n" +
 	"image_urls\x18\t \x03(\tR\timageUrlsB?Z=gitlab.com/shanemaglangit/homagochi/backend/internal/protobufb\x06proto3"

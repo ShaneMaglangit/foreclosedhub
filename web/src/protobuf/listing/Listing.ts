@@ -9,7 +9,7 @@ export interface Listing {
   'address'?: (string);
   'floorArea'?: (number | string);
   'price'?: (number | string | Long);
-  'occupied'?: (boolean);
+  'occupancyStatus'?: (string);
   'imageLoaded'?: (boolean);
   'imageUrls'?: (string)[];
 }
@@ -21,7 +21,7 @@ export interface Listing__Output {
   'address': (string);
   'floorArea': (number);
   'price': (string);
-  'occupied': (boolean);
+  'occupancyStatus': (string);
   'imageLoaded': (boolean);
   'imageUrls': (string)[];
 }

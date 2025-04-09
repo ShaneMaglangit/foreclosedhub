@@ -37,21 +37,26 @@ func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobu
 		sources = append(sources, db.Source(source))
 	}
 
+	occupancyStatuses := make([]db.OccupancyStatus, 0, len(request.OccupancyStatuses))
+	for _, occupancyStatus := range request.OccupancyStatuses {
+		occupancyStatuses = append(occupancyStatuses, db.OccupancyStatus(occupancyStatus))
+	}
+
 	if hasPrevParameter {
 		listings, pageInfo, err = s.listingService.GetPrevWithImages(ctx, db.GetListingsPrevPageParams{
-			Search:   request.Search,
-			Occupied: request.GetOccupied(),
-			Sources:  sources,
-			Before:   request.GetBefore(),
-			RowLimit: request.Limit,
+			Search:          request.Search,
+			OccupancyStatus: occupancyStatuses,
+			Sources:         sources,
+			Before:          request.GetBefore(),
+			RowLimit:        request.Limit,
 		})
 	} else {
 		listings, pageInfo, err = s.listingService.GetNextWithImages(ctx, db.GetListingsNextPageParams{
-			Search:   request.Search,
-			Occupied: request.GetOccupied(),
-			Sources:  sources,
-			After:    request.GetAfter(),
-			RowLimit: request.Limit,
+			Search:          request.Search,
+			OccupancyStatus: occupancyStatuses,
+			Sources:         sources,
+			After:           request.GetAfter(),
+			RowLimit:        request.Limit,
 		})
 	}
 
@@ -92,14 +97,14 @@ func convertListing(listing *db.ListingWithImages) (*protobuf.Listing, error) {
 	}
 
 	return &protobuf.Listing{
-		Id:          listing.ID,
-		Source:      string(listing.Source),
-		ExternalId:  listing.ExternalID,
-		Address:     listing.Address,
-		FloorArea:   floorArea.Float64,
-		Price:       listing.Price,
-		Occupied:    listing.Occupied,
-		ImageLoaded: listing.ImageLoaded,
-		ImageUrls:   imageUrls,
+		Id:              listing.ID,
+		Source:          string(listing.Source),
+		ExternalId:      listing.ExternalID,
+		Address:         listing.Address,
+		FloorArea:       floorArea.Float64,
+		Price:           listing.Price,
+		OccupancyStatus: string(listing.OccupancyStatus),
+		ImageLoaded:     listing.ImageLoaded,
+		ImageUrls:       imageUrls,
 	}, nil
 }

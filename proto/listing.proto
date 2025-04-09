@@ -11,7 +11,7 @@ message Listing {
   string address = 4;
   double floor_area = 5;
   int64 price = 6;
-  bool occupied = 7;
+  string occupancy_status= 7;
   bool image_loaded = 8;
   repeated string image_urls = 9;
 }

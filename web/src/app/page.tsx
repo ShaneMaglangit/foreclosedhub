@@ -27,7 +27,7 @@ type Props = {
     limit?: number;
     search?: string;
     sources?: string[] | string;
-    occupied?: boolean;
+    occupancyStatuses?: string[] | string;
   };
 };
 
@@ -37,9 +37,13 @@ const paramsSchema = z.object({
     .union([z.string(), z.array(z.string())])
     .transform((val) => (typeof val === "string" ? [val] : val))
     .default(["pagibig"]),
+  occupancyStatuses: z
+    .union([z.string(), z.array(z.string())])
+    .transform((val) => (typeof val === "string" ? [val] : val))
+    .default(["occupied", "unoccupied", "unknown"]),
   after: z.coerce.number().optional(),
   before: z.coerce.number().optional(),
-  limit: z.coerce.number().default(20),
+  limit: z.coerce.number().default(30),
 });
 
 export default async function Page({ searchParams }: Props) {
@@ -75,7 +79,7 @@ export default async function Page({ searchParams }: Props) {
         </header>
         <div
           className={cn(
-            "grid auto-rows-min md:grid-cols-5 p-2 gap-2",
+            "grid auto-rows-min md:grid-cols-6 p-2 gap-2",
             "relative bg-fixed",
             "bg-[image:repeating-linear-gradient(315deg,_var(--accent)_0,_var(--primary)_1px,_transparent_0,_transparent_50%)]",
             "bg-[size:5px_5px] [--pattern-fg:var(--accent)]/5 dark:[--pattern-fg:var(--accent)]/10",
@@ -91,10 +95,10 @@ export default async function Page({ searchParams }: Props) {
                         src={url}
                         style={{
                           width: "100%",
-                          height: "300px",
+                          height: "250px",
                         }}
                         width={500}
-                        height={300}
+                        height={250}
                         alt="property image"
                       />
                     </CarouselItem>
@@ -102,7 +106,7 @@ export default async function Page({ searchParams }: Props) {
                   {!listing.imageUrls.length && (
                     <CarouselItem
                       className={cn(
-                        "h-[300px] w-full relative bg-fixed max-lg:h-66 max-lg:border-t lg:border-l ",
+                        "h-[250px] w-full relative bg-fixed max-lg:h-66 max-lg:border-t lg:border-l ",
                         "bg-[image:repeating-linear-gradient(315deg,_var(--accent)_0,_var(--primary)_1px,_transparent_0,_transparent_50%)]",
                         "bg-[size:10px_10px] [--pattern-fg:var(--accent)]/5 dark:[--pattern-fg:var(--accent)]/10",
                       )}

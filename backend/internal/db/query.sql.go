@@ -58,22 +58,22 @@ func (q *Queries) GetListingImagesByListingIds(ctx context.Context, ids []int64)
 }
 
 const getListingsNextPage = `-- name: GetListingsNextPage :many
-SELECT id, source, external_id, address, floor_area, price, occupied, image_loaded
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status
 FROM listings
 WHERE id > $1::bigint
   AND address ILIKE $2::text
   AND source = ANY ($3::source[])
-  AND (coalesce($4, occupied) IS NULL OR occupied = coalesce($4, occupied))
+  AND occupancy_status = ANY ($4::occupancy_status[])
 ORDER BY id
 LIMIT $5::int
 `
 
 type GetListingsNextPageParams struct {
-	After    int64
-	Search   string
-	Sources  []Source
-	Occupied interface{}
-	RowLimit int32
+	After           int64
+	Search          string
+	Sources         []Source
+	OccupancyStatus []OccupancyStatus
+	RowLimit        int32
 }
 
 func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPageParams) ([]*Listing, error) {
@@ -81,7 +81,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 		arg.After,
 		arg.Search,
 		arg.Sources,
-		arg.Occupied,
+		arg.OccupancyStatus,
 		arg.RowLimit,
 	)
 	if err != nil {
@@ -98,8 +98,8 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 			&i.Address,
 			&i.FloorArea,
 			&i.Price,
-			&i.Occupied,
 			&i.ImageLoaded,
+			&i.OccupancyStatus,
 		); err != nil {
 			return nil, err
 		}
@@ -112,22 +112,22 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 }
 
 const getListingsPrevPage = `-- name: GetListingsPrevPage :many
-SELECT id, source, external_id, address, floor_area, price, occupied, image_loaded
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status
 FROM listings
 WHERE id < $1::bigint
   AND address ILIKE $2::text
   AND source = ANY ($3::source[])
-  AND (coalesce($4, occupied) IS NULL OR occupied = coalesce($4, occupied))
+  AND occupancy_status = ANY ($4::occupancy_status[])
 ORDER BY id DESC
 LIMIT $5::int
 `
 
 type GetListingsPrevPageParams struct {
-	Before   int64
-	Search   string
-	Sources  []Source
-	Occupied interface{}
-	RowLimit int32
+	Before          int64
+	Search          string
+	Sources         []Source
+	OccupancyStatus []OccupancyStatus
+	RowLimit        int32
 }
 
 func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPageParams) ([]*Listing, error) {
@@ -135,7 +135,7 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 		arg.Before,
 		arg.Search,
 		arg.Sources,
-		arg.Occupied,
+		arg.OccupancyStatus,
 		arg.RowLimit,
 	)
 	if err != nil {
@@ -152,8 +152,8 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 			&i.Address,
 			&i.FloorArea,
 			&i.Price,
-			&i.Occupied,
 			&i.ImageLoaded,
+			&i.OccupancyStatus,
 		); err != nil {
 			return nil, err
 		}
@@ -181,27 +181,27 @@ func (q *Queries) InsertListingImages(ctx context.Context, arg InsertListingImag
 }
 
 const insertListings = `-- name: InsertListings :exec
-INSERT INTO listings (source, external_id, address, floor_area, price, occupied)
+INSERT INTO listings (source, external_id, address, floor_area, price, occupancy_status)
 VALUES (unnest($1::source[]),
         unnest($2::text[]),
         unnest($3::text[]),
         unnest($4::numeric(8, 2)[]),
         unnest($5::bigint[]),
-        unnest($6::boolean[]))
+        unnest($6::occupancy_status[]))
 ON CONFLICT (source, external_id) DO UPDATE
-    SET address    = EXCLUDED.address,
-        floor_area = EXCLUDED.floor_area,
-        price      = EXCLUDED.price,
-        occupied   = EXCLUDED.occupied
+    SET address          = EXCLUDED.address,
+        floor_area       = EXCLUDED.floor_area,
+        price            = EXCLUDED.price,
+        occupancy_status = EXCLUDED.occupancy_status
 `
 
 type InsertListingsParams struct {
-	Sources     []Source
-	ExternalIds []string
-	Addresses   []string
-	FloorAreas  []pgtype.Numeric
-	Prices      []int64
-	Occupied    []bool
+	Sources           []Source
+	ExternalIds       []string
+	Addresses         []string
+	FloorAreas        []pgtype.Numeric
+	Prices            []int64
+	OccupancyStatuses []OccupancyStatus
 }
 
 func (q *Queries) InsertListings(ctx context.Context, arg InsertListingsParams) error {
@@ -211,7 +211,7 @@ func (q *Queries) InsertListings(ctx context.Context, arg InsertListingsParams) 
 		arg.Addresses,
 		arg.FloorAreas,
 		arg.Prices,
-		arg.Occupied,
+		arg.OccupancyStatuses,
 	)
 	return err
 }

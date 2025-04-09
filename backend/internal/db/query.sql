@@ -4,7 +4,7 @@ FROM listings
 WHERE id > @after::bigint
   AND address ILIKE @search::text
   AND source = ANY (@sources::source[])
-  AND (coalesce(sqlc.narg('occupied'), occupied) IS NULL OR occupied = coalesce(sqlc.narg('occupied'), occupied))
+  AND occupancy_status = ANY (@occupancy_status::occupancy_status[])
 ORDER BY id
 LIMIT @row_limit::int;
 
@@ -14,7 +14,7 @@ FROM listings
 WHERE id < @before::bigint
   AND address ILIKE @search::text
   AND source = ANY (@sources::source[])
-  AND (coalesce(sqlc.narg('occupied'), occupied) IS NULL OR occupied = coalesce(sqlc.narg('occupied'), occupied))
+  AND occupancy_status = ANY (@occupancy_status::occupancy_status[])
 ORDER BY id DESC
 LIMIT @row_limit::int;
 
@@ -26,18 +26,18 @@ WHERE source = @source::source
 LIMIT 1;
 
 -- name: InsertListings :exec
-INSERT INTO listings (source, external_id, address, floor_area, price, occupied)
+INSERT INTO listings (source, external_id, address, floor_area, price, occupancy_status)
 VALUES (unnest(@sources::source[]),
         unnest(@external_ids::text[]),
         unnest(@addresses::text[]),
         unnest(@floor_areas::numeric(8, 2)[]),
         unnest(@prices::bigint[]),
-        unnest(@occupied::boolean[]))
+        unnest(@occupancy_statuses::occupancy_status[]))
 ON CONFLICT (source, external_id) DO UPDATE
-    SET address    = EXCLUDED.address,
-        floor_area = EXCLUDED.floor_area,
-        price      = EXCLUDED.price,
-        occupied   = EXCLUDED.occupied;
+    SET address          = EXCLUDED.address,
+        floor_area       = EXCLUDED.floor_area,
+        price            = EXCLUDED.price,
+        occupancy_status = EXCLUDED.occupancy_status;
 
 -- name: UpdateListingsImageLoaded :exec
 UPDATE listings

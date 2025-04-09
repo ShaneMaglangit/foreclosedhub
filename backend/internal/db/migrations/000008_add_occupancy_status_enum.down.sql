@@ -1,0 +1,1 @@
+DROP TYPE occupancy_status;

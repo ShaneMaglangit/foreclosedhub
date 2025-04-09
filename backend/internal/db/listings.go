@@ -17,6 +17,7 @@ type ListingsRepository interface {
 type ListingsRepositoryImpl struct{}
 
 func (l ListingsRepositoryImpl) GetListingsNextPage(ctx context.Context, dbtx DBTX, params GetListingsNextPageParams) ([]*Listing, error) {
+	fmt.Println(params)
 	params.Search = fmt.Sprintf("%%%s%%", params.Search)
 	return New(dbtx).GetListingsNextPage(ctx, params)
 }
@@ -31,29 +32,30 @@ func (l ListingsRepositoryImpl) GetListingByImageNotLoaded(ctx context.Context, 
 }
 
 func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error {
-	sources := make([]Source, len(listings))
-	externalIDs := make([]string, len(listings))
-	addresses := make([]string, len(listings))
-	floorAreas := make([]pgtype.Numeric, len(listings))
-	prices := make([]int64, len(listings))
-	occupied := make([]bool, len(listings))
+	sources := make([]Source, 0, len(listings))
+	externalIDs := make([]string, 0, len(listings))
+	addresses := make([]string, 0, len(listings))
+	floorAreas := make([]pgtype.Numeric, 0, len(listings))
+	prices := make([]int64, 0, len(listings))
+	occupancyStatuses := make([]OccupancyStatus, 0, len(listings))
 
-	for i, listing := range listings {
-		sources[i] = listing.Source
-		externalIDs[i] = listing.ExternalID
-		addresses[i] = listing.Address
-		floorAreas[i] = listing.FloorArea
-		prices[i] = listing.Price
-		occupied[i] = listing.Occupied
+	for _, listing := range listings {
+		sources = append(sources, listing.Source)
+		externalIDs = append(externalIDs, listing.ExternalID)
+		addresses = append(addresses, listing.Address)
+		prices = append(prices, listing.Price)
+		floorAreas = append(floorAreas, listing.FloorArea)
+		prices = append(prices, listing.Price)
+		occupancyStatuses = append(occupancyStatuses, listing.OccupancyStatus)
 	}
 
 	return New(dbtx).InsertListings(ctx, InsertListingsParams{
-		Sources:     sources,
-		ExternalIds: externalIDs,
-		Addresses:   addresses,
-		FloorAreas:  floorAreas,
-		Prices:      prices,
-		Occupied:    occupied,
+		Sources:           sources,
+		ExternalIds:       externalIDs,
+		Addresses:         addresses,
+		FloorAreas:        floorAreas,
+		Prices:            prices,
+		OccupancyStatuses: occupancyStatuses,
 	})
 }
 
