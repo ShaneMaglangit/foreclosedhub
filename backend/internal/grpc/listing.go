@@ -29,15 +29,24 @@ func (server *ListingServiceServer) GetListings(ctx context.Context, request *pr
 	var listings []*db.Listing
 	var pageInfo *protobuf.PageInfo
 
+	sources := make([]db.Source, 0, len(request.Sources))
+	for _, source := range request.Sources {
+		sources = append(sources, db.Source(source))
+	}
+
 	if hasPrevParameter {
 		listings, pageInfo, err = getPrevListingsWithPageInfo(ctx, pool, db.GetListingsPreviousPageParams{
 			Search:   request.Search,
+			Occupied: request.Occupied,
+			Sources:  sources,
 			Before:   request.Before,
 			RowLimit: request.Limit,
 		})
 	} else {
 		listings, pageInfo, err = getNextListingsWithPageInfo(ctx, pool, db.GetListingsNextPageParams{
 			Search:   request.Search,
+			Occupied: request.Occupied,
+			Sources:  sources,
 			After:    request.After,
 			RowLimit: request.Limit,
 		})

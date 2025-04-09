@@ -3,6 +3,8 @@ SELECT *
 FROM listings
 WHERE id > @after::bigint
   AND address ILIKE @search::text
+  AND source = ANY (@sources::source[])
+  AND (coalesce(sqlc.narg('occupied'), occupied) IS NULL OR occupied = coalesce(sqlc.narg('occupied'), occupied))
 ORDER BY id
 LIMIT @row_limit::int;
 
@@ -11,6 +13,8 @@ SELECT *
 FROM listings
 WHERE id < @before::bigint
   AND address ILIKE @search::text
+  AND source = ANY (@sources::source[])
+  AND (coalesce(sqlc.narg('occupied'), occupied) IS NULL OR occupied = coalesce(sqlc.narg('occupied'), occupied))
 ORDER BY id DESC
 LIMIT @row_limit::int;
 

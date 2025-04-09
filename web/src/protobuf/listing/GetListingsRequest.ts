@@ -7,6 +7,9 @@ export interface GetListingsRequest {
   'before'?: (number | string | Long);
   'limit'?: (number);
   'search'?: (string);
+  'sources'?: (string)[];
+  'occupied'?: (boolean);
+  '_occupied'?: "occupied";
 }
 
 export interface GetListingsRequest__Output {
@@ -14,4 +17,7 @@ export interface GetListingsRequest__Output {
   'before': (string);
   'limit': (number);
   'search': (string);
+  'sources': (string)[];
+  'occupied'?: (boolean);
+  '_occupied': "occupied";
 }

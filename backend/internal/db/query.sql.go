@@ -67,18 +67,28 @@ SELECT id, source, external_id, address, floor_area, price, occupied, image_load
 FROM listings
 WHERE id > $1::bigint
   AND address ILIKE $2::text
+  AND source = ANY ($3::source[])
+  AND (coalesce($4, occupied) IS NULL OR occupied = coalesce($4, occupied))
 ORDER BY id
-LIMIT $3::int
+LIMIT $5::int
 `
 
 type GetListingsNextPageParams struct {
 	After    int64
 	Search   string
+	Sources  []Source
+	Occupied interface{}
 	RowLimit int32
 }
 
 func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPageParams) ([]*Listing, error) {
-	rows, err := q.db.Query(ctx, getListingsNextPage, arg.After, arg.Search, arg.RowLimit)
+	rows, err := q.db.Query(ctx, getListingsNextPage,
+		arg.After,
+		arg.Search,
+		arg.Sources,
+		arg.Occupied,
+		arg.RowLimit,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -111,18 +121,28 @@ SELECT id, source, external_id, address, floor_area, price, occupied, image_load
 FROM listings
 WHERE id < $1::bigint
   AND address ILIKE $2::text
+  AND source = ANY ($3::source[])
+  AND (coalesce($4, occupied) IS NULL OR occupied = coalesce($4, occupied))
 ORDER BY id DESC
-LIMIT $3::int
+LIMIT $5::int
 `
 
 type GetListingsPreviousPageParams struct {
 	Before   int64
 	Search   string
+	Sources  []Source
+	Occupied interface{}
 	RowLimit int32
 }
 
 func (q *Queries) GetListingsPreviousPage(ctx context.Context, arg GetListingsPreviousPageParams) ([]*Listing, error) {
-	rows, err := q.db.Query(ctx, getListingsPreviousPage, arg.Before, arg.Search, arg.RowLimit)
+	rows, err := q.db.Query(ctx, getListingsPreviousPage,
+		arg.Before,
+		arg.Search,
+		arg.Sources,
+		arg.Occupied,
+		arg.RowLimit,
+	)
 	if err != nil {
 		return nil, err
 	}

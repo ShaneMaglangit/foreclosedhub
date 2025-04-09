@@ -19,6 +19,7 @@ import { formatNumeric } from "@web/lib/utils";
 import { Button } from "@web/components/common/button";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { z } from "zod";
 
 type Props = {
   searchParams?: {
@@ -26,8 +27,15 @@ type Props = {
     before?: number;
     limit?: number;
     search?: string;
+    sources?: string[] | string;
+    occupied?: boolean;
   };
 };
+
+const stringOrArraySchema = z
+  .union([z.string(), z.array(z.string())])
+  .optional()
+  .transform((val) => (typeof val === "string" ? [val] : val));
 
 export default async function Page({ searchParams }: Props) {
   const {
@@ -35,13 +43,17 @@ export default async function Page({ searchParams }: Props) {
     before = 0,
     limit = 20,
     search,
+    sources = ["pagibig"],
+    occupied,
   } = (await searchParams) || {};
 
   const { listings, pageInfo } = await getListings({
+    sources: stringOrArraySchema.parse(sources),
     after,
     before,
     limit,
     search,
+    occupied,
   });
 
   const processedListings = listings.map((listing) => {

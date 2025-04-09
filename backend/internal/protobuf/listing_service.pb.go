@@ -27,6 +27,8 @@ type GetListingsRequest struct {
 	Before        int64                  `protobuf:"varint,2,opt,name=before,proto3" json:"before,omitempty"`
 	Limit         int32                  `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
 	Search        string                 `protobuf:"bytes,4,opt,name=search,proto3" json:"search,omitempty"`
+	Sources       []string               `protobuf:"bytes,5,rep,name=sources,proto3" json:"sources,omitempty"`
+	Occupied      *bool                  `protobuf:"varint,6,opt,name=occupied,proto3,oneof" json:"occupied,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -89,6 +91,20 @@ func (x *GetListingsRequest) GetSearch() string {
 	return ""
 }
 
+func (x *GetListingsRequest) GetSources() []string {
+	if x != nil {
+		return x.Sources
+	}
+	return nil
+}
+
+func (x *GetListingsRequest) GetOccupied() bool {
+	if x != nil && x.Occupied != nil {
+		return *x.Occupied
+	}
+	return false
+}
+
 type GetListingsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Listings      []*Listing             `protobuf:"bytes,1,rep,name=listings,proto3" json:"listings,omitempty"`
@@ -145,12 +161,15 @@ var File_listing_service_proto protoreflect.FileDescriptor
 
 const file_listing_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15listing_service.proto\x12\alisting\x1a\fcommon.proto\x1a\rlisting.proto\"p\n" +
+	"\x15listing_service.proto\x12\alisting\x1a\fcommon.proto\x1a\rlisting.proto\"\xb8\x01\n" +
 	"\x12GetListingsRequest\x12\x14\n" +
 	"\x05after\x18\x01 \x01(\x03R\x05after\x12\x16\n" +
 	"\x06before\x18\x02 \x01(\x03R\x06before\x12\x14\n" +
 	"\x05limit\x18\x03 \x01(\x05R\x05limit\x12\x16\n" +
-	"\x06search\x18\x04 \x01(\tR\x06search\"q\n" +
+	"\x06search\x18\x04 \x01(\tR\x06search\x12\x18\n" +
+	"\asources\x18\x05 \x03(\tR\asources\x12\x1f\n" +
+	"\boccupied\x18\x06 \x01(\bH\x00R\boccupied\x88\x01\x01B\v\n" +
+	"\t_occupied\"q\n" +
 	"\x13GetListingsResponse\x12,\n" +
 	"\blistings\x18\x01 \x03(\v2\x10.listing.ListingR\blistings\x12,\n" +
 	"\bpageInfo\x18\x02 \x01(\v2\x10.common.PageInfoR\bpageInfo2Z\n" +
@@ -195,6 +214,7 @@ func file_listing_service_proto_init() {
 	}
 	file_common_proto_init()
 	file_listing_proto_init()
+	file_listing_service_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
