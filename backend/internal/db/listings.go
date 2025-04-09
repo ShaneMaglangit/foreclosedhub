@@ -8,7 +8,7 @@ import (
 
 type ListingsRepository interface {
 	GetListingsNextPage(ctx context.Context, dbtx DBTX, params GetListingsNextPageParams) ([]*Listing, error)
-	GetListingsPreviousPage(ctx context.Context, dbtx DBTX, params GetListingsPreviousPageParams) ([]*Listing, error)
+	GetListingsPrevPage(ctx context.Context, dbtx DBTX, params GetListingsPrevPageParams) ([]*Listing, error)
 	GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error)
 	InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error
 	UpdateListingsImageLoaded(ctx context.Context, dbtx DBTX, id int64, imageLoaded bool) error
@@ -21,9 +21,9 @@ func (l ListingsRepositoryImpl) GetListingsNextPage(ctx context.Context, dbtx DB
 	return New(dbtx).GetListingsNextPage(ctx, params)
 }
 
-func (l ListingsRepositoryImpl) GetListingsPreviousPage(ctx context.Context, dbtx DBTX, params GetListingsPreviousPageParams) ([]*Listing, error) {
+func (l ListingsRepositoryImpl) GetListingsPrevPage(ctx context.Context, dbtx DBTX, params GetListingsPrevPageParams) ([]*Listing, error) {
 	params.Search = fmt.Sprintf("%%%s%%", params.Search)
-	return New(dbtx).GetListingsPreviousPage(ctx, params)
+	return New(dbtx).GetListingsPrevPage(ctx, params)
 }
 
 func (l ListingsRepositoryImpl) GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error) {

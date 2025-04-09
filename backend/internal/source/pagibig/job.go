@@ -8,7 +8,7 @@ import (
 
 type ScrapeListingJob struct{}
 
-func (job *ScrapeListingJob) Run() error {
+func (j *ScrapeListingJob) Run() error {
 	batches, err := getBatches()
 	if err != nil {
 		return err
@@ -38,7 +38,7 @@ func (job *ScrapeListingJob) Run() error {
 
 type ScrapeListingImageJob struct{}
 
-func (job *ScrapeListingImageJob) Run() error {
+func (j *ScrapeListingImageJob) Run() error {
 	ctx := context.Background()
 
 	pool, err := db.Connect(ctx)
@@ -59,7 +59,7 @@ func (job *ScrapeListingImageJob) Run() error {
 	}
 
 	imageBlobUploadService := service.NewImageBlobUploadService(blobs)
-	listingImagesCreateService := service.NewListingImagesCreateService(imageBlobUploadService)
+	listingImageService := service.NewListingImageService()
 
-	return listingImagesCreateService.ExecuteBatch(listing.ID)
+	return listingImageService.Create(imageBlobUploadService, listing.ID)
 }

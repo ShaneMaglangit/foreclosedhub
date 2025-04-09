@@ -21,11 +21,11 @@ func NewImageBlobUploadService(blobs []string) *ImageBlobUploadService {
 	}
 }
 
-func (service *ImageBlobUploadService) Execute() (string, error) {
+func (s *ImageBlobUploadService) Execute() (string, error) {
 	panic("Not implemented")
 }
 
-func (service *ImageBlobUploadService) ExecuteBatch() ([]string, error) {
+func (s *ImageBlobUploadService) ExecuteBatch() ([]string, error) {
 	ctx := context.Background()
 
 	client, err := storage.NewClient(ctx)
@@ -35,7 +35,7 @@ func (service *ImageBlobUploadService) ExecuteBatch() ([]string, error) {
 	defer client.Close()
 
 	var urls []string
-	for _, blob := range service.blobs {
+	for _, blob := range s.blobs {
 		object := createObject(client)
 		if err = uploadImage(ctx, object, blob); err != nil {
 			return nil, err

@@ -19,8 +19,8 @@ type Batch struct {
 	Areas             string `json:"areas"`
 }
 
-func (batch Batch) getListings() (Listings, error) {
-	url := fmt.Sprintf(pagibigListingsEndpoint, batch.Number)
+func (b Batch) getListings() (Listings, error) {
+	url := fmt.Sprintf(pagibigListingsEndpoint, b.Number)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -38,10 +38,10 @@ func (batch Batch) getListings() (Listings, error) {
 
 type Batches []Batch
 
-func (batches Batches) getListings() (Listings, error) {
+func (b Batches) getListings() (Listings, error) {
 	listings := make(Listings, 0)
 
-	for _, batch := range batches {
+	for _, batch := range b {
 		batchListings, err := batch.getListings()
 		if err != nil {
 			return nil, err

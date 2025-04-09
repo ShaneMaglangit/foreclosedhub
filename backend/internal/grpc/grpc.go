@@ -18,7 +18,7 @@ func Serve() error {
 	}
 
 	server := grpc.NewServer()
-	protobuf.RegisterListingServiceServer(server, &ListingServiceServer{})
+	protobuf.RegisterListingServiceServer(server, NewListingServiceServer())
 
 	log.Println("Starting gRPC server on " + port)
 	return server.Serve(listener)

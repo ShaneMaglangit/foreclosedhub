@@ -32,26 +32,21 @@ func (q *Queries) GetListingByImageNotLoaded(ctx context.Context, source Source)
 }
 
 const getListingImagesByListingIds = `-- name: GetListingImagesByListingIds :many
-SELECT listing_id, url
+SELECT id, listing_id, url
 FROM listing_images
 WHERE listing_id = ANY ($1::bigint[])
 `
 
-type GetListingImagesByListingIdsRow struct {
-	ListingID int64
-	Url       string
-}
-
-func (q *Queries) GetListingImagesByListingIds(ctx context.Context, ids []int64) ([]*GetListingImagesByListingIdsRow, error) {
+func (q *Queries) GetListingImagesByListingIds(ctx context.Context, ids []int64) ([]*ListingImage, error) {
 	rows, err := q.db.Query(ctx, getListingImagesByListingIds, ids)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []*GetListingImagesByListingIdsRow
+	var items []*ListingImage
 	for rows.Next() {
-		var i GetListingImagesByListingIdsRow
-		if err := rows.Scan(&i.ListingID, &i.Url); err != nil {
+		var i ListingImage
+		if err := rows.Scan(&i.ID, &i.ListingID, &i.Url); err != nil {
 			return nil, err
 		}
 		items = append(items, &i)
@@ -116,7 +111,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 	return items, nil
 }
 
-const getListingsPreviousPage = `-- name: GetListingsPreviousPage :many
+const getListingsPrevPage = `-- name: GetListingsPrevPage :many
 SELECT id, source, external_id, address, floor_area, price, occupied, image_loaded
 FROM listings
 WHERE id < $1::bigint
@@ -127,7 +122,7 @@ ORDER BY id DESC
 LIMIT $5::int
 `
 
-type GetListingsPreviousPageParams struct {
+type GetListingsPrevPageParams struct {
 	Before   int64
 	Search   string
 	Sources  []Source
@@ -135,8 +130,8 @@ type GetListingsPreviousPageParams struct {
 	RowLimit int32
 }
 
-func (q *Queries) GetListingsPreviousPage(ctx context.Context, arg GetListingsPreviousPageParams) ([]*Listing, error) {
-	rows, err := q.db.Query(ctx, getListingsPreviousPage,
+func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPageParams) ([]*Listing, error) {
+	rows, err := q.db.Query(ctx, getListingsPrevPage,
 		arg.Before,
 		arg.Search,
 		arg.Sources,

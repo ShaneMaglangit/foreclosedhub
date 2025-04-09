@@ -8,7 +8,7 @@ WHERE id > @after::bigint
 ORDER BY id
 LIMIT @row_limit::int;
 
--- name: GetListingsPreviousPage :many
+-- name: GetListingsPrevPage :many
 SELECT *
 FROM listings
 WHERE id < @before::bigint
@@ -45,7 +45,7 @@ SET image_loaded = @image_loaded::boolean
 WHERE listings.id = @id::bigint;
 
 -- name: GetListingImagesByListingIds :many
-SELECT listing_id, url
+SELECT *
 FROM listing_images
 WHERE listing_id = ANY (@ids::bigint[]);
 

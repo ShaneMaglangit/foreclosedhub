@@ -5,20 +5,17 @@ import (
 	"homagochi/internal/db"
 )
 
-type ListingImagesCreateServices struct {
-	uploadService UploadService
+type ListingImageService struct {
 }
 
-func NewListingImagesCreateService(uploadService UploadService) *ListingImagesCreateServices {
-	return &ListingImagesCreateServices{
-		uploadService: uploadService,
-	}
+func NewListingImageService() *ListingImageService {
+	return &ListingImageService{}
 }
 
-func (service *ListingImagesCreateServices) ExecuteBatch(listingId int64) error {
+func (s *ListingImageService) Create(uploadService ImageUploadService, listingId int64) error {
 	ctx := context.Background()
 
-	urls, err := service.uploadService.ExecuteBatch()
+	urls, err := uploadService.ExecuteBatch()
 	if err != nil {
 		return err
 	}

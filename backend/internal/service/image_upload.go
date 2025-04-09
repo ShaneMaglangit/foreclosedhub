@@ -1,6 +1,6 @@
 package service
 
-type UploadService interface {
+type ImageUploadService interface {
 	Execute() (string, error)
 	ExecuteBatch() ([]string, error)
 }
