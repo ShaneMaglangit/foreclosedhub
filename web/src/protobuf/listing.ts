@@ -7,6 +7,11 @@ type SubtypeConstructor<Constructor extends new (...args: any) => any, Subtype> 
 };
 
 export interface ProtoGrpcType {
+  google: {
+    protobuf: {
+      Timestamp: MessageTypeDefinition
+    }
+  }
   listing: {
     Listing: MessageTypeDefinition
   }

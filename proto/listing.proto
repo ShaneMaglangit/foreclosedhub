@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package listing;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "gitlab.com/shanemaglangit/homagochi/backend/internal/protobuf";
 
 message Listing {
@@ -14,4 +16,7 @@ message Listing {
   string occupancy_status= 7;
   bool image_loaded = 8;
   repeated string image_urls = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+  string payload = 12;
 }
