@@ -46,7 +46,7 @@ export function Filters({ initialFilters }: { initialFilters: ListingParam }) {
     setSources(updatedSources);
   };
 
-  const handleOccupancyStatusChange = (status: OccupancyStatus) => {
+  const handleOccupancyStatusChange = (status: string) => {
     const updatedStatuses = filters.occupancyStatuses.includes(status)
       ? filters.occupancyStatuses.filter((s) => s !== status)
       : [...filters.occupancyStatuses, status];
