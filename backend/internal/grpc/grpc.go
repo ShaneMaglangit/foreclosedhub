@@ -1,16 +1,18 @@
 package grpc
 
 import (
+	"fmt"
 	"google.golang.org/grpc"
 	"homagochi/internal/protobuf"
 	"log"
 	"net"
+	"os"
 )
 
-const DEFAULT_PORT = ":8080"
-
 func Serve() error {
-	listener, err := net.Listen("tcp", DEFAULT_PORT)
+	port := fmt.Sprintf(":%s", os.Getenv("PORT"))
+
+	listener, err := net.Listen("tcp", port)
 	if err != nil {
 		return err
 	}
@@ -18,6 +20,6 @@ func Serve() error {
 	server := grpc.NewServer()
 	protobuf.RegisterListingServiceServer(server, &ListingServiceServer{})
 
-	log.Println("Starting gRPC server on " + DEFAULT_PORT)
+	log.Println("Starting gRPC server on " + port)
 	return server.Serve(listener)
 }
