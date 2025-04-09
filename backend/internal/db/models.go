@@ -104,6 +104,9 @@ type Listing struct {
 	Price           int64
 	ImageLoaded     bool
 	OccupancyStatus OccupancyStatus
+	CreatedAt       pgtype.Timestamptz
+	UpdatedAt       pgtype.Timestamptz
+	Payload         []byte
 }
 
 type ListingImage struct {

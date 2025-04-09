@@ -58,7 +58,7 @@ func (q *Queries) GetListingImagesByListingIds(ctx context.Context, ids []int64)
 }
 
 const getListingsNextPage = `-- name: GetListingsNextPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload
 FROM listings
 WHERE id > $1::bigint
   AND address ILIKE $2::text
@@ -100,6 +100,9 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 			&i.Price,
 			&i.ImageLoaded,
 			&i.OccupancyStatus,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Payload,
 		); err != nil {
 			return nil, err
 		}
@@ -112,7 +115,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 }
 
 const getListingsPrevPage = `-- name: GetListingsPrevPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload
 FROM listings
 WHERE id < $1::bigint
   AND address ILIKE $2::text
@@ -154,6 +157,9 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 			&i.Price,
 			&i.ImageLoaded,
 			&i.OccupancyStatus,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Payload,
 		); err != nil {
 			return nil, err
 		}
@@ -181,37 +187,43 @@ func (q *Queries) InsertListingImages(ctx context.Context, arg InsertListingImag
 }
 
 const insertListings = `-- name: InsertListings :exec
-INSERT INTO listings (source, external_id, address, floor_area, price, occupancy_status)
-VALUES (unnest($1::source[]),
-        unnest($2::text[]),
+INSERT INTO listings (external_id, source, address, floor_area, price, occupancy_status, payload)
+VALUES (
+        unnest($1::text[]),
+        unnest($2::source[]),
         unnest($3::text[]),
         unnest($4::numeric(8, 2)[]),
         unnest($5::bigint[]),
-        unnest($6::occupancy_status[]))
+        unnest($6::occupancy_status[]),
+        unnest($7::jsonb[]))
 ON CONFLICT (source, external_id) DO UPDATE
     SET address          = EXCLUDED.address,
         floor_area       = EXCLUDED.floor_area,
         price            = EXCLUDED.price,
-        occupancy_status = EXCLUDED.occupancy_status
+        occupancy_status = EXCLUDED.occupancy_status,
+        payload          = EXCLUDED.payload,
+        updated_at       = NOW()
 `
 
 type InsertListingsParams struct {
-	Sources           []Source
 	ExternalIds       []string
+	Sources           []Source
 	Addresses         []string
 	FloorAreas        []pgtype.Numeric
 	Prices            []int64
 	OccupancyStatuses []OccupancyStatus
+	Payloads          [][]byte
 }
 
 func (q *Queries) InsertListings(ctx context.Context, arg InsertListingsParams) error {
 	_, err := q.db.Exec(ctx, insertListings,
-		arg.Sources,
 		arg.ExternalIds,
+		arg.Sources,
 		arg.Addresses,
 		arg.FloorAreas,
 		arg.Prices,
 		arg.OccupancyStatuses,
+		arg.Payloads,
 	)
 	return err
 }

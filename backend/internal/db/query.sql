@@ -26,18 +26,21 @@ WHERE source = @source::source
 LIMIT 1;
 
 -- name: InsertListings :exec
-INSERT INTO listings (source, external_id, address, floor_area, price, occupancy_status)
+INSERT INTO listings (external_id, source, address, floor_area, price, occupancy_status, payload)
 VALUES (unnest(@sources::source[]),
         unnest(@external_ids::text[]),
         unnest(@addresses::text[]),
         unnest(@floor_areas::numeric(8, 2)[]),
         unnest(@prices::bigint[]),
-        unnest(@occupancy_statuses::occupancy_status[]))
+        unnest(@occupancy_statuses::occupancy_status[]),
+        unnest(@payloads::jsonb[]))
 ON CONFLICT (source, external_id) DO UPDATE
     SET address          = EXCLUDED.address,
         floor_area       = EXCLUDED.floor_area,
         price            = EXCLUDED.price,
-        occupancy_status = EXCLUDED.occupancy_status;
+        occupancy_status = EXCLUDED.occupancy_status,
+        payload          = EXCLUDED.payload,
+        updated_at       = NOW();
 
 -- name: UpdateListingsImageLoaded :exec
 UPDATE listings

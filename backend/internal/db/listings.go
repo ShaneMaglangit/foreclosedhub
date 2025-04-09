@@ -37,6 +37,7 @@ func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, dbtx DBTX, l
 	floorAreas := make([]pgtype.Numeric, 0, len(listings))
 	prices := make([]int64, 0, len(listings))
 	occupancyStatuses := make([]OccupancyStatus, 0, len(listings))
+	payloads := make([][]byte, 0, len(listings))
 
 	for _, listing := range listings {
 		sources = append(sources, listing.Source)
@@ -44,8 +45,8 @@ func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, dbtx DBTX, l
 		addresses = append(addresses, listing.Address)
 		prices = append(prices, listing.Price)
 		floorAreas = append(floorAreas, listing.FloorArea)
-		prices = append(prices, listing.Price)
 		occupancyStatuses = append(occupancyStatuses, listing.OccupancyStatus)
+		payloads = append(payloads, listing.Payload)
 	}
 
 	return New(dbtx).InsertListings(ctx, InsertListingsParams{
@@ -55,6 +56,7 @@ func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, dbtx DBTX, l
 		FloorAreas:        floorAreas,
 		Prices:            prices,
 		OccupancyStatuses: occupancyStatuses,
+		Payloads:          payloads,
 	})
 }
 
