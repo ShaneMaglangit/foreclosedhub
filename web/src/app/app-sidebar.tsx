@@ -23,7 +23,7 @@ export function AppSidebar({
   return (
     <Sidebar {...props}>
       <SidebarHeader className="bg-foreground text-background border-sidebar-border h-16 border-b justify-center">
-        <Link href="/public" className="flex gap-2">
+        <Link href="/" className="flex gap-2">
           <Logo className="h-8 w-8" />
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-medium">Homagochi</span>
