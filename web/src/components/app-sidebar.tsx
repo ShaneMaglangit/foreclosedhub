@@ -14,7 +14,7 @@ import { Filters } from "@web/components/filters";
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
-      <SidebarHeader className="border-sidebar-border h-16 border-b justify-center">
+      <SidebarHeader className="bg-foreground text-background border-sidebar-border h-16 border-b justify-center">
         <Brand />
       </SidebarHeader>
       <SidebarContent>

@@ -38,10 +38,10 @@ const paramsSchema = z.object({
     .union([z.string(), z.array(z.string())])
     .transform((val) => (typeof val === "string" ? [val] : val))
     .default(["pagibig"]),
-  occupied: z.boolean().optional(),
-  after: z.number().optional(),
-  before: z.number().optional(),
-  limit: z.number().default(20),
+  occupied: z.coerce.boolean().optional(),
+  after: z.coerce.number().optional(),
+  before: z.coerce.number().optional(),
+  limit: z.coerce.number().default(20),
 });
 
 export default async function Page({ searchParams }: Props) {
@@ -82,12 +82,9 @@ export default async function Page({ searchParams }: Props) {
             )}
           </div>
         </header>
-        <div className="grid auto-rows-min md:grid-cols-5 -m-[0.5px]">
+        <div className="grid auto-rows-min md:grid-cols-5 p-2 gap-2">
           {listings.map((listing) => (
-            <div
-              key={listing.id}
-              className="bg-muted/50 border-[0.5px] overflow-hidden "
-            >
+            <div key={listing.id} className="bg-muted/50 border-[0.5px]">
               <div className="flex flex-col gap-2 p-2">
                 <h6 className="font-medium truncate capitalize">
                   {listing.address.toLowerCase()}
@@ -95,7 +92,7 @@ export default async function Page({ searchParams }: Props) {
                 <p>₱ {formatNumeric(listing.price)}</p>
               </div>
               <Separator />
-              <Carousel className="bg-accent h-full">
+              <Carousel className="bg-accent">
                 <CarouselContent>
                   {listing.imageUrls.map((url, index) => (
                     <CarouselItem key={index}>
