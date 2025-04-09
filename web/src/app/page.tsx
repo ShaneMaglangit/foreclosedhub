@@ -7,6 +7,7 @@ import {
 import { AppSidebar } from "@web/app/app-sidebar";
 import { listingParams } from "@web/app/schema";
 import { Listing } from "@web/app/listing";
+import { Pagination } from "@web/app/pagination";
 
 export default async function Page({
   searchParams,
@@ -27,8 +28,9 @@ export default async function Page({
     <SidebarProvider>
       <AppSidebar params={params} />
       <SidebarInset>
-        <header className="bg-background sticky top-0 flex h-16 items-center gap-2 border-b px-4 z-10">
+        <header className="bg-background sticky top-0 flex h-16 items-center justify-between gap-2 border-b px-4 z-10">
           <SidebarTrigger className="-ml-1" />
+          <Pagination pageInfo={pageInfo} />
         </header>
         <Listing listings={listings} />
       </SidebarInset>
