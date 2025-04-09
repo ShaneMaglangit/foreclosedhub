@@ -9,7 +9,7 @@ import {
 } from "@web/components/common/sidebar";
 import { Brand } from "@web/components/brand";
 import { NavUtility } from "@web/components/nav-utility";
-import { Filters } from "@web/components/filters";
+import { Filters } from "@web/app/filters";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
