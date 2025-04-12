@@ -188,9 +188,8 @@ func (q *Queries) InsertListingImages(ctx context.Context, arg InsertListingImag
 
 const insertListings = `-- name: InsertListings :exec
 INSERT INTO listings (external_id, source, address, floor_area, price, occupancy_status, payload)
-VALUES (
-        unnest($1::text[]),
-        unnest($2::source[]),
+VALUES (unnest($1::source[]),
+        unnest($2::text[]),
         unnest($3::text[]),
         unnest($4::numeric(8, 2)[]),
         unnest($5::bigint[]),
@@ -206,8 +205,8 @@ ON CONFLICT (source, external_id) DO UPDATE
 `
 
 type InsertListingsParams struct {
-	ExternalIds       []string
 	Sources           []Source
+	ExternalIds       []string
 	Addresses         []string
 	FloorAreas        []pgtype.Numeric
 	Prices            []int64
@@ -217,8 +216,8 @@ type InsertListingsParams struct {
 
 func (q *Queries) InsertListings(ctx context.Context, arg InsertListingsParams) error {
 	_, err := q.db.Exec(ctx, insertListings,
-		arg.ExternalIds,
 		arg.Sources,
+		arg.ExternalIds,
 		arg.Addresses,
 		arg.FloorAreas,
 		arg.Prices,

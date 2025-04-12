@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ListingParam } from "@web/app/schema";
+import { ListingParams } from "@web/app/schema";
 import { SearchForm } from "@web/components/search-form";
 import {
   SidebarGroup,
@@ -31,10 +31,10 @@ const sourceLabel = {
 const occupancyStatusLabel = {
   Occupied: "Occupied",
   Unoccupied: "Unoccupied",
-  Unknown: "Unknown",
+  Unspecified: "Unspecified",
 } satisfies Record<OccupancyStatus, string>;
 
-export function Filters({ initialFilters }: { initialFilters: ListingParam }) {
+export function Filters({ initialFilters }: { initialFilters: ListingParams }) {
   const { filters, setSearch, setSources, setOccupancyStatuses } =
     useFilter(initialFilters);
 
@@ -104,9 +104,6 @@ function SourceFilters({
                 className="flex gap-2 p-2 hover:bg-accent cursor-pointer"
               >
                 <Checkbox
-                  disabled={
-                    currentValues.length === 1 && currentValues.includes(value)
-                  }
                   defaultChecked={currentValues.includes(value)}
                   onCheckedChange={() => onCheckChanged(value)}
                 />
@@ -149,9 +146,6 @@ function OccupancyStatusFilters({
                 className="flex gap-2 p-2 hover:bg-accent cursor-pointer"
               >
                 <Checkbox
-                  disabled={
-                    currentValues.length === 1 && currentValues.includes(value)
-                  }
                   defaultChecked={currentValues.includes(value)}
                   onCheckedChange={() => onCheckChanged(value)}
                 />

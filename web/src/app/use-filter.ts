@@ -1,7 +1,7 @@
-import { ListingParam } from "@web/app/schema";
+import { ListingParams } from "@web/app/schema";
 import { usePathname, useRouter } from "next/navigation";
 
-export function useFilter(initial: ListingParam) {
+export function useFilter(initial: ListingParams) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -17,7 +17,7 @@ export function useFilter(initial: ListingParam) {
     }
   };
 
-  const updateFilter = (updatedFilters: ListingParam) => {
+  const updateFilter = (updatedFilters: ListingParams) => {
     const urlParams = new URLSearchParams();
 
     if (updatedFilters.search) urlParams.set("search", updatedFilters.search);

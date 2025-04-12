@@ -1,5 +1,5 @@
 import { cn, formatNumeric } from "@web/lib/utils";
-import { Listing__Output } from "@web/protobuf/listing/Listing";
+import { Listing__Output } from "@web/lib/protobuf/listing/Listing";
 import {
   Carousel,
   CarouselContent,

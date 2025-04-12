@@ -1,11 +1,11 @@
 import * as grpc from "@grpc/grpc-js";
+import { ServiceError } from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
 import path from "path";
-import { ServiceError } from "@grpc/grpc-js";
-import { ProtoGrpcType } from "@web/protobuf/listing_service";
-import { GetListingsResponse__Output } from "@web/protobuf/listing/GetListingsResponse";
+import { ProtoGrpcType } from "@web/lib/protobuf/listing_service";
+import { GetListingsResponse__Output } from "@web/lib/protobuf/listing/GetListingsResponse";
 import { env } from "@web/env";
-import { GetListingsRequest } from "@web/protobuf/listing/GetListingsRequest";
+import { GetListingsRequest } from "@web/lib/protobuf/listing/GetListingsRequest";
 
 const PROTO_PATH = path.join(process.cwd(), "../proto/listing_service.proto");
 

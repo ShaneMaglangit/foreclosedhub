@@ -27,20 +27,22 @@ func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobu
 		err      error
 	)
 
+	setDefaultRequestParams(request)
+
 	hasNextParameter := request.After != nil
 	hasPrevParameter := request.Before != nil
 	if hasNextParameter && hasPrevParameter {
 		return nil, fmt.Errorf("after and before are mutually exclusive parameters")
 	}
 
-	sources := make([]db.Source, 0, len(request.Sources))
-	for _, source := range request.Sources {
-		sources = append(sources, db.Source(source))
+	sources, err := db.ParseSources(request.Sources)
+	if err != nil {
+		return nil, err
 	}
 
-	occupancyStatuses := make([]db.OccupancyStatus, 0, len(request.OccupancyStatuses))
-	for _, occupancyStatus := range request.OccupancyStatuses {
-		occupancyStatuses = append(occupancyStatuses, db.OccupancyStatus(occupancyStatus))
+	occupancyStatuses, err := db.ParseOccupancyStatuses(request.OccupancyStatuses)
+	if err != nil {
+		return nil, err
 	}
 
 	if hasPrevParameter {
@@ -66,6 +68,22 @@ func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobu
 	}
 
 	return buildGetListingsResponse(listings, pageInfo)
+}
+
+func setDefaultRequestParams(request *protobuf.GetListingsRequest) {
+	if len(request.Sources) == 0 {
+		defaultSources := []string{string(db.SourcePagibig)}
+		request.Sources = defaultSources
+	}
+
+	if len(request.OccupancyStatuses) == 0 {
+		defaultOccupancyStatuses := []string{
+			string(db.OccupancyStatusOccupied),
+			string(db.OccupancyStatusUnoccupied),
+			string(db.OccupancyStatusUnspecified),
+		}
+		request.OccupancyStatuses = defaultOccupancyStatuses
+	}
 }
 
 func buildGetListingsResponse(listings []*db.ListingWithImages, pageInfo *protobuf.PageInfo) (*protobuf.GetListingsResponse, error) {

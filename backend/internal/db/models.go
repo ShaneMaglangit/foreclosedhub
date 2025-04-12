@@ -14,9 +14,9 @@ import (
 type OccupancyStatus string
 
 const (
-	OccupancyStatusOccupied   OccupancyStatus = "occupied"
-	OccupancyStatusUnoccupied OccupancyStatus = "unoccupied"
-	OccupancyStatusUnknown    OccupancyStatus = "unknown"
+	OccupancyStatusOccupied    OccupancyStatus = "occupied"
+	OccupancyStatusUnoccupied  OccupancyStatus = "unoccupied"
+	OccupancyStatusUnspecified OccupancyStatus = "unknown"
 )
 
 func (e *OccupancyStatus) Scan(src interface{}) error {

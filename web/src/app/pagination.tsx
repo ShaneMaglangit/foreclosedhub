@@ -1,6 +1,6 @@
 "use client";
 
-import { PageInfo__Output } from "@web/protobuf/common/PageInfo";
+import { PageInfo__Output } from "@web/lib/protobuf/common/PageInfo";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";

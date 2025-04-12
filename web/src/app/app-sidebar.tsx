@@ -12,13 +12,13 @@ import { NavUtility } from "@web/components/nav-utility";
 import { Filters } from "@web/app/filters";
 import Link from "next/link";
 import { Logo } from "@web/assets/logo";
-import { ListingParam } from "@web/app/schema";
+import { ListingParams } from "@web/app/schema";
 
 export function AppSidebar({
   params,
   ...props
 }: ComponentProps<typeof Sidebar> & {
-  params: ListingParam;
+  params: ListingParams;
 }) {
   return (
     <Sidebar {...props}>

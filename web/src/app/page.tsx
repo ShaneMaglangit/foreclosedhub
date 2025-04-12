@@ -1,4 +1,4 @@
-import { getListings } from "@web/grpc/client";
+import { getListings } from "@web/lib/grpc/client";
 import {
   SidebarInset,
   SidebarProvider,
