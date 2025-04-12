@@ -82,7 +82,7 @@ function PagibigFormButton({ listing }: { listing: Listing__Output }) {
       <input type="hidden" name="ropaId" value={listing.id} />
       <input type="hidden" name="flag" value={flag} />
       <input type="hidden" name="hbc" value={hbc} />
-      <Button variant="link" className="has-[>svg]:p-0">
+      <Button variant="link" size="sm" className="h-auto has-[>svg]:p-0">
         <ExternalLink /> Submit offer
       </Button>
     </form>
