@@ -24,13 +24,6 @@ func NewListingServiceServer() *ListingServiceServer {
 }
 
 func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobuf.GetListingsRequest) (*protobuf.GetListingsResponse, error) {
-	var (
-		listings []*db.ListingWithImages
-		pageInfo *protobuf.PageInfo
-		err      error
-	)
-
-	fmt.Printf("Listing request: %v\n", request)
 	setDefaultRequestParams(request)
 
 	hasNextParameter := request.After != nil
@@ -56,6 +49,9 @@ func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobu
 			Valid: true,
 		}
 	}
+
+	var listings []*db.ListingWithImages
+	var pageInfo *protobuf.PageInfo
 
 	if hasPrevParameter {
 		listings, pageInfo, err = s.listingService.GetPrevWithImages(ctx, db.GetListingsPrevPageParams{
