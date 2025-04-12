@@ -22,8 +22,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@web/components/common/tooltip";
+import { ComponentProps } from "react";
 
-export function Listing({ listings }: { listings: Listing__Output[] }) {
+export function Listing({
+  listings,
+  className,
+  ...props
+}: { listings: Listing__Output[] } & ComponentProps<"div">) {
   return (
     <div
       className={cn(
@@ -31,7 +36,9 @@ export function Listing({ listings }: { listings: Listing__Output[] }) {
         "relative bg-fixed",
         "bg-[image:repeating-linear-gradient(315deg,_var(--accent)_0,_var(--primary)_1px,_transparent_0,_transparent_50%)]",
         "bg-[size:5px_5px] [--pattern-fg:var(--accent)]/5 dark:[--pattern-fg:var(--accent)]/10",
+        className,
       )}
+      {...props}
     >
       {listings.map((listing) => (
         <ListingCard key={listing.id} listing={listing} />

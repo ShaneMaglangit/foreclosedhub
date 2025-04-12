@@ -64,7 +64,7 @@ WHERE id > $1::bigint
   AND address ILIKE $2::text
   AND source = ANY ($3::source[])
   AND occupancy_status = ANY ($4::occupancy_status[])
-  AND price BETWEEN $5::bigint AND COALESCE($6::bigint, 9223372036854775807)
+  AND price BETWEEN $5::bigint AND COALESCE($6, 9223372036854775807)
 ORDER BY id
 LIMIT $7::int
 `
@@ -126,7 +126,7 @@ WHERE id < $1::bigint
   AND address ILIKE $2::text
   AND source = ANY ($3::source[])
   AND occupancy_status = ANY ($4::occupancy_status[])
-  AND price BETWEEN $5::bigint AND COALESCE($6::bigint, 9223372036854775807)
+  AND price BETWEEN $5::bigint AND COALESCE($6, 9223372036854775807)
 ORDER BY id DESC
 LIMIT $7::int
 `
@@ -198,8 +198,8 @@ func (q *Queries) InsertListingImages(ctx context.Context, arg InsertListingImag
 
 const insertListings = `-- name: InsertListings :exec
 INSERT INTO listings (external_id, source, address, floor_area, price, occupancy_status, payload)
-VALUES (unnest($1::source[]),
-        unnest($2::text[]),
+VALUES (unnest($1::text[]),
+        unnest($2::source[]),
         unnest($3::text[]),
         unnest($4::numeric(8, 2)[]),
         unnest($5::bigint[]),
@@ -215,8 +215,8 @@ ON CONFLICT (source, external_id) DO UPDATE
 `
 
 type InsertListingsParams struct {
-	Sources           []Source
 	ExternalIds       []string
+	Sources           []Source
 	Addresses         []string
 	FloorAreas        []pgtype.Numeric
 	Prices            []int64
@@ -226,8 +226,8 @@ type InsertListingsParams struct {
 
 func (q *Queries) InsertListings(ctx context.Context, arg InsertListingsParams) error {
 	_, err := q.db.Exec(ctx, insertListings,
-		arg.Sources,
 		arg.ExternalIds,
+		arg.Sources,
 		arg.Addresses,
 		arg.FloorAreas,
 		arg.Prices,

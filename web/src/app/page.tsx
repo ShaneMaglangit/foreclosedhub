@@ -12,14 +12,14 @@ import { Pagination } from "@web/app/pagination";
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: {
+  searchParams?: Promise<{
     after?: number;
     before?: number;
     limit?: number;
     search?: string;
     sources?: string[] | string;
     occupancyStatuses?: string[] | string;
-  };
+  }>;
 }) {
   const params = listingParams.parse(await searchParams);
   const { listings, pageInfo } = await getListings(params);
@@ -32,7 +32,10 @@ export default async function Page({
           <SidebarTrigger className="-ml-1" />
           <Pagination pageInfo={pageInfo} />
         </header>
-        <Listing listings={listings} />
+        <Listing
+          className="min-h-[calc(100dvh-(var(--spacing)*16))]"
+          listings={listings}
+        />
       </SidebarInset>
     </SidebarProvider>
   );

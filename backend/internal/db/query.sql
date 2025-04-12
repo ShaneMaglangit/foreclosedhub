@@ -31,8 +31,8 @@ LIMIT 1;
 
 -- name: InsertListings :exec
 INSERT INTO listings (external_id, source, address, floor_area, price, occupancy_status, payload)
-VALUES (unnest(@sources::source[]),
-        unnest(@external_ids::text[]),
+VALUES (unnest(@external_ids::text[]),
+        unnest(@sources::source[]),
         unnest(@addresses::text[]),
         unnest(@floor_areas::numeric(8, 2)[]),
         unnest(@prices::bigint[]),
