@@ -4,7 +4,7 @@ FROM listings
 WHERE id > @after::bigint
   AND address ILIKE @search::text
   AND source = ANY (@sources::source[])
-  AND occupancy_status = ANY (@occupancy_status::occupancy_status[])
+  AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
 ORDER BY id
 LIMIT @row_limit::int;
 
@@ -14,7 +14,7 @@ FROM listings
 WHERE id < @before::bigint
   AND address ILIKE @search::text
   AND source = ANY (@sources::source[])
-  AND occupancy_status = ANY (@occupancy_status::occupancy_status[])
+  AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
 ORDER BY id DESC
 LIMIT @row_limit::int;
 

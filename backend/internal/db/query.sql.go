@@ -69,11 +69,11 @@ LIMIT $5::int
 `
 
 type GetListingsNextPageParams struct {
-	After           int64
-	Search          string
-	Sources         []Source
-	OccupancyStatus []OccupancyStatus
-	RowLimit        int32
+	After             int64
+	Search            string
+	Sources           []Source
+	OccupancyStatuses []OccupancyStatus
+	RowLimit          int32
 }
 
 func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPageParams) ([]*Listing, error) {
@@ -81,7 +81,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 		arg.After,
 		arg.Search,
 		arg.Sources,
-		arg.OccupancyStatus,
+		arg.OccupancyStatuses,
 		arg.RowLimit,
 	)
 	if err != nil {
@@ -126,11 +126,11 @@ LIMIT $5::int
 `
 
 type GetListingsPrevPageParams struct {
-	Before          int64
-	Search          string
-	Sources         []Source
-	OccupancyStatus []OccupancyStatus
-	RowLimit        int32
+	Before            int64
+	Search            string
+	Sources           []Source
+	OccupancyStatuses []OccupancyStatus
+	RowLimit          int32
 }
 
 func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPageParams) ([]*Listing, error) {
@@ -138,7 +138,7 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 		arg.Before,
 		arg.Search,
 		arg.Sources,
-		arg.OccupancyStatus,
+		arg.OccupancyStatuses,
 		arg.RowLimit,
 	)
 	if err != nil {

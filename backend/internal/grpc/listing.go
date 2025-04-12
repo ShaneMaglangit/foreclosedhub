@@ -47,19 +47,19 @@ func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobu
 
 	if hasPrevParameter {
 		listings, pageInfo, err = s.listingService.GetPrevWithImages(ctx, db.GetListingsPrevPageParams{
-			Search:          request.Search,
-			OccupancyStatus: occupancyStatuses,
-			Sources:         sources,
-			Before:          request.GetBefore(),
-			RowLimit:        request.Limit,
+			Search:            request.Search,
+			OccupancyStatuses: occupancyStatuses,
+			Sources:           sources,
+			Before:            request.GetBefore(),
+			RowLimit:          request.Limit,
 		})
 	} else {
 		listings, pageInfo, err = s.listingService.GetNextWithImages(ctx, db.GetListingsNextPageParams{
-			Search:          request.Search,
-			OccupancyStatus: occupancyStatuses,
-			Sources:         sources,
-			After:           request.GetAfter(),
-			RowLimit:        request.Limit,
+			Search:            request.Search,
+			OccupancyStatuses: occupancyStatuses,
+			Sources:           sources,
+			After:             request.GetAfter(),
+			RowLimit:          request.Limit,
 		})
 	}
 
