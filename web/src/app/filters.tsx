@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ComponentProps } from "react";
+import { ChangeEvent, ComponentProps } from "react";
 import { ListingParams } from "@web/app/schema";
 import { SearchForm } from "@web/components/search-form";
 import {
@@ -141,12 +141,12 @@ function PriceRangeFilter({
   onMinChange: (value?: number) => unknown;
   onMaxChange: (value?: number) => unknown;
 }) {
-  const handleMinChange = ({ target: { value } }: Event<HTMLInputElement>) => {
-    onMinChange(value ? parseInt(value) : undefined);
+  const handleMinChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    onMinChange(target.value ? parseInt(target.value) : undefined);
   };
 
-  const handleMaxChange = ({ target: { value } }: Event<HTMLInputElement>) => {
-    onMaxChange(value ? parseInt(value) : undefined);
+  const handleMaxChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    onMaxChange(target.value ? parseInt(target.value) : undefined);
   };
 
   return (
