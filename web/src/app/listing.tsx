@@ -16,6 +16,12 @@ import {
 } from "lucide-react";
 import { Button } from "@web/components/common/button";
 import { Separator } from "@web/components/common/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@web/components/common/tooltip";
 
 export function Listing({ listings }: { listings: Listing__Output[] }) {
   return (
@@ -39,9 +45,18 @@ function ListingCard({ listing }: { listing: Listing__Output }) {
     <div key={listing.id} className="bg-background border">
       <ListingCarousel listing={listing} />
       <Separator />
-      <h6 className="font-medium truncate capitalize p-2">
-        {listing.address.toLowerCase()}
-      </h6>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger className="w-full">
+            <h6 className="font-medium truncate capitalize p-2">
+              {listing.address.toLowerCase()}
+            </h6>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="capitalize">{listing.address.toLowerCase()}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <div className="grid grid-cols-2 px-2 pb-2 gap-2">
         <div className="flex items-center gap-2 ">
           <PhilippinePeso className="h-4 w-4" />
