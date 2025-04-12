@@ -1,12 +1,15 @@
 -- name: GetListingsNextPage :many
+-- name: GetListings :many
 SELECT *
 FROM listings
 WHERE id > @after::bigint
   AND address ILIKE @search::text
   AND source = ANY (@sources::source[])
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
+  AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
 ORDER BY id
 LIMIT @row_limit::int;
+
 
 -- name: GetListingsPrevPage :many
 SELECT *
@@ -15,6 +18,7 @@ WHERE id < @before::bigint
   AND address ILIKE @search::text
   AND source = ANY (@sources::source[])
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
+  AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
 ORDER BY id DESC
 LIMIT @row_limit::int;
 

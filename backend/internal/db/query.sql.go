@@ -64,8 +64,9 @@ WHERE id > $1::bigint
   AND address ILIKE $2::text
   AND source = ANY ($3::source[])
   AND occupancy_status = ANY ($4::occupancy_status[])
+  AND price BETWEEN $5::bigint AND COALESCE($6::bigint, 9223372036854775807)
 ORDER BY id
-LIMIT $5::int
+LIMIT $7::int
 `
 
 type GetListingsNextPageParams struct {
@@ -73,6 +74,8 @@ type GetListingsNextPageParams struct {
 	Search            string
 	Sources           []Source
 	OccupancyStatuses []OccupancyStatus
+	MinPrice          int64
+	MaxPrice          pgtype.Int8
 	RowLimit          int32
 }
 
@@ -82,6 +85,8 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 		arg.Search,
 		arg.Sources,
 		arg.OccupancyStatuses,
+		arg.MinPrice,
+		arg.MaxPrice,
 		arg.RowLimit,
 	)
 	if err != nil {
@@ -121,8 +126,9 @@ WHERE id < $1::bigint
   AND address ILIKE $2::text
   AND source = ANY ($3::source[])
   AND occupancy_status = ANY ($4::occupancy_status[])
+  AND price BETWEEN $5::bigint AND COALESCE($6::bigint, 9223372036854775807)
 ORDER BY id DESC
-LIMIT $5::int
+LIMIT $7::int
 `
 
 type GetListingsPrevPageParams struct {
@@ -130,6 +136,8 @@ type GetListingsPrevPageParams struct {
 	Search            string
 	Sources           []Source
 	OccupancyStatuses []OccupancyStatus
+	MinPrice          int64
+	MaxPrice          pgtype.Int8
 	RowLimit          int32
 }
 
@@ -139,6 +147,8 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 		arg.Search,
 		arg.Sources,
 		arg.OccupancyStatuses,
+		arg.MinPrice,
+		arg.MaxPrice,
 		arg.RowLimit,
 	)
 	if err != nil {
