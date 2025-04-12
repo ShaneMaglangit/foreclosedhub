@@ -9,8 +9,11 @@ export interface GetListingsRequest {
   'search'?: (string);
   'sources'?: (string)[];
   'occupancyStatuses'?: (string)[];
+  'minPrice'?: (number | string | Long);
+  'maxPrice'?: (number | string | Long);
   '_after'?: "after";
   '_before'?: "before";
+  '_maxPrice'?: "maxPrice";
 }
 
 export interface GetListingsRequest__Output {
@@ -20,6 +23,9 @@ export interface GetListingsRequest__Output {
   'search': (string);
   'sources': (string)[];
   'occupancyStatuses': (string)[];
+  'minPrice': (string);
+  'maxPrice'?: (string);
   '_after': "after";
   '_before': "before";
+  '_maxPrice': "maxPrice";
 }

@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"fmt"
+	"github.com/jackc/pgx/v5/pgtype"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"homagochi/internal/db"
 	"homagochi/internal/protobuf"
@@ -45,11 +46,21 @@ func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobu
 		return nil, err
 	}
 
+	var maxPrice pgtype.Int8
+	if request.MaxPrice != nil {
+		maxPrice = pgtype.Int8{
+			Int64: *request.MaxPrice,
+			Valid: true,
+		}
+	}
+
 	if hasPrevParameter {
 		listings, pageInfo, err = s.listingService.GetPrevWithImages(ctx, db.GetListingsPrevPageParams{
 			Search:            request.Search,
 			OccupancyStatuses: occupancyStatuses,
 			Sources:           sources,
+			MinPrice:          request.MinPrice,
+			MaxPrice:          maxPrice,
 			Before:            request.GetBefore(),
 			RowLimit:          request.Limit,
 		})
@@ -58,6 +69,8 @@ func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobu
 			Search:            request.Search,
 			OccupancyStatuses: occupancyStatuses,
 			Sources:           sources,
+			MinPrice:          request.MinPrice,
+			MaxPrice:          maxPrice,
 			After:             request.GetAfter(),
 			RowLimit:          request.Limit,
 		})

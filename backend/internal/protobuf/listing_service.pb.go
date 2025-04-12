@@ -29,6 +29,8 @@ type GetListingsRequest struct {
 	Search            string                 `protobuf:"bytes,4,opt,name=search,proto3" json:"search,omitempty"`
 	Sources           []string               `protobuf:"bytes,5,rep,name=sources,proto3" json:"sources,omitempty"`
 	OccupancyStatuses []string               `protobuf:"bytes,6,rep,name=occupancy_statuses,json=occupancyStatuses,proto3" json:"occupancy_statuses,omitempty"`
+	MinPrice          int64                  `protobuf:"varint,7,opt,name=min_price,json=minPrice,proto3" json:"min_price,omitempty"`
+	MaxPrice          *int64                 `protobuf:"varint,8,opt,name=max_price,json=maxPrice,proto3,oneof" json:"max_price,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -105,6 +107,20 @@ func (x *GetListingsRequest) GetOccupancyStatuses() []string {
 	return nil
 }
 
+func (x *GetListingsRequest) GetMinPrice() int64 {
+	if x != nil {
+		return x.MinPrice
+	}
+	return 0
+}
+
+func (x *GetListingsRequest) GetMaxPrice() int64 {
+	if x != nil && x.MaxPrice != nil {
+		return *x.MaxPrice
+	}
+	return 0
+}
+
 type GetListingsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Listings      []*Listing             `protobuf:"bytes,1,rep,name=listings,proto3" json:"listings,omitempty"`
@@ -161,16 +177,20 @@ var File_listing_service_proto protoreflect.FileDescriptor
 
 const file_listing_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15listing_service.proto\x12\alisting\x1a\fcommon.proto\x1a\rlisting.proto\"\xd8\x01\n" +
+	"\x15listing_service.proto\x12\alisting\x1a\fcommon.proto\x1a\rlisting.proto\"\xa5\x02\n" +
 	"\x12GetListingsRequest\x12\x19\n" +
 	"\x05after\x18\x01 \x01(\x03H\x00R\x05after\x88\x01\x01\x12\x1b\n" +
 	"\x06before\x18\x02 \x01(\x03H\x01R\x06before\x88\x01\x01\x12\x14\n" +
 	"\x05limit\x18\x03 \x01(\x05R\x05limit\x12\x16\n" +
 	"\x06search\x18\x04 \x01(\tR\x06search\x12\x18\n" +
 	"\asources\x18\x05 \x03(\tR\asources\x12-\n" +
-	"\x12occupancy_statuses\x18\x06 \x03(\tR\x11occupancyStatusesB\b\n" +
+	"\x12occupancy_statuses\x18\x06 \x03(\tR\x11occupancyStatuses\x12\x1b\n" +
+	"\tmin_price\x18\a \x01(\x03R\bminPrice\x12 \n" +
+	"\tmax_price\x18\b \x01(\x03H\x02R\bmaxPrice\x88\x01\x01B\b\n" +
 	"\x06_afterB\t\n" +
-	"\a_before\"q\n" +
+	"\a_beforeB\f\n" +
+	"\n" +
+	"_max_price\"q\n" +
 	"\x13GetListingsResponse\x12,\n" +
 	"\blistings\x18\x01 \x03(\v2\x10.listing.ListingR\blistings\x12,\n" +
 	"\bpageInfo\x18\x02 \x01(\v2\x10.common.PageInfoR\bpageInfo2Z\n" +
