@@ -1,7 +1,7 @@
 export const occupancyStatuses = {
   Occupied: "occupied",
   Unoccupied: "unoccupied",
-  Unspecified: "unknown",
+  Unspecified: "unspecified",
 } as const;
 
 export type OccupancyStatus = keyof typeof occupancyStatuses;
