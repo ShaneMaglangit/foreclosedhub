@@ -10,6 +10,8 @@ import (
 	"homagochi/internal/service"
 )
 
+const defaultLimit = 30
+
 type ListingServiceServer struct {
 	protobuf.UnimplementedListingServiceServer
 	listingService *service.ListingService
@@ -28,6 +30,7 @@ func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobu
 		err      error
 	)
 
+	fmt.Printf("Listing request: %v\n", request)
 	setDefaultRequestParams(request)
 
 	hasNextParameter := request.After != nil
@@ -96,6 +99,10 @@ func setDefaultRequestParams(request *protobuf.GetListingsRequest) {
 			string(db.OccupancyStatusUnspecified),
 		}
 		request.OccupancyStatuses = defaultOccupancyStatuses
+	}
+
+	if request.Limit <= 0 {
+		request.Limit = defaultLimit
 	}
 }
 
