@@ -5,7 +5,6 @@ include:
       opentofu_version: 1.9.0
       root_dir: terraform/
       state_name: production
-      apply_rules: [ { when: on_success } ]
 
 stages:
   - validate
@@ -28,7 +27,8 @@ apply:
     - echo "GCP_ZONE=$(gitlab-tofu output -raw gcp_zone)" >> deploy.env
   artifacts:
     reports:
-      dotenv: deploy.env
+      dotenv: deploy.env 
+  rules: [ { when: on_success } ]
 
 migrate:
   stage: deploy
