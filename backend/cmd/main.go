@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/joho/godotenv"
 	"homagochi/internal/cron"
 	"homagochi/internal/grpc"
@@ -13,10 +12,7 @@ import (
 func main() {
 	_ = godotenv.Load()
 
-	fmt.Println(os.Getenv("ENV"))
-	fmt.Println(os.Getenv("NEON_DATABASE_URL"))
-	fmt.Println(os.Getenv("GCP_PROJECT_ID"))
-	fmt.Println(os.Getenv("GCP_BUCKET_NAME"))
+	log.Fatal(os.Getenv("NEON_DATABASE_URL"))
 
 	if err := (&pagibig.ScrapeListingJob{}).Run(); err != nil {
 		log.Fatal(err)

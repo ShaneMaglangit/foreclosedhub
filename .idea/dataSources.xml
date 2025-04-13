@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="neondb@ep-rapid-pond-a64b9f6c-pooler.us-west-2.aws.neon.tech" uuid="e5858782-5801-4d35-a92e-fb6c42398f0c">
+    <data-source source="LOCAL" name="homagochi@ep-wandering-art-a62ln2h6-pooler.us-west-2.aws.neon.tech" uuid="e5858782-5801-4d35-a92e-fb6c42398f0c">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://ep-rapid-pond-a64b9f6c-pooler.us-west-2.aws.neon.tech:5432/neondb?sslmode=require</jdbc-url>
+      <jdbc-url>jdbc:postgresql://ep-wandering-art-a62ln2h6-pooler.us-west-2.aws.neon.tech:5432/homagochi?sslmode=require</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
