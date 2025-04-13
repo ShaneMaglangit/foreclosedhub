@@ -27,9 +27,16 @@ provision:
     - export GCP_PROJECT_ID=$(tofu output -raw gcp_project_id)
     - export GCP_ZONE=$(tofu output -raw gcp_zone)
 
-deploy:
+migrate:
   stage: deploy
   needs: [provision]
+  script:
+    - cd backend
+    - migrate -path ./internal/db/migrations -database $NEON_DATABASE_URL up
+
+deploy:
+  stage: deploy
+  needs: [migrate]
   image: google/cloud-sdk:latest
   script:
     - gcloud auth activate-service-account --key-file="GOOGLE_APPLICATION_CREDENTIALS"
