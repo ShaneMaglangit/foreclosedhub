@@ -35,6 +35,6 @@ deploy:
   needs: [migrate]
   image: google/cloud-sdk:latest
   script:
-    - sudo chmod +x ./deploy.sh
-    - sudo ./deploy.sh
+    - chmod +x ./deploy.sh
+    - ./deploy.sh
   environment: production
