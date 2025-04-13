@@ -23,7 +23,7 @@ compile:
   script:
     - cd backend
     - go mod tidy
-    - go build -o app ./cmd/main.go
+    - GOOS=linux GOARCH=amd64 go build -o app ./cmd/main.go
     - mv app ../app
   artifacts:
     paths:
