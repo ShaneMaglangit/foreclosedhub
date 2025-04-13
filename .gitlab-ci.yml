@@ -32,6 +32,8 @@ apply:
   script:
     - cd terraform
     - ls
+    - tofu output
+    - gitlab-tofu output
     - echo "GCP_BUCKET_NAME=$(tofu output -raw gcp_bucket_name)" >> deploy.env
     - echo "GCP_PROJECT_ID=$(tofu output -raw gcp_project_id)" >> deploy.env
     - echo "GCP_ZONE=$(tofu output -raw gcp_zone)" >> deploy.env
