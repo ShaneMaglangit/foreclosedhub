@@ -8,9 +8,9 @@ REMOTE_BINARY_PATH="/home/$USER/app"
 SERVICE_NAME="app"
 
 pushd terraform || exit
-GCP_BUCKET_NAME=$(tofu output -raw gcp_bucket_name)
-GCP_PROJECT_ID=$(tofu output -raw gcp_project_id)
-GCP_ZONE=$(tofu output -raw gcp_zone)
+GCP_BUCKET_NAME=$(gitlab-tofu output -raw gcp_bucket_name)
+GCP_PROJECT_ID=$(gitlab-tofu output -raw gcp_project_id)
+GCP_ZONE=$(gitlab-tofu output -raw gcp_zone)
 popd || exit
 
 echo "Authenticating SSH"
