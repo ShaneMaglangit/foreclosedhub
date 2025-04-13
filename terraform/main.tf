@@ -55,6 +55,8 @@ resource "google_compute_instance" "server" {
     email  = var.gcp_sa_email
     scopes = ["cloud-platform"]
   }
+
+  tags = ["grpc-server"]
 }
 
 resource "google_compute_firewall" "allow_grpc" {
@@ -67,7 +69,7 @@ resource "google_compute_firewall" "allow_grpc" {
   }
 
   source_ranges = [var.grpc_client_ip_cidr_range]
-  target_tags   = ["allow-grpc"]
+  target_tags   = ["grpc-server"]
 }
 
 output "server_ip" {

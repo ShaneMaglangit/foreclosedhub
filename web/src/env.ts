@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    GRPC_ADDRESS: z.string().url(),
+    GRPC_ADDRESS: z.string(),
   },
   client: {},
   runtimeEnv: {

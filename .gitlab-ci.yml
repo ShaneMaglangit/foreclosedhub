@@ -43,7 +43,9 @@ apply:
 
 migrate:
   stage: deploy
-  needs: [ apply ]
+  needs:
+    - job: apply
+      artifacts: true
   image: golang:latest
   before_script:
     - apt-get update && apt-get install -y curl unzip
