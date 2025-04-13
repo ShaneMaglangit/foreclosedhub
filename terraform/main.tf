@@ -16,6 +16,7 @@ provider "neon" {
 }
 
 resource "neon_project" "homagochi" {
+  id        = var.neon_project_name
   name      = var.neon_project_name
   region_id = var.neon_region
 
@@ -64,11 +65,6 @@ output "gcp_bucket_name" {
   value = google_storage_bucket.bucket.name
 }
 
-resource "google_service_account" "default" {
-  account_id   = "gce-service-account"
-  display_name = "SA for Compute Engine"
-}
-
 resource "google_compute_instance" "server" {
   name         = "server"
   machine_type = "e2-micro"
@@ -85,11 +81,6 @@ resource "google_compute_instance" "server" {
   network_interface {
     network = "default"
     access_config {}
-  }
-
-  service_account {
-    email = google_service_account.default.email
-    scopes = ["cloud-platform"]
   }
 
   metadata = {
