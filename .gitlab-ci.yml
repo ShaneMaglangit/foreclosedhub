@@ -24,6 +24,7 @@ compile:
     - cd backend
     - go mod tidy
     - go build -o app ./cmd/main.go
+    - mv app ../app
   artifacts:
     paths:
       - app
