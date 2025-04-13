@@ -15,6 +15,10 @@ variable "gcp_zone" {
   description = "Zone for GCP."
 }
 
+variable "gcp_sa_email" {
+  description = "Email for gcp service account."
+}
+
 variable "neon_api_key" {
   description = "API key for Neon."
 }

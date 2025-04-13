@@ -82,6 +82,11 @@ resource "google_compute_instance" "server" {
     access_config {}
   }
 
+  service_account {
+    email = var.gcp_sa_email
+    scopes = ["cloud-platform"]
+  }
+
   metadata = {
     startup-script = <<-EOF
       #!/bin/bash

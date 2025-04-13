@@ -2,6 +2,7 @@ environment       =
 gcp_project_id    =
 gcp_region        =
 gcp_zone          =
+gcp_sa_email      =
 neon_api_key      =
 neon_project_name =
 neon_region       =
