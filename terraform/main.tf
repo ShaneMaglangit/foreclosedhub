@@ -16,7 +16,6 @@ provider "neon" {
 }
 
 resource "neon_project" "homagochi" {
-  id        = var.neon_project_name
   name      = var.neon_project_name
   region_id = var.neon_region
 
