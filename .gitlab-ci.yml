@@ -7,7 +7,6 @@ include:
       state_name: production
 
 stages:
-  - validate
   - build
   - deploy
 
@@ -21,21 +20,17 @@ compile:
 provision:
   stage: deploy
   script:
-    - export GOOGLE_APPLICATION_CREDENTIALS=$GCP_SERVICE_ACCOUNT_KEY
     - cd terraform
-    - tofu init
-    - tofu apply -auto-approve
     - export GCP_BUCKET_NAME=$(terraform output -raw gcp_bucket_name)
     - export GCP_PROJECT_ID=$(terraform output -raw gcp_project_id)
     - export GCP_ZONE=${terraform output -raw gcp_zone}
 
 deploy:
   stage: deploy
-  dependencies:
-    - provision
+  needs: [apply, provision]
   image: google/cloud-sdk:latest
   script:
-    - gcloud auth activate-service-account --key-file="$GCP_SERVICE_ACCOUNT_KEY"
+    - gcloud auth activate-service-account --key-file="GOOGLE_APPLICATION_CREDENTIALS"
     - gcloud config set project $GCP_PROJECT_ID
     - ./deploy.sh
   environment: production
