@@ -28,8 +28,7 @@ compile:
 
 apply:
   extends: [ .opentofu:apply ]
-  stage: deploy
-  script:
+  after_script:
     - cd terraform
     - ls
     - gitlab-tofu output
