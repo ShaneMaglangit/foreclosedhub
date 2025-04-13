@@ -7,14 +7,12 @@ LOCAL_BINARY_PATH="./app"
 REMOTE_BINARY_PATH="/home/$USER/app"
 SERVICE_NAME="app"
 
-echo $GCP_BUCKET_NAME
+gcloud config set project $GCP_PROJECT_ID
 
 echo "Authenticating SSH"
 gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
 
 echo "Initializing SSH"
-echo "$USER@$INSTANCE_NAME"
-echo "$GCP_ZONE"
 gcloud compute ssh "$USER@$INSTANCE_NAME" --zone="$GCP_ZONE" --command "echo hi"
 
 echo "Uploading binary to GCE..."
