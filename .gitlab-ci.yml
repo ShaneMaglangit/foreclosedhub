@@ -29,6 +29,12 @@ compile:
     - go build -o app ./cmd/main.go
 
 deploy:
+
+deploy_to_gcp:
   stage: deploy
-  script: ./deploy.sh
+  image: google/cloud-sdk:latest
+  script:
+    - gcloud auth activate-service-account --key-file="$GCP_SERVICE_ACCOUNT_KEY"
+    - gcloud config set project $GCP_PROJECT_ID
+    - ./deploy.sh
   environment: production
