@@ -34,5 +34,7 @@ deploy:
   stage: deploy
   needs: [migrate]
   image: google/cloud-sdk:latest
-  script: ./deploy.sh
+  script:
+    - chmod +x deploy.sh
+    - ./deploy.sh
   environment: production
