@@ -36,6 +36,8 @@ resource "google_compute_instance" "server" {
   machine_type = "e2-micro"
   zone         = var.gcp_zone
 
+  allow_stopping_for_update = true
+
   boot_disk {
     initialize_params {
       image = "ubuntu-os-cloud/ubuntu-2204-lts"
