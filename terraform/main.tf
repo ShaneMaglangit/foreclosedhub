@@ -64,6 +64,11 @@ output "gcp_bucket_name" {
   value = google_storage_bucket.bucket.name
 }
 
+resource "google_service_account" "default" {
+  account_id   = "gce-service-account"
+  display_name = "SA for Compute Engine"
+}
+
 resource "google_compute_instance" "server" {
   name         = "server"
   machine_type = "e2-micro"
@@ -83,7 +88,7 @@ resource "google_compute_instance" "server" {
   }
 
   service_account {
-    email = var.gcp_sa_email
+    email = google_service_account.default.email
     scopes = ["cloud-platform"]
   }
 
