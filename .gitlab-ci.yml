@@ -5,6 +5,7 @@ include:
       opentofu_version: 1.9.0
       root_dir: terraform/
       state_name: production
+      rules: [{when: on_success}]
 
 stages:
   - validate
@@ -22,11 +23,11 @@ migrate:
   stage: deploy
   needs: [apply]
   image: golang:latest
+  before_script:
+    - apt-get update && apt-get install -y curl unzip
+    - curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz
+    - mv migrate /usr/local/bin/migrate
   script:
-    - curl -L https://packagecloud.io/golang-migrate/migrate/gpgkey | apt-key add -
-    - echo "deb https://packagecloud.io/golang-migrate/migrate/ubuntu/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/migrate.list
-    - apt-get update
-    - apt-get install -y migrate
     - cd backend
     - migrate -path ./internal/db/migrations -database $NEON_DATABASE_URL up
 
