@@ -17,6 +17,18 @@ stages:
   - build
   - deploy
 
+compile:
+  stage: build
+  image: golang:latest
+  script:
+    - cd backend
+    - go mod tidy
+    - go build -o app ./cmd/main.go
+  artifacts:
+    paths:
+      - app
+    expire_in: 1 hour
+
 apply:
   extends: [ .opentofu:apply ]
   after_script:
@@ -40,7 +52,7 @@ migrate:
 
 deploy:
   stage: deploy
-  needs: [ apply, migrate ]
+  needs: [ apply, migrate, compile ]
   image: google/cloud-sdk:latest
   script:
     - chmod +x ./deploy.sh
