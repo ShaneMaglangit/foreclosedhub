@@ -54,5 +54,6 @@ deploy:
   needs: [ apply, migrate ]
   image: google/cloud-sdk:latest
   script:
+    - echo $GCP_BUCKET_NAME
     - chmod +x ./deploy.sh
     - ./deploy.sh
