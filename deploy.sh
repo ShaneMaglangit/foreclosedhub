@@ -30,10 +30,10 @@ ExecStart=$REMOTE_BINARY_PATH
 Restart=always
 User=$USER
 WorkingDirectory=/home/$USER
-Environment=ENV=production
-Environment=NEON_DATABASE_URL=${NEON_DATABASE_URL}
-Environment=GCP_PROJECT_ID=${GCP_PROJECT_ID}
-Environment=GCP_BUCKET_NAME=${GCP_BUCKET_NAME}
+Environment=\"ENV=production\"
+Environment=\"NEON_DATABASE_URL=${NEON_DATABASE_URL}\"
+Environment=\"GCP_PROJECT_ID=${GCP_PROJECT_ID}\"
+Environment=\"GCP_BUCKET_NAME=${GCP_BUCKET_NAME}\"
 
 [Install]
 WantedBy=multi-user.target' | sudo tee /etc/systemd/system/$SERVICE_NAME.service > /dev/null

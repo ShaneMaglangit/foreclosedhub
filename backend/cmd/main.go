@@ -20,7 +20,7 @@ func main() {
 	defer c.Stop()
 
 	// Start GRPC server
-	if err = grpc.Serve(); err != nil {
+	if err := grpc.Serve(); err != nil {
 		log.Fatal(err)
 	}
 }
