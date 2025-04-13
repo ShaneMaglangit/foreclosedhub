@@ -29,8 +29,6 @@ compile:
     - go build -o app ./cmd/main.go
 
 deploy:
-
-deploy_to_gcp:
   stage: deploy
   image: google/cloud-sdk:latest
   script:
