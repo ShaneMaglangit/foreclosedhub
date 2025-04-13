@@ -5,6 +5,7 @@ include:
       opentofu_version: 1.9.0
       root_dir: terraform/
       state_name: production
+      apply_rules: [{when: on_success}]
 
 stages:
   - validate
