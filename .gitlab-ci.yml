@@ -7,7 +7,10 @@ include:
       state_name: production
   - component: gitlab.com/components/opentofu/job-templates@2.0.0-rc1
     inputs:
+      version: 2.0.0-rc1
       opentofu_version: 1.9.0
+      root_dir: terraform/
+      state_name: production
 
 stages:
   - validate
