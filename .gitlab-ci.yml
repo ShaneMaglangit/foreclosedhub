@@ -32,6 +32,7 @@ deploy:
   stage: deploy
   image: google/cloud-sdk:latest
   script:
+    - cat $GCP_SERVICE_ACCOUNT_KEY
     - gcloud auth activate-service-account --key-file="$GCP_SERVICE_ACCOUNT_KEY"
     - gcloud config set project $GCP_PROJECT_ID
     - ./deploy.sh
