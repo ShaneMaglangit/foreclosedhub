@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-const defaultPort = "8080"
+const defaultPort = "50051"
 
 func Serve() error {
 	port := os.Getenv("PORT")
