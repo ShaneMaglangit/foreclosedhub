@@ -20,6 +20,7 @@ compile:
 
 provision:
   stage: deploy
+  needs: [apply]
   script:
     - cd terraform
     - export GCP_BUCKET_NAME=$(terraform output -raw gcp_bucket_name)
@@ -28,7 +29,7 @@ provision:
 
 deploy:
   stage: deploy
-  needs: [apply, provision]
+  needs: [provision]
   image: google/cloud-sdk:latest
   script:
     - gcloud auth activate-service-account --key-file="GOOGLE_APPLICATION_CREDENTIALS"
