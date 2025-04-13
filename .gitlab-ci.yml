@@ -23,9 +23,9 @@ provision:
   needs: [apply]
   script:
     - cd terraform
-    - export GCP_BUCKET_NAME=$(terraform output -raw gcp_bucket_name)
-    - export GCP_PROJECT_ID=$(terraform output -raw gcp_project_id)
-    - export GCP_ZONE=${terraform output -raw gcp_zone}
+    - export GCP_BUCKET_NAME=$(tofu output -raw gcp_bucket_name)
+    - export GCP_PROJECT_ID=$(tofu output -raw gcp_project_id)
+    - export GCP_ZONE=${tofu output -raw gcp_zone}
 
 deploy:
   stage: deploy
