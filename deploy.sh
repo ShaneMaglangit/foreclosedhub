@@ -30,7 +30,7 @@ Restart=always
 User=$USER
 WorkingDirectory=/home/$USER
 Environment=ENV=production
-Environment=DATABASE_URL=${DATABASE_URL}
+Environment=NEON_DATABASE_URL=${NEON_DATABASE_URL}
 Environment=GCP_PROJECT_ID=${GPC_PROJECT_ID}
 Environment=GCP_BUCKET_NAME=${GCP_BUCKET_NAME}
 

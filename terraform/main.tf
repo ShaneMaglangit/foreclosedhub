@@ -4,42 +4,7 @@ terraform {
       source  = "hashicorp/google"
       version = "6.28.0"
     }
-    neon = {
-      source  = "kislerdm/neon"
-      version = "0.9.0"
-    }
   }
-}
-
-provider "neon" {
-  api_key = var.neon_api_key
-}
-
-resource "neon_project" "homagochi" {
-  name      = var.neon_project_name
-  region_id = var.neon_region
-
-  branch {
-    name = var.environment
-  }
-}
-
-output "neon_connection_uri" {
-  value     = neon_project.homagochi.connection_uri_pooler
-  sensitive = true
-}
-
-resource "neon_role" "homagochi" {
-  project_id = neon_project.homagochi.id
-  branch_id  = neon_project.homagochi.default_branch_id
-  name       = "homagochi"
-}
-
-resource "neon_database" "homagochi" {
-  project_id = neon_project.homagochi.id
-  branch_id  = neon_project.homagochi.default_branch_id
-  name       = "homagochi"
-  owner_name = neon_role.homagochi.name
 }
 
 provider "google" {

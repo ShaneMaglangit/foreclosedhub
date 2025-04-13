@@ -29,7 +29,7 @@ func Connect(ctx context.Context) (*pgxpool.Pool, error) {
 }
 
 func createConfig() (*pgxpool.Config, error) {
-	url := os.Getenv("DATABASE_URL")
+	url := os.Getenv("NEON_DATABASE_URL")
 
 	config, err := pgxpool.ParseConfig(url)
 	if err != nil {
