@@ -13,13 +13,13 @@ echo "Authenticating SSH"
 gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
 
 echo "Initializing SSH"
+echo "$USER@$INSTANCE_NAME"
+echo "$GCP_ZONE"
 gcloud compute ssh "$USER@$INSTANCE_NAME" --zone="$GCP_ZONE" --command "echo hi"
 
-# Upload Go binary to GCE instance
 echo "Uploading binary to GCE..."
 gcloud compute scp "$LOCAL_BINARY_PATH" "$USER@$INSTANCE_NAME:~/app" --zone="$GCP_ZONE" --quiet
 
-# SSH into the instance and setup systemd service
 echo "Setting up systemd service..."
 gcloud compute ssh "$USER@$INSTANCE_NAME" --zone="$GCP_ZONE" --command "
   chmod +x $REMOTE_BINARY_PATH
