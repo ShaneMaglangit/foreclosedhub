@@ -1,11 +1,11 @@
 include:
-  - component: gitlab.com/components/opentofu/validate-plan-apply@2.0.0-rc1
+  - component: gitlab.com/components/opentofu/validate-plan@2.0.0-rc1
     inputs:
       version: 2.0.0-rc1
       opentofu_version: 1.9.0
       root_dir: terraform/
       state_name: production
-      apply_rules: [{when: on_success}]
+      apply_rules: [ { when: on_success } ]
 
 stages:
   - validate
@@ -19,9 +19,20 @@ compile:
     - cd backend
     - go build -o app ./cmd/main.go
 
+apply:
+  stage: deploy
+  extends: [.opentofu:apply]
+  script:
+    - echo "GCP_BUCKET_NAME=$(gitlab-tofu output -raw gcp_bucket_name)" >> deploy.env
+    - echo "GCP_PROJECT_ID=$(gitlab-tofu output -raw gcp_project_id)" >> deploy.env
+    - echo "GCP_ZONE=$(gitlab-tofu output -raw gcp_zone)" >> deploy.env
+  artifacts:
+    reports:
+      dotenv: deploy.env
+
 migrate:
   stage: deploy
-  needs: [apply]
+  needs: [ apply ]
   image: golang:latest
   before_script:
     - apt-get update && apt-get install -y curl unzip
@@ -32,7 +43,7 @@ migrate:
 
 deploy:
   stage: deploy
-  needs: [migrate]
+  needs: [ migrate ]
   image: google/cloud-sdk:latest
   script:
     - chmod +x ./deploy.sh

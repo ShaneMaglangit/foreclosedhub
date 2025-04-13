@@ -7,14 +7,8 @@ LOCAL_BINARY_PATH="../backend/app"
 REMOTE_BINARY_PATH="/home/$USER/app"
 SERVICE_NAME="app"
 
-pushd terraform || exit
-GCP_BUCKET_NAME=$(gitlab-tofu output -raw gcp_bucket_name)
-GCP_PROJECT_ID=$(gitlab-tofu output -raw gcp_project_id)
-GCP_ZONE=$(gitlab-tofu output -raw gcp_zone)
-popd || exit
-
 echo "Authenticating SSH"
-gcloud auth activate-service-account --key-file="GOOGLE_APPLICATION_CREDENTIALS"
+gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
 
 echo "Initializing SSH"
 gcloud compute ssh "$USER@$INSTANCE_NAME" --zone="$GCP_ZONE" --command "echo hi"
