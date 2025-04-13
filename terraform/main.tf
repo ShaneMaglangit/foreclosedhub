@@ -14,7 +14,7 @@ provider "google" {
   region  = var.gcp_region
 }
 
-output "gpc_project_id" {
+output "gcp_project_id" {
   value = var.gcp_project_id
 }
 
