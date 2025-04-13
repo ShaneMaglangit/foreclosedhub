@@ -47,6 +47,14 @@ provider "google" {
   region  = var.gcp_region
 }
 
+output gpc_project_id {
+  value = var.gcp_project_id
+}
+
+output gcp_zone {
+  value = var.gcp_zone
+}
+
 resource "google_storage_bucket" "bucket" {
   name     = "${var.environment}-homagochi"
   location = var.gcp_region

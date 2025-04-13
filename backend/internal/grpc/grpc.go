@@ -9,10 +9,15 @@ import (
 	"os"
 )
 
-func Serve() error {
-	port := fmt.Sprintf(":%s", os.Getenv("GRPC_PORT"))
+const defaultPort = "8080"
 
-	listener, err := net.Listen("tcp", port)
+func Serve() error {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
+	}
+
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
 		return err
 	}

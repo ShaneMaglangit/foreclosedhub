@@ -1,0 +1,28 @@
+image: golang:latest
+
+stages:
+  - provision
+  - build
+  - deploy
+
+terraform:
+  stage: provision
+  script:
+    - cd terraform
+    - terraform init
+    - terraform apply -auto-approve
+    - export DATABASE_URL=$(terraform output -raw neon_connection_uri)
+    - export GCP_BUCKET_NAME=$(terraform output -raw gcp_bucket_name)
+    - export GCP_PROJECT_ID=$(terraform output -raw gcp_project_id)
+    - export GCP_ZONE=${terraform output -raw gcp_zone}
+
+compile:
+  stage: build
+  script:
+    - cd backend
+    - go build -o app ./cmd/main.go
+
+deploy:
+  stage: deploy
+  script: ./deploy.sh
+  environment: production
