@@ -7,19 +7,17 @@ LOCAL_BINARY_PATH="./app"
 REMOTE_BINARY_PATH="/home/$USER/app"
 SERVICE_NAME="app"
 
-gcloud config set project $GCP_PROJECT_ID
-
 echo "Authenticating SSH"
 gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
 
 echo "Initializing SSH"
-gcloud compute ssh "$USER@$INSTANCE_NAME" --zone="$GCP_ZONE" --command "echo hi"
+gcloud compute ssh "$USER@$INSTANCE_NAME" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --command "echo hi"
 
 echo "Uploading binary to GCE..."
-gcloud compute scp "$LOCAL_BINARY_PATH" "$USER@$INSTANCE_NAME:~/app" --zone="$GCP_ZONE" --quiet
+gcloud compute scp "$LOCAL_BINARY_PATH" "$USER@$INSTANCE_NAME:~/app" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --quiet
 
 echo "Setting up systemd service..."
-gcloud compute ssh "$USER@$INSTANCE_NAME" --zone="$GCP_ZONE" --command "
+gcloud compute ssh "$USER@$INSTANCE_NAME" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --command "
   chmod +x $REMOTE_BINARY_PATH
 
   # Create systemd service file
