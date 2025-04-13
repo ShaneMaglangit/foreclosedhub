@@ -7,6 +7,15 @@ LOCAL_BINARY_PATH="../backend/app"
 REMOTE_BINARY_PATH="/home/$USER/app"
 SERVICE_NAME="app"
 
+pushd terraform || exit
+GCP_BUCKET_NAME=$(tofu output -raw gcp_bucket_name)
+GCP_PROJECT_ID=$(tofu output -raw gcp_project_id)
+GCP_ZONE=$(tofu output -raw gcp_zone)
+popd || exit
+
+echo "Authenticating SSH"
+gcloud auth activate-service-account --key-file="GOOGLE_APPLICATION_CREDENTIALS"
+
 echo "Initializing SSH"
 gcloud compute ssh "$USER@$INSTANCE_NAME" --zone="$GCP_ZONE" --command "echo hi"
 
@@ -31,7 +40,7 @@ User=$USER
 WorkingDirectory=/home/$USER
 Environment=ENV=production
 Environment=NEON_DATABASE_URL=${NEON_DATABASE_URL}
-Environment=GCP_PROJECT_ID=${GPC_PROJECT_ID}
+Environment=GCP_PROJECT_ID=${GCP_PROJECT_ID}
 Environment=GCP_BUCKET_NAME=${GCP_BUCKET_NAME}
 
 [Install]

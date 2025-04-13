@@ -18,18 +18,9 @@ compile:
     - cd backend
     - go build -o app ./cmd/main.go
 
-provision:
-  stage: deploy
-  needs: [apply]
-  script:
-    - cd terraform
-    - export GCP_BUCKET_NAME=$(tofu output -raw gcp_bucket_name)
-    - export GCP_PROJECT_ID=$(tofu output -raw gcp_project_id)
-    - export GCP_ZONE=$(tofu output -raw gcp_zone)
-
 migrate:
   stage: deploy
-  needs: [provision]
+  needs: [apply]
   script:
     - cd backend
     - migrate -path ./internal/db/migrations -database $NEON_DATABASE_URL up
@@ -38,8 +29,5 @@ deploy:
   stage: deploy
   needs: [migrate]
   image: google/cloud-sdk:latest
-  script:
-    - gcloud auth activate-service-account --key-file="GOOGLE_APPLICATION_CREDENTIALS"
-    - gcloud config set project $GCP_PROJECT_ID
-    - ./deploy.sh
+  script: ./deploy.sh
   environment: production

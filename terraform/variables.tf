@@ -1,6 +1,6 @@
 variable "environment" {
   description = "Environment of the app (dev, staging, prod)."
-  default = "dev"
+  default     = "dev"
 }
 
 variable "gcp_project_id" {
