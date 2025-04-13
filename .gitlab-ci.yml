@@ -25,7 +25,7 @@ migrate:
   image: golang:latest
   before_script:
     - apt-get update && apt-get install -y curl unzip
-    - curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz
+    - curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz
     - mv migrate /usr/local/bin/migrate
   script:
     - cd backend
