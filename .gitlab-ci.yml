@@ -28,8 +28,7 @@ migrate:
     - curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz
     - mv migrate /usr/local/bin/migrate
   script:
-    - cd backend
-    - migrate -path ./internal/db/migrations -database $NEON_DATABASE_URL up
+    - migrate -path ./backend/internal/db/migrations -database $NEON_DATABASE_URL up
 
 deploy:
   stage: deploy
