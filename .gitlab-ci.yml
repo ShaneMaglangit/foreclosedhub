@@ -19,6 +19,7 @@ compile:
   image: golang:latest
   script:
     - cd backend
+    - go mod tidy
     - go build -o app ./cmd/main.go
 
 apply:
@@ -39,8 +40,7 @@ migrate:
   image: golang:latest
   before_script:
     - apt-get update && apt-get install -y curl unzip
-    - curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz
-    - mv migrate /usr/local/bin/migrate
+    - if [ ! -f /usr/local/bin/migrate ]; then curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz && mv migrate /usr/local/bin/migrate; fi
   script:
     - migrate -path ./backend/internal/db/migrations -database $NEON_DATABASE_URL up
 
