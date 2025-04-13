@@ -1,3 +1,7 @@
-environment =
-gcp_project_id =
-gcp_region =
+environment       =
+gcp_project_id    =
+gcp_region        =
+gcp_zone          =
+neon_api_key      =
+neon_project_name =
+neon_region       =

@@ -10,3 +10,19 @@ variable "gcp_project_id" {
 variable "gcp_region" {
   description = "GCP Region."
 }
+
+variable "gcp_zone" {
+  description = "Zone for GCP."
+}
+
+variable "neon_api_key" {
+  description = "API key for Neon."
+}
+
+variable "neon_project_name" {
+  description = "Project name for Neon."
+}
+
+variable "neon_region" {
+  description = "Region ID for Neon."
+}
