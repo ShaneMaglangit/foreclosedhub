@@ -2,3 +2,5 @@ environment       =
 gcp_project_id    =
 gcp_region        =
 gcp_zone          =
+gcp_sa_email      =
+grpc_client_ip_cidr_range  =

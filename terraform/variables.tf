@@ -18,3 +18,7 @@ variable "gcp_zone" {
 variable "gcp_sa_email" {
   description = "GCP Service account."
 }
+
+variable "grpc_client_ip_cidr_range" {
+  description = "GCP Client IP."
+}

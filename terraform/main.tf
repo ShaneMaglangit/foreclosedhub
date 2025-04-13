@@ -56,3 +56,18 @@ resource "google_compute_instance" "server" {
     scopes = ["cloud-platform"]
   }
 }
+
+resource "google_compute_firewall" "allow_grpc" {
+  name    = "allow-grpc"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["50051"]
+  }
+
+  source_ranges = [var.grpc_client_ip_cidr_range]
+  target_tags   = ["allow-grpc"]
+}
+
+
