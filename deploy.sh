@@ -13,6 +13,11 @@ gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS
 echo "Initializing SSH"
 gcloud compute ssh "$USER@$INSTANCE_NAME" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --command "echo hi"
 
+echo "Stopping running service..."
+gcloud compute ssh "$USER@$INSTANCE_NAME" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --command "
+  sudo systemctl stop $SERVICE_NAME
+"
+
 echo "Uploading binary to GCE..."
 gcloud compute scp "$LOCAL_BINARY_PATH" "$USER@$INSTANCE_NAME:~/app" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --quiet
 
@@ -42,7 +47,7 @@ WantedBy=multi-user.target' | sudo tee /etc/systemd/system/$SERVICE_NAME.service
   sudo systemctl daemon-reexec
   sudo systemctl daemon-reload
   sudo systemctl enable $SERVICE_NAME
-  sudo systemctl restart $SERVICE_NAME
+  sudo systemctl start $SERVICE_NAME
 
   # Show status
   sudo systemctl status $SERVICE_NAME --no-pager

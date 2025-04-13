@@ -6,13 +6,10 @@ import (
 	"homagochi/internal/grpc"
 	"homagochi/internal/source/pagibig"
 	"log"
-	"os"
 )
 
 func main() {
 	_ = godotenv.Load()
-
-	log.Fatal(os.Getenv("NEON_DATABASE_URL"))
 
 	if err := (&pagibig.ScrapeListingJob{}).Run(); err != nil {
 		log.Fatal(err)
