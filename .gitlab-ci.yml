@@ -34,6 +34,7 @@ apply:
     - echo "GCP_BUCKET_NAME=$(gitlab-tofu output -raw gcp_bucket_name)" >> deploy.env
     - echo "GCP_PROJECT_ID=$(gitlab-tofu output -raw gcp_project_id)" >> deploy.env
     - echo "GCP_ZONE=$(gitlab-tofu output -raw gcp_zone)" >> deploy.env
+    - cat deploy.env
   artifacts:
     reports:
       dotenv: deploy.env
@@ -54,6 +55,7 @@ deploy:
   needs: [ apply, migrate ]
   image: google/cloud-sdk:latest
   script:
+    - echo "$GCP_BUCKET_NAME"
     - echo $GCP_BUCKET_NAME
     - chmod +x ./deploy.sh
     - ./deploy.sh
