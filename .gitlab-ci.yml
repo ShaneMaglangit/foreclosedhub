@@ -21,6 +21,10 @@ compile:
     - cd backend
     - go mod tidy
     - go build -o app ./cmd/main.go
+  artifacts:
+    paths:
+      - app
+    expire_in: 1 hour
 
 apply:
   extends: [.opentofu:apply]
@@ -47,9 +51,8 @@ migrate:
 
 deploy:
   stage: deploy
-  needs: [ migrate ]
+  needs: [ apply, migrate ]
   image: google/cloud-sdk:latest
   script:
     - chmod +x ./deploy.sh
     - ./deploy.sh
-  environment: production
