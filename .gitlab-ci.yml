@@ -1,31 +1,37 @@
-image: golang:latest
+include:
+  - component: gitlab.com/components/opentofu/validate-plan-apply@2.0.0-rc1
+    inputs:
+      version: 2.0.0-rc1
+      opentofu_version: 1.9.0
+      root_dir: terraform/
+      state_name: production
 
 stages:
-  - provision
   - build
   - deploy
 
-terraform:
-  stage: provision
-  script:
-    - apt-get update && apt-get install -y wget unzip
-    - wget https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip
-    - unzip -o terraform_1.6.6_linux_amd64.zip -d /usr/local/bin/
-    - cd terraform
-    - terraform init
-    - GOOGLE_APPLICATION_CREDENTIALS=$GCP_SERVICE_ACCOUNT_KEY terraform apply -auto-approve
-    - export GCP_BUCKET_NAME=$(terraform output -raw gcp_bucket_name)
-    - export GCP_PROJECT_ID=$(terraform output -raw gcp_project_id)
-    - export GCP_ZONE=${terraform output -raw gcp_zone}
-
 compile:
   stage: build
+  image: golang:latest
   script:
     - cd backend
     - go build -o app ./cmd/main.go
 
+provision:
+  stage: deploy
+  script:
+    - export GOOGLE_APPLICATION_CREDENTIALS=$GCP_SERVICE_ACCOUNT_KEY
+    - cd terraform
+    - tofu init
+    - tofu apply -auto-approve
+    - export GCP_BUCKET_NAME=$(terraform output -raw gcp_bucket_name)
+    - export GCP_PROJECT_ID=$(terraform output -raw gcp_project_id)
+    - export GCP_ZONE=${terraform output -raw gcp_zone}
+
 deploy:
   stage: deploy
+  dependencies:
+    - provision
   image: google/cloud-sdk:latest
   script:
     - gcloud auth activate-service-account --key-file="$GCP_SERVICE_ACCOUNT_KEY"
