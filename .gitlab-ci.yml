@@ -27,7 +27,7 @@ compile:
     expire_in: 1 hour
 
 apply:
-  extends: [.opentofu:apply]
+  extends: [ .opentofu:apply ]
   stage: deploy
   script:
     - cd terraform
@@ -36,7 +36,7 @@ apply:
     - echo "GCP_ZONE=$(gitlab-tofu output -raw gcp_zone)" >> deploy.env
   artifacts:
     reports:
-      dotenv: deploy.env 
+      dotenv: deploy.env
   rules: [ { when: on_success } ]
 
 migrate:
