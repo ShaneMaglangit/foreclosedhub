@@ -14,6 +14,7 @@ before_script:
 terraform:
   stage: provision
   script:
+    - cat $GCP_SERVICE_ACCOUNT_KEY
     - gcloud auth activate-service-account --key-file="$GCP_SERVICE_ACCOUNT_KEY"
     - cd terraform
     - terraform init
