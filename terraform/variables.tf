@@ -12,5 +12,9 @@ variable "gcp_region" {
 }
 
 variable "gcp_zone" {
-  description = "Zone for GCP."
+  description = "GCP Zone."
+}
+
+variable "gcp_sa_email" {
+  description = "GCP Service account."
 }
