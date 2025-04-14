@@ -6,29 +6,35 @@ import { ProtoGrpcType } from "@web/lib/protobuf/listing_service";
 import { GetListingsResponse__Output } from "@web/lib/protobuf/listing/GetListingsResponse";
 import { env } from "@web/env";
 import { GetListingsRequest } from "@web/lib/protobuf/listing/GetListingsRequest";
+import getConfig from "next/config";
+
+const { serverRuntimeConfig } = getConfig();
+
+const PROTO_PATH = path.join(
+  serverRuntimeConfig.PROJECT_ROOT,
+  "./proto/listing_service.proto",
+);
+
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true,
+});
+
+const proto = grpc.loadPackageDefinition(
+  packageDefinition,
+) as unknown as ProtoGrpcType;
+
+const cert = Buffer.from(env.GRPC_CERT, "base64");
+const client = new proto.listing.ListingService(
+  env.GRPC_ADDRESS,
+  credentials.createSsl(cert),
+);
 
 export function getListings(
   request: GetListingsRequest,
 ): Promise<GetListingsResponse__Output> {
-  const PROTO_PATH = path.join(process.cwd(), "./proto/listing_service.proto");
-
-  const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
-    longs: String,
-    enums: String,
-    defaults: true,
-    oneofs: true,
-  });
-
-  const proto = grpc.loadPackageDefinition(
-    packageDefinition,
-  ) as unknown as ProtoGrpcType;
-
-  const cert = Buffer.from(env.GRPC_CERT, "base64");
-  const client = new proto.listing.ListingService(
-    env.GRPC_ADDRESS,
-    credentials.createSsl(cert),
-  );
-
   return new Promise((resolve, reject) => {
     client.GetListings(
       request,
