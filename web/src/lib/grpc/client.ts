@@ -7,6 +7,7 @@ import { GetListingsResponse__Output } from "@web/lib/protobuf/listing/GetListin
 import { env } from "@web/env";
 import { GetListingsRequest } from "@web/lib/protobuf/listing/GetListingsRequest";
 import getConfig from "next/config";
+import * as fs from "node:fs";
 
 const { serverRuntimeConfig } = getConfig();
 
@@ -15,12 +16,16 @@ const PROTO_PATH = path.join(
   "./proto/listing_service.proto",
 );
 
-const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
-  longs: String,
-  enums: String,
-  defaults: true,
-  oneofs: true,
-});
+const descriptorBuffer = fs.readFileSync(PROTO_PATH);
+const packageDefinition = protoLoader.loadFileDescriptorSetFromBuffer(
+  descriptorBuffer,
+  {
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true,
+  },
+);
 
 const proto = grpc.loadPackageDefinition(
   packageDefinition,
