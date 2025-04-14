@@ -6,10 +6,12 @@ import { ProtoGrpcType } from "@web/lib/protobuf/listing_service";
 import { GetListingsResponse__Output } from "@web/lib/protobuf/listing/GetListingsResponse";
 import { env } from "@web/env";
 import { GetListingsRequest } from "@web/lib/protobuf/listing/GetListingsRequest";
+import { promises as fs } from "fs";
 
-const PROTO_PATH = path.join(process.cwd(), "./proto/listing_service.proto");
+const PROTO_PATH = path.join(process.cwd(), "./protodef/listing_service.json");
 
-const packageDefinition = await protoLoader.load(PROTO_PATH, {
+const protoJson = JSON.parse(await fs.readFile(PROTO_PATH, "utf-8"));
+const packageDefinition = protoLoader.fromJSON(protoJson, {
   longs: String,
   enums: String,
   defaults: true,

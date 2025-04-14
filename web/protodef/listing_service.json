@@ -1,0 +1,203 @@
+{
+  "options": {
+    "syntax": "proto3"
+  },
+  "nested": {
+    "listing": {
+      "options": {
+        "go_package": "gitlab.com/shanemaglangit/homagochi/backend/internal/protobuf"
+      },
+      "nested": {
+        "GetListingsRequest": {
+          "oneofs": {
+            "_after": {
+              "oneof": [
+                "after"
+              ]
+            },
+            "_before": {
+              "oneof": [
+                "before"
+              ]
+            },
+            "_maxPrice": {
+              "oneof": [
+                "maxPrice"
+              ]
+            }
+          },
+          "fields": {
+            "after": {
+              "type": "int64",
+              "id": 1,
+              "options": {
+                "proto3_optional": true
+              }
+            },
+            "before": {
+              "type": "int64",
+              "id": 2,
+              "options": {
+                "proto3_optional": true
+              }
+            },
+            "limit": {
+              "type": "int32",
+              "id": 3
+            },
+            "search": {
+              "type": "string",
+              "id": 4
+            },
+            "sources": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 5
+            },
+            "occupancyStatuses": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 6
+            },
+            "minPrice": {
+              "type": "int64",
+              "id": 7
+            },
+            "maxPrice": {
+              "type": "int64",
+              "id": 8,
+              "options": {
+                "proto3_optional": true
+              }
+            }
+          }
+        },
+        "GetListingsResponse": {
+          "fields": {
+            "listings": {
+              "rule": "repeated",
+              "type": "Listing",
+              "id": 1
+            },
+            "pageInfo": {
+              "type": "common.PageInfo",
+              "id": 2
+            }
+          }
+        },
+        "ListingService": {
+          "methods": {
+            "GetListings": {
+              "requestType": "GetListingsRequest",
+              "responseType": "GetListingsResponse"
+            }
+          }
+        },
+        "Listing": {
+          "fields": {
+            "id": {
+              "type": "int64",
+              "id": 1
+            },
+            "source": {
+              "type": "string",
+              "id": 2
+            },
+            "externalId": {
+              "type": "string",
+              "id": 3
+            },
+            "address": {
+              "type": "string",
+              "id": 4
+            },
+            "floorArea": {
+              "type": "double",
+              "id": 5
+            },
+            "price": {
+              "type": "int64",
+              "id": 6
+            },
+            "occupancyStatus": {
+              "type": "string",
+              "id": 7
+            },
+            "imageLoaded": {
+              "type": "bool",
+              "id": 8
+            },
+            "imageUrls": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 9
+            },
+            "createdAt": {
+              "type": "google.protobuf.Timestamp",
+              "id": 10
+            },
+            "updatedAt": {
+              "type": "google.protobuf.Timestamp",
+              "id": 11
+            },
+            "payload": {
+              "type": "string",
+              "id": 12
+            }
+          }
+        }
+      }
+    },
+    "common": {
+      "options": {
+        "go_package": "gitlab.com/shanemaglangit/homagochi/backend/internal/protobuf"
+      },
+      "nested": {
+        "PageInfo": {
+          "fields": {
+            "count": {
+              "type": "int32",
+              "id": 2
+            },
+            "startCursor": {
+              "type": "int64",
+              "id": 3
+            },
+            "endCursor": {
+              "type": "int64",
+              "id": 4
+            },
+            "hasNextPage": {
+              "type": "bool",
+              "id": 5
+            },
+            "hasPrevPage": {
+              "type": "bool",
+              "id": 6
+            }
+          }
+        }
+      }
+    },
+    "google": {
+      "nested": {
+        "protobuf": {
+          "nested": {
+            "Timestamp": {
+              "fields": {
+                "seconds": {
+                  "type": "int64",
+                  "id": 1
+                },
+                "nanos": {
+                  "type": "int32",
+                  "id": 2
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
