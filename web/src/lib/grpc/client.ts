@@ -6,20 +6,15 @@ import { ProtoGrpcType } from "@web/lib/protobuf/listing_service";
 import { GetListingsResponse__Output } from "@web/lib/protobuf/listing/GetListingsResponse";
 import { env } from "@web/env";
 import { GetListingsRequest } from "@web/lib/protobuf/listing/GetListingsRequest";
-import { promises as fs } from "fs";
 
-const PROTO_PATH = path.join(process.cwd(), "./proto/listing_service.pb");
+const PROTO_PATH = path.join(process.cwd(), "./proto/listing_service.proto");
 
-const descriptorBuffer = await fs.readFile(PROTO_PATH);
-const packageDefinition = protoLoader.loadFileDescriptorSetFromBuffer(
-  descriptorBuffer,
-  {
-    longs: String,
-    enums: String,
-    defaults: true,
-    oneofs: true,
-  },
-);
+const packageDefinition = await protoLoader.load(PROTO_PATH, {
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true,
+});
 
 const proto = grpc.loadPackageDefinition(
   packageDefinition,

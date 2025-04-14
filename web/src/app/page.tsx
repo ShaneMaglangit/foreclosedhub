@@ -24,6 +24,8 @@ export default async function Page({
   const params = listingParams.parse(await searchParams);
   const { listings, pageInfo } = await getListings(params);
 
+  console.log(listings);
+
   return (
     <SidebarProvider>
       <AppSidebar params={params} />
