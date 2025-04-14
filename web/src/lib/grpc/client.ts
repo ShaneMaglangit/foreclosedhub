@@ -12,7 +12,9 @@ import * as fs from "node:fs";
 const { serverRuntimeConfig } = getConfig();
 
 const directories = fs
-  .readdirSync(serverRuntimeConfig.PROJECT_ROOT, { withFileTypes: true })
+  .readdirSync(path.join(serverRuntimeConfig.PROJECT_ROOT, "./proto"), {
+    withFileTypes: true,
+  })
   .filter((dirent) => dirent.isDirectory())
   .map((dirent) => dirent.name);
 
