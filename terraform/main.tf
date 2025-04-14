@@ -68,7 +68,7 @@ resource "google_compute_firewall" "allow_grpc" {
     ports    = ["50051"]
   }
 
-  source_ranges = [var.grpc_client_ip_cidr_range]
+  source_ranges = ["0.0.0.0/0"]
   target_tags   = ["grpc-server"]
 }
 

@@ -6,6 +6,7 @@ USER="ubuntu"
 LOCAL_BINARY_PATH="./app"
 REMOTE_BINARY_PATH="/home/$USER/app"
 SERVICE_NAME="app"
+CERTS_DIR="/home/$USER/certs"
 
 echo "Authenticating SSH"
 gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
@@ -15,11 +16,32 @@ gcloud compute ssh "$USER@$INSTANCE_NAME" --project="$GCP_PROJECT_ID" --zone="$G
 
 echo "Stopping running service..."
 gcloud compute ssh "$USER@$INSTANCE_NAME" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --command "
-  sudo systemctl stop $SERVICE_NAME
+  sudo systemctl stop $SERVICE_NAME || true
 "
 
 echo "Uploading binary to GCE..."
 gcloud compute scp "$LOCAL_BINARY_PATH" "$USER@$INSTANCE_NAME:~/app" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --quiet
+
+echo "Setting up TLS certs..."
+gcloud compute ssh "$USER@$INSTANCE_NAME" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --command "
+  mkdir -p $CERTS_DIR
+
+  if [[ ! -f $CERTS_DIR/ca.crt || ! -f $CERTS_DIR/server.crt || ! -f $CERTS_DIR/server.key ]]; then
+    echo 'Generating TLS certs...'
+
+    openssl genrsa -out $CERTS_DIR/ca.key 4096
+    openssl req -x509 -new -nodes -key $CERTS_DIR/ca.key -subj \"/CN=local-ca\" -days 365 -out $CERTS_DIR/ca.crt
+
+    openssl genrsa -out $CERTS_DIR/server.key 4096
+    openssl req -new -key $CERTS_DIR/server.key -subj \"/CN=$INSTANCE_NAME\" -out $CERTS_DIR/server.csr
+
+    openssl x509 -req -in $CERTS_DIR/server.csr -CA $CERTS_DIR/ca.crt -CAkey $CERTS_DIR/ca.key -CAcreateserial -out $CERTS_DIR/server.crt -days 365
+
+    rm -f $CERTS_DIR/server.csr $CERTS_DIR/ca.key $CERTS_DIR/ca.srl
+  else
+    echo 'TLS certs already exist. Skipping generation.'
+  fi
+"
 
 echo "Setting up systemd service..."
 gcloud compute ssh "$USER@$INSTANCE_NAME" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --command "
@@ -39,16 +61,15 @@ Environment=\"ENV=production\"
 Environment=\"NEON_DATABASE_URL=${NEON_DATABASE_URL}\"
 Environment=\"GCP_PROJECT_ID=${GCP_PROJECT_ID}\"
 Environment=\"GCP_BUCKET_NAME=${GCP_BUCKET_NAME}\"
+Environment=\"CERTS_DIR=$CERTS_DIR\"
 
 [Install]
 WantedBy=multi-user.target' | sudo tee /etc/systemd/system/$SERVICE_NAME.service > /dev/null
 
-  # Reload systemd, enable and start the service
   sudo systemctl daemon-reexec
   sudo systemctl daemon-reload
   sudo systemctl enable $SERVICE_NAME
   sudo systemctl start $SERVICE_NAME
 
-  # Show status
   sudo systemctl status $SERVICE_NAME --no-pager
 "
