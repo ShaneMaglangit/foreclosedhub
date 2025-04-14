@@ -6,17 +6,11 @@ import { ProtoGrpcType } from "@web/lib/protobuf/listing_service";
 import { GetListingsResponse__Output } from "@web/lib/protobuf/listing/GetListingsResponse";
 import { env } from "@web/env";
 import { GetListingsRequest } from "@web/lib/protobuf/listing/GetListingsRequest";
-import getConfig from "next/config";
-import * as fs from "node:fs";
+import { promises as fs } from "fs";
 
-const { serverRuntimeConfig } = getConfig();
+const PROTO_PATH = path.join(process.cwd(), "./proto/listing_service.proto");
 
-const PROTO_PATH = path.join(
-  serverRuntimeConfig.PROJECT_ROOT,
-  "./proto/listing_service.proto",
-);
-
-const descriptorBuffer = fs.readFileSync(PROTO_PATH);
+const descriptorBuffer = await fs.readFile(PROTO_PATH);
 const packageDefinition = protoLoader.loadFileDescriptorSetFromBuffer(
   descriptorBuffer,
   {
