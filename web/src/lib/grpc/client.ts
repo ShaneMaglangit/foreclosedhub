@@ -1,5 +1,5 @@
 import * as grpc from "@grpc/grpc-js";
-import { ServiceError } from "@grpc/grpc-js";
+import { credentials, ServiceError } from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
 import path from "path";
 import { ProtoGrpcType } from "@web/lib/protobuf/listing_service";
@@ -20,9 +20,10 @@ const proto = grpc.loadPackageDefinition(
   packageDefinition,
 ) as unknown as ProtoGrpcType;
 
+const cert = Buffer.from(env.GRPC_CERT, "base64");
 const client = new proto.listing.ListingService(
   env.GRPC_ADDRESS,
-  grpc.credentials.createInsecure(),
+  credentials.createSsl(cert),
 );
 
 export function getListings(

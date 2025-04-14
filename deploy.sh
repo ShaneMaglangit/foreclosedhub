@@ -29,15 +29,28 @@ gcloud compute ssh "$USER@$INSTANCE_NAME" --project="$GCP_PROJECT_ID" --zone="$G
   if [[ ! -f $CERTS_DIR/ca.crt || ! -f $CERTS_DIR/server.crt || ! -f $CERTS_DIR/server.key ]]; then
     echo 'Generating TLS certs...'
 
+    # Create CA
     openssl genrsa -out $CERTS_DIR/ca.key 4096
     openssl req -x509 -new -nodes -key $CERTS_DIR/ca.key -subj \"/CN=local-ca\" -days 365 -out $CERTS_DIR/ca.crt
 
+    # Create server key
     openssl genrsa -out $CERTS_DIR/server.key 4096
-    openssl req -new -key $CERTS_DIR/server.key -subj \"/CN=$INSTANCE_NAME\" -out $CERTS_DIR/server.csr
 
-    openssl x509 -req -in $CERTS_DIR/server.csr -CA $CERTS_DIR/ca.crt -CAkey $CERTS_DIR/ca.key -CAcreateserial -out $CERTS_DIR/server.crt -days 365
+    # Create config with SAN for IP
+    echo \"[req]
+distinguished_name=req
+req_extensions=san
+[san]
+subjectAltName=IP:$GCP_SERVER_IP\" > $CERTS_DIR/openssl.cnf
 
-    rm -f $CERTS_DIR/server.csr $CERTS_DIR/ca.key $CERTS_DIR/ca.srl
+    # Create CSR with CN as IP and SAN
+    openssl req -new -key $CERTS_DIR/server.key -subj \"/CN=$GCP_SERVER_IP\" -out $CERTS_DIR/server.csr -config $CERTS_DIR/openssl.cnf
+
+    # Sign certificate with SAN
+    openssl x509 -req -in $CERTS_DIR/server.csr -CA $CERTS_DIR/ca.crt -CAkey $CERTS_DIR/ca.key -CAcreateserial -out $CERTS_DIR/server.crt -days 365 -extensions san -extfile $CERTS_DIR/openssl.cnf
+
+    # Cleanup
+    rm -f $CERTS_DIR/server.csr $CERTS_DIR/ca.key $CERTS_DIR/ca.srl $CERTS_DIR/openssl.cnf
   else
     echo 'TLS certs already exist. Skipping generation.'
   fi

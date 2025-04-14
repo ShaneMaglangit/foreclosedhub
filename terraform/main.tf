@@ -31,6 +31,11 @@ output "gcp_bucket_name" {
   value = google_storage_bucket.bucket.name
 }
 
+resource "google_compute_address" "server_ip" {
+  name = "server-external-address"
+  region = var.gcp_region
+}
+
 resource "google_compute_instance" "server" {
   name         = "server"
   machine_type = "e2-micro"
@@ -48,7 +53,9 @@ resource "google_compute_instance" "server" {
 
   network_interface {
     network = "default"
-    access_config {}
+    access_config {
+      nat_ip = google_compute_address.server_ip.address
+    }
   }
 
   service_account {
@@ -73,5 +80,5 @@ resource "google_compute_firewall" "allow_grpc" {
 }
 
 output "server_ip" {
-  value = google_compute_instance.server.network_interface[0].access_config[0].nat_ip
+  value = google_compute_address.server_ip.address
 }
