@@ -8,7 +8,7 @@ import { env } from "@web/env";
 import { GetListingsRequest } from "@web/lib/protobuf/listing/GetListingsRequest";
 import { promises as fs } from "fs";
 
-const PROTO_PATH = path.join(process.cwd(), "./proto/listing_service.proto");
+const PROTO_PATH = path.join(process.cwd(), "./proto/listing_service.pb");
 
 const descriptorBuffer = await fs.readFile(PROTO_PATH);
 const packageDefinition = protoLoader.loadFileDescriptorSetFromBuffer(
