@@ -7,8 +7,18 @@ import { GetListingsResponse__Output } from "@web/lib/protobuf/listing/GetListin
 import { env } from "@web/env";
 import { GetListingsRequest } from "@web/lib/protobuf/listing/GetListingsRequest";
 import getConfig from "next/config";
+import * as fs from "node:fs";
 
 const { serverRuntimeConfig } = getConfig();
+
+const directories = fs
+  .readdirSync(serverRuntimeConfig.PROJECT_ROOT, { withFileTypes: true })
+  .filter((dirent) => dirent.isDirectory())
+  .map((dirent) => dirent.name);
+
+throw new Error(
+  `Failed to locate proto file. Available directories in project root (${serverRuntimeConfig.PROJECT_ROOT}):\n- ${directories.join("\n- ")}`,
+);
 
 const PROTO_PATH = path.join(
   serverRuntimeConfig.PROJECT_ROOT,
