@@ -1,4 +1,4 @@
-// Original file: ../proto/listing.proto
+// Original file: proto/listing.proto
 
 import type { Timestamp as _google_protobuf_Timestamp, Timestamp__Output as _google_protobuf_Timestamp__Output } from '../google/protobuf/Timestamp';
 import type { Long } from '@grpc/proto-loader';

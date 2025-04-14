@@ -1,4 +1,4 @@
-// Original file: ../proto/listing_service.proto
+// Original file: proto/listing_service.proto
 
 import type { Long } from '@grpc/proto-loader';
 
