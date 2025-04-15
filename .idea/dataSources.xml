@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://ep-wandering-art-a62ln2h6-pooler.us-west-2.aws.neon.tech:5432/homagochi?sslmode=require</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="homagochi@localhost" uuid="b5b405f8-a4d2-4666-ab7f-047ad4bf7d83">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/homagochi</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
