@@ -55,7 +55,7 @@ function ListingCard({ listing }: { listing: Listing__Output }) {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger className="w-full">
-            <h6 className="font-medium truncate capitalize p-2">
+            <h6 className="text-left font-medium truncate capitalize p-2">
               {listing.address.toLowerCase()}
             </h6>
           </TooltipTrigger>
