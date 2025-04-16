@@ -12,6 +12,7 @@ type ListingsRepository interface {
 	GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error)
 	InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error
 	UpdateListingsImageLoaded(ctx context.Context, dbtx DBTX, id int64, imageLoaded bool) error
+	UnlistOldPagibigListings(ctx context.Context, dbtx DBTX) error
 }
 
 type ListingsRepositoryImpl struct{}
@@ -67,6 +68,10 @@ func (l ListingsRepositoryImpl) UpdateListingsImageLoaded(ctx context.Context, d
 	}
 
 	return New(dbtx).UpdateListingsImageLoaded(ctx, params)
+}
+
+func (l ListingsRepositoryImpl) UnlistOldPagibigListings(ctx context.Context, dbtx DBTX) error {
+	return New(dbtx).UnlistOldPagibigListings(ctx)
 }
 
 func NewListingsRepository() ListingsRepository {

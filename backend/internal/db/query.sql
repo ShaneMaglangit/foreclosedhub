@@ -1,5 +1,4 @@
 -- name: GetListingsNextPage :many
--- name: GetListings :many
 SELECT *
 FROM listings
 WHERE id > @after::bigint
@@ -7,9 +6,9 @@ WHERE id > @after::bigint
   AND source = ANY (@sources::source[])
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
+  AND status = 'active'::listing_status
 ORDER BY id
 LIMIT @row_limit::int;
-
 
 -- name: GetListingsPrevPage :many
 SELECT *
@@ -19,6 +18,7 @@ WHERE id < @before::bigint
   AND source = ANY (@sources::source[])
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
+  AND status = 'active'::listing_status
 ORDER BY id DESC
 LIMIT @row_limit::int;
 
@@ -44,12 +44,18 @@ ON CONFLICT (source, external_id) DO UPDATE
         price            = EXCLUDED.price,
         occupancy_status = EXCLUDED.occupancy_status,
         payload          = EXCLUDED.payload,
+        status           = 'active'::listing_status,
         updated_at       = NOW();
 
 -- name: UpdateListingsImageLoaded :exec
 UPDATE listings
 SET image_loaded = @image_loaded::boolean
 WHERE listings.id = @id::bigint;
+
+-- name: UnlistOldPagibigListings :exec
+UPDATE listings
+SET status = 'unlisted'::listing_status
+WHERE listings.source = 'pagibig'::source AND listings.updated_at::date < CURRENT_DATE;
 
 -- name: GetListingImagesByListingIds :many
 SELECT *

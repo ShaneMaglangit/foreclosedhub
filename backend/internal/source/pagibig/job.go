@@ -32,8 +32,11 @@ func (j *ScrapeListingJob) Run() error {
 	defer pool.Close()
 
 	listingsRepository := db.NewListingsRepository()
+	if err = listingsRepository.InsertListings(ctx, pool, dbListings); err != nil {
+		return err
+	}
 
-	return listingsRepository.InsertListings(ctx, pool, dbListings)
+	return listingsRepository.UnlistOldPagibigListings(ctx, pool)
 }
 
 type ScrapeListingImageJob struct{}

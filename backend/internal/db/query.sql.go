@@ -58,13 +58,14 @@ func (q *Queries) GetListingImagesByListingIds(ctx context.Context, ids []int64)
 }
 
 const getListingsNextPage = `-- name: GetListingsNextPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status
 FROM listings
 WHERE id > $1::bigint
   AND address ILIKE $2::text
   AND source = ANY ($3::source[])
   AND occupancy_status = ANY ($4::occupancy_status[])
   AND price BETWEEN $5::bigint AND COALESCE($6, 9223372036854775807)
+  AND status = 'active'::listing_status
 ORDER BY id
 LIMIT $7::int
 `
@@ -108,6 +109,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Payload,
+			&i.Status,
 		); err != nil {
 			return nil, err
 		}
@@ -120,13 +122,14 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 }
 
 const getListingsPrevPage = `-- name: GetListingsPrevPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status
 FROM listings
 WHERE id < $1::bigint
   AND address ILIKE $2::text
   AND source = ANY ($3::source[])
   AND occupancy_status = ANY ($4::occupancy_status[])
   AND price BETWEEN $5::bigint AND COALESCE($6, 9223372036854775807)
+  AND status = 'active'::listing_status
 ORDER BY id DESC
 LIMIT $7::int
 `
@@ -170,6 +173,7 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Payload,
+			&i.Status,
 		); err != nil {
 			return nil, err
 		}
@@ -211,6 +215,7 @@ ON CONFLICT (source, external_id) DO UPDATE
         price            = EXCLUDED.price,
         occupancy_status = EXCLUDED.occupancy_status,
         payload          = EXCLUDED.payload,
+        status           = 'active'::listing_status,
         updated_at       = NOW()
 `
 
@@ -234,6 +239,17 @@ func (q *Queries) InsertListings(ctx context.Context, arg InsertListingsParams) 
 		arg.OccupancyStatuses,
 		arg.Payloads,
 	)
+	return err
+}
+
+const unlistOldPagibigListings = `-- name: UnlistOldPagibigListings :exec
+UPDATE listings
+SET status = 'unlisted'::listing_status
+WHERE listings.source = 'pagibig'::source AND listings.updated_at::date < CURRENT_DATE
+`
+
+func (q *Queries) UnlistOldPagibigListings(ctx context.Context) error {
+	_, err := q.db.Exec(ctx, unlistOldPagibigListings)
 	return err
 }
 

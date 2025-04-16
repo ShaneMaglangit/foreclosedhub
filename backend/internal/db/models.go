@@ -11,6 +11,48 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type ListingStatus string
+
+const (
+	ListingStatusActive   ListingStatus = "active"
+	ListingStatusUnlisted ListingStatus = "unlisted"
+)
+
+func (e *ListingStatus) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = ListingStatus(s)
+	case string:
+		*e = ListingStatus(s)
+	default:
+		return fmt.Errorf("unsupported scan type for ListingStatus: %T", src)
+	}
+	return nil
+}
+
+type NullListingStatus struct {
+	ListingStatus ListingStatus
+	Valid         bool // Valid is true if ListingStatus is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullListingStatus) Scan(value interface{}) error {
+	if value == nil {
+		ns.ListingStatus, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.ListingStatus.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullListingStatus) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.ListingStatus), nil
+}
+
 type OccupancyStatus string
 
 const (
@@ -107,6 +149,7 @@ type Listing struct {
 	CreatedAt       pgtype.Timestamptz
 	UpdatedAt       pgtype.Timestamptz
 	Payload         []byte
+	Status          ListingStatus
 }
 
 type ListingImage struct {
