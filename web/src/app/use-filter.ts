@@ -21,7 +21,7 @@ export function useFilter(initial: ListingParams) {
     setFilters({ ...filters, search });
   };
 
-  const toggleSourceChange = (source: string) => {
+  const toggleSource = (source: string) => {
     const updatedSources = filters.sources.includes(source)
       ? filters.sources.filter((source) => source !== source)
       : [...filters.sources, source];
@@ -29,12 +29,20 @@ export function useFilter(initial: ListingParams) {
     setFilters({ ...filters, sources: updatedSources });
   };
 
-  const toggleOccupancyStatusChange = (status: string) => {
+  const toggleOccupancyStatus = (status: string) => {
     const updatedStatuses = filters.occupancyStatuses.includes(status)
       ? filters.occupancyStatuses.filter((s) => s !== status)
       : [...filters.occupancyStatuses, status];
 
     setFilters({ ...filters, occupancyStatuses: updatedStatuses });
+  };
+
+  const toggleStatus = (status: string) => {
+    const updatedStatuses = filters.statuses.includes(status)
+      ? filters.statuses.filter((s) => s !== status)
+      : [...filters.statuses, status];
+
+    setFilters({ ...filters, statuses: updatedStatuses });
   };
 
   const setMinPrice = (value?: number) => {
@@ -56,6 +64,7 @@ export function useFilter(initial: ListingParams) {
       search,
       sources,
       occupancyStatuses,
+      statuses,
       minPrice,
       maxPrice,
       before,
@@ -74,6 +83,7 @@ export function useFilter(initial: ListingParams) {
 
     setArrayParam("occupancyStatuses", occupancyStatuses, urlParams);
     setArrayParam("sources", sources, urlParams);
+    setArrayParam("statuses", statuses, urlParams);
 
     router.push(`${pathname}?${urlParams.toString()}`);
   }, [pathname, router, filters]);
@@ -81,8 +91,9 @@ export function useFilter(initial: ListingParams) {
   return {
     filters,
     setSearch,
-    toggleSourceChange,
-    toggleOccupancyStatusChange,
+    toggleSource,
+    toggleOccupancyStatus,
+    toggleStatus,
     setMinPrice,
     setMaxPrice,
   };

@@ -25,23 +25,15 @@ import {
 } from "@web/types/occupancy-status";
 import { typedEntries } from "@web/lib/utils";
 import { Input } from "@web/components/common/input";
-
-const sourceLabel = {
-  Pagibig: "Pagibig Fund",
-} satisfies Record<Source, string>;
-
-const occupancyStatusLabel = {
-  Occupied: "Occupied",
-  Unoccupied: "Unoccupied",
-  Unspecified: "Unspecified",
-} satisfies Record<OccupancyStatus, string>;
+import { ListingStatus, listingStatuses } from "@web/types/listing-status";
 
 export function Filters({ initialFilters }: { initialFilters: ListingParams }) {
   const {
     filters,
     setSearch,
-    toggleSourceChange,
-    toggleOccupancyStatusChange,
+    toggleSource,
+    toggleOccupancyStatus,
+    toggleStatus,
     setMinPrice,
     setMaxPrice,
   } = useFilter(initialFilters);
@@ -57,12 +49,17 @@ export function Filters({ initialFilters }: { initialFilters: ListingParams }) {
       <SidebarSeparator className="mx-0" />
       <SourceFilter
         currentValues={filters.sources}
-        onCheckChanged={toggleSourceChange}
+        onCheckChanged={toggleSource}
       />
       <SidebarSeparator className="mx-0" />
       <OccupancyStatusFilter
         currentValues={filters.occupancyStatuses}
-        onCheckChanged={toggleOccupancyStatusChange}
+        onCheckChanged={toggleOccupancyStatus}
+      />
+      <SidebarSeparator className="mx-0" />
+      <ListingStatusFilter
+        currentValues={filters.statuses}
+        onCheckChanged={toggleStatus}
       />
       <SidebarSeparator className="mx-0" />
       <PriceRangeFilter
@@ -75,6 +72,10 @@ export function Filters({ initialFilters }: { initialFilters: ListingParams }) {
     </>
   );
 }
+
+const sourceLabel = {
+  Pagibig: "Pagibig Fund",
+} satisfies Record<Source, string>;
 
 function SourceFilter({
   currentValues,
@@ -103,6 +104,12 @@ function SourceFilter({
   );
 }
 
+const occupancyStatusLabel = {
+  Occupied: "Occupied",
+  Unoccupied: "Unoccupied",
+  Unspecified: "Unspecified",
+} satisfies Record<OccupancyStatus, string>;
+
 function OccupancyStatusFilter({
   currentValues,
   onCheckChanged,
@@ -123,6 +130,38 @@ function OccupancyStatusFilter({
           />
           <span className="text-sm font-medium leading-none">
             {occupancyStatusLabel[key]}
+          </span>
+        </label>
+      ))}
+    </SidebarFilterGroup>
+  );
+}
+
+const listingStatusLabel = {
+  Active: "Active",
+  Unlisted: "Unlisted",
+} satisfies Record<ListingStatus, string>;
+
+function ListingStatusFilter({
+  currentValues,
+  onCheckChanged,
+}: {
+  currentValues: string[];
+  onCheckChanged: (value: string) => unknown;
+}) {
+  return (
+    <SidebarFilterGroup title="Listing Status">
+      {typedEntries(listingStatuses).map(([key, value]) => (
+        <label
+          key={key}
+          className="flex gap-2 p-2 hover:bg-accent cursor-pointer"
+        >
+          <Checkbox
+            defaultChecked={currentValues.includes(value)}
+            onCheckedChange={() => onCheckChanged(value)}
+          />
+          <span className="text-sm font-medium leading-none">
+            {listingStatusLabel[key]}
           </span>
         </label>
       ))}

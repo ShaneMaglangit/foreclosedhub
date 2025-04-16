@@ -10,6 +10,10 @@ export const listingParams = z.object({
     .union([z.string(), z.array(z.string())])
     .transform((val) => (typeof val === "string" ? [val] : val))
     .default([]),
+  statuses: z
+    .union([z.string(), z.array(z.string())])
+    .transform((val) => (typeof val === "string" ? [val] : val))
+    .default([]),
   minPrice: z.coerce.number().optional(),
   maxPrice: z.coerce.number().optional(),
   after: z.coerce.number().optional(),
