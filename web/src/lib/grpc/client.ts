@@ -25,7 +25,9 @@ const proto = grpc.loadPackageDefinition(
 const cert = Buffer.from(env.GRPC_CERT, "base64");
 const client = new proto.listing.ListingService(
   env.GRPC_ADDRESS,
-  credentials.createSsl(cert),
+  env.ENVIRONMENT === "development"
+    ? credentials.createInsecure()
+    : credentials.createSsl(cert),
 );
 
 export function getListings(

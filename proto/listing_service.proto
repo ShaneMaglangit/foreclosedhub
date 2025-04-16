@@ -14,8 +14,9 @@ message GetListingsRequest {
   string search = 4;
   repeated string sources = 5;
   repeated string occupancy_statuses = 6;
-  int64 min_price = 7;
-  optional int64 max_price = 8;
+  repeated string statuses = 7;
+  int64 min_price = 8;
+  optional int64 max_price = 9;
 }
 
 message GetListingsResponse {

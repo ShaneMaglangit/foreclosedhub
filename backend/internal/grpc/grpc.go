@@ -5,6 +5,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"homagochi/internal/protobuf"
+	"homagochi/internal/utils"
 	"log"
 	"net"
 	"os"
@@ -14,28 +15,36 @@ import (
 const defaultPort = "50051"
 
 func Serve() error {
-	port := os.Getenv("PORT")
+	port := os.Getenv("GRPC_PORT")
 	if port == "" {
 		port = defaultPort
 	}
 
-	certDir := os.Getenv("CERTS_DIR")
-	certFile := filepath.Join(certDir, "server.crt")
-	keyFile := filepath.Join(certDir, "server.key")
+	var server *grpc.Server
 
-	creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
-	if err != nil {
-		log.Fatalf("Failed to generate credentials %v", err)
+	if utils.IsDevelopment() {
+		server = grpc.NewServer()
+		log.Println("Starting gRPC server in development mode (no TLS)")
+	} else {
+		certDir := os.Getenv("CERTS_DIR")
+		certFile := filepath.Join(certDir, "server.crt")
+		keyFile := filepath.Join(certDir, "server.key")
+
+		creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
+		if err != nil {
+			log.Fatalf("Failed to generate credentials: %v", err)
+		}
+
+		server = grpc.NewServer(grpc.Creds(creds))
+		log.Println("Starting gRPC server in production mode (TLS enabled)")
 	}
 
+	protobuf.RegisterListingServiceServer(server, NewListingServiceServer())
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
+
 	if err != nil {
 		return err
 	}
 
-	server := grpc.NewServer(grpc.Creds(creds))
-	protobuf.RegisterListingServiceServer(server, NewListingServiceServer())
-
-	log.Println("Starting gRPC server on " + port)
 	return server.Serve(listener)
 }

@@ -9,7 +9,7 @@ package protobuf
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	_ "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -31,11 +31,8 @@ type Listing struct {
 	FloorArea       float64                `protobuf:"fixed64,5,opt,name=floor_area,json=floorArea,proto3" json:"floor_area,omitempty"`
 	Price           int64                  `protobuf:"varint,6,opt,name=price,proto3" json:"price,omitempty"`
 	OccupancyStatus string                 `protobuf:"bytes,7,opt,name=occupancy_status,json=occupancyStatus,proto3" json:"occupancy_status,omitempty"`
-	ImageLoaded     bool                   `protobuf:"varint,8,opt,name=image_loaded,json=imageLoaded,proto3" json:"image_loaded,omitempty"`
-	ImageUrls       []string               `protobuf:"bytes,9,rep,name=image_urls,json=imageUrls,proto3" json:"image_urls,omitempty"`
-	CreatedAt       *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt       *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	Payload         string                 `protobuf:"bytes,12,opt,name=payload,proto3" json:"payload,omitempty"`
+	ImageUrls       []string               `protobuf:"bytes,8,rep,name=image_urls,json=imageUrls,proto3" json:"image_urls,omitempty"`
+	Payload         string                 `protobuf:"bytes,9,opt,name=payload,proto3" json:"payload,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -119,30 +116,9 @@ func (x *Listing) GetOccupancyStatus() string {
 	return ""
 }
 
-func (x *Listing) GetImageLoaded() bool {
-	if x != nil {
-		return x.ImageLoaded
-	}
-	return false
-}
-
 func (x *Listing) GetImageUrls() []string {
 	if x != nil {
 		return x.ImageUrls
-	}
-	return nil
-}
-
-func (x *Listing) GetCreatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.CreatedAt
-	}
-	return nil
-}
-
-func (x *Listing) GetUpdatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.UpdatedAt
 	}
 	return nil
 }
@@ -158,7 +134,7 @@ var File_listing_proto protoreflect.FileDescriptor
 
 const file_listing_proto_rawDesc = "" +
 	"\n" +
-	"\rlisting.proto\x12\alisting\x1a\x1fgoogle/protobuf/timestamp.proto\"\x9e\x03\n" +
+	"\rlisting.proto\x12\alisting\x1a\x1fgoogle/protobuf/timestamp.proto\"\x85\x02\n" +
 	"\aListing\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x16\n" +
 	"\x06source\x18\x02 \x01(\tR\x06source\x12\x1f\n" +
@@ -168,16 +144,10 @@ const file_listing_proto_rawDesc = "" +
 	"\n" +
 	"floor_area\x18\x05 \x01(\x01R\tfloorArea\x12\x14\n" +
 	"\x05price\x18\x06 \x01(\x03R\x05price\x12)\n" +
-	"\x10occupancy_status\x18\a \x01(\tR\x0foccupancyStatus\x12!\n" +
-	"\fimage_loaded\x18\b \x01(\bR\vimageLoaded\x12\x1d\n" +
+	"\x10occupancy_status\x18\a \x01(\tR\x0foccupancyStatus\x12\x1d\n" +
 	"\n" +
-	"image_urls\x18\t \x03(\tR\timageUrls\x129\n" +
-	"\n" +
-	"created_at\x18\n" +
-	" \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
-	"\n" +
-	"updated_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12\x18\n" +
-	"\apayload\x18\f \x01(\tR\apayloadB?Z=gitlab.com/shanemaglangit/homagochi/backend/internal/protobufb\x06proto3"
+	"image_urls\x18\b \x03(\tR\timageUrls\x12\x18\n" +
+	"\apayload\x18\t \x01(\tR\apayloadB?Z=gitlab.com/shanemaglangit/homagochi/backend/internal/protobufb\x06proto3"
 
 var (
 	file_listing_proto_rawDescOnce sync.Once
@@ -193,17 +163,14 @@ func file_listing_proto_rawDescGZIP() []byte {
 
 var file_listing_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_listing_proto_goTypes = []any{
-	(*Listing)(nil),               // 0: listing.Listing
-	(*timestamppb.Timestamp)(nil), // 1: google.protobuf.Timestamp
+	(*Listing)(nil), // 0: listing.Listing
 }
 var file_listing_proto_depIdxs = []int32{
-	1, // 0: listing.Listing.created_at:type_name -> google.protobuf.Timestamp
-	1, // 1: listing.Listing.updated_at:type_name -> google.protobuf.Timestamp
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0, // [0:0] is the sub-list for method output_type
+	0, // [0:0] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_listing_proto_init() }

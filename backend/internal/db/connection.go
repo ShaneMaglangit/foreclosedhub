@@ -44,7 +44,7 @@ func createConfig() (*pgxpool.Config, error) {
 // SQLC does not have a built-in compatibility support for custom enums with query parameters
 // See https://github.com/jackc/pgx/discussions/1559
 func registerEnums(ctx context.Context, conn *pgx.Conn) error {
-	enumNames := []string{"source", "_source", "occupancy_status", "_occupancy_status"}
+	enumNames := []string{"source", "_source", "occupancy_status", "_occupancy_status", "listing_status", "_listing_status"}
 	enumTypes, err := conn.LoadTypes(ctx, enumNames)
 	if err != nil {
 		return err

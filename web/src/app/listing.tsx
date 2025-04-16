@@ -101,7 +101,7 @@ function PagibigFormButton({ listing }: { listing: Listing__Output }) {
       target="_blank"
     >
       <input type="hidden" name="batchNo" value={batchNumber} />
-      <input type="hidden" name="ropaId" value={listing.id} />
+      <input type="hidden" name="ropaId" value={listing.externalId} />
       <input type="hidden" name="flag" value={flag} />
       <input type="hidden" name="hbc" value={hbc} />
       <Button variant="link" size="sm" className="h-auto has-[>svg]:p-0">

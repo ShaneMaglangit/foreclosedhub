@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/jackc/pgx/v5/pgtype"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"homagochi/internal/db"
 	"homagochi/internal/protobuf"
 	"homagochi/internal/service"
@@ -42,6 +41,11 @@ func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobu
 		return nil, err
 	}
 
+	listingStatuses, err := db.ParseListingStatuses(request.Statuses)
+	if err != nil {
+		return nil, err
+	}
+
 	var maxPrice pgtype.Int8
 	if request.MaxPrice != nil {
 		maxPrice = pgtype.Int8{
@@ -57,6 +61,7 @@ func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobu
 		listings, pageInfo, err = s.listingService.GetPrevWithImages(ctx, db.GetListingsPrevPageParams{
 			Search:            request.Search,
 			OccupancyStatuses: occupancyStatuses,
+			Statuses:          listingStatuses,
 			Sources:           sources,
 			MinPrice:          request.MinPrice,
 			MaxPrice:          maxPrice,
@@ -67,6 +72,7 @@ func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobu
 		listings, pageInfo, err = s.listingService.GetNextWithImages(ctx, db.GetListingsNextPageParams{
 			Search:            request.Search,
 			OccupancyStatuses: occupancyStatuses,
+			Statuses:          listingStatuses,
 			Sources:           sources,
 			MinPrice:          request.MinPrice,
 			MaxPrice:          maxPrice,
@@ -95,6 +101,11 @@ func setDefaultRequestParams(request *protobuf.GetListingsRequest) {
 			string(db.OccupancyStatusUnspecified),
 		}
 		request.OccupancyStatuses = defaultOccupancyStatuses
+	}
+
+	if len(request.Statuses) == 0 {
+		defaultStatuses := []string{string(db.ListingStatusActive), string(db.ListingStatusUnlisted)}
+		request.Statuses = defaultStatuses
 	}
 
 	if request.Limit <= 0 {
@@ -139,10 +150,7 @@ func convertListing(listing *db.ListingWithImages) (*protobuf.Listing, error) {
 		FloorArea:       floorArea.Float64,
 		Price:           listing.Price,
 		OccupancyStatus: string(listing.OccupancyStatus),
-		ImageLoaded:     listing.ImageLoaded,
 		ImageUrls:       imageUrls,
-		CreatedAt:       timestamppb.New(listing.CreatedAt.Time),
-		UpdatedAt:       timestamppb.New(listing.UpdatedAt.Time),
 		Payload:         string(listing.Payload),
 	}, nil
 }

@@ -1,7 +1,4 @@
 {
-  "options": {
-    "syntax": "proto3"
-  },
   "nested": {
     "listing": {
       "options": {
@@ -59,13 +56,18 @@
               "type": "string",
               "id": 6
             },
+            "statuses": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 7
+            },
             "minPrice": {
               "type": "int64",
-              "id": 7
+              "id": 8
             },
             "maxPrice": {
               "type": "int64",
-              "id": 8,
+              "id": 9,
               "options": {
                 "proto3_optional": true
               }
@@ -123,26 +125,14 @@
               "type": "string",
               "id": 7
             },
-            "imageLoaded": {
-              "type": "bool",
-              "id": 8
-            },
             "imageUrls": {
               "rule": "repeated",
               "type": "string",
-              "id": 9
-            },
-            "createdAt": {
-              "type": "google.protobuf.Timestamp",
-              "id": 10
-            },
-            "updatedAt": {
-              "type": "google.protobuf.Timestamp",
-              "id": 11
+              "id": 8
             },
             "payload": {
               "type": "string",
-              "id": 12
+              "id": 9
             }
           }
         }

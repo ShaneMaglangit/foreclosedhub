@@ -6,7 +6,7 @@ WHERE id > @after::bigint
   AND source = ANY (@sources::source[])
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
-  AND status = 'active'::listing_status
+  AND status = ANY (@statuses::listing_status[])
 ORDER BY id
 LIMIT @row_limit::int;
 
@@ -18,7 +18,7 @@ WHERE id < @before::bigint
   AND source = ANY (@sources::source[])
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
-  AND status = 'active'::listing_status
+  AND status = ANY (@statuses::listing_status[])
 ORDER BY id DESC
 LIMIT @row_limit::int;
 
