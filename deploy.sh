@@ -70,7 +70,7 @@ ExecStart=$REMOTE_BINARY_PATH
 Restart=always
 User=$USER
 WorkingDirectory=/home/$USER
-Environment=\"ENV=production\"
+Environment=\"ENVIRONMENT=${ENVIRONMENT}\"
 Environment=\"NEON_DATABASE_URL=${NEON_DATABASE_URL}\"
 Environment=\"GCP_PROJECT_ID=${GCP_PROJECT_ID}\"
 Environment=\"GCP_BUCKET_NAME=${GCP_BUCKET_NAME}\"
