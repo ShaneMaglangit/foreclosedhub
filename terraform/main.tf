@@ -32,7 +32,7 @@ output "gcp_bucket_name" {
 }
 
 resource "google_compute_address" "server_ip" {
-  name = "server-external-address"
+  name   = "server-external-address"
   region = var.gcp_region
 }
 
