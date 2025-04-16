@@ -32,7 +32,7 @@ export function Listing({
   return (
     <div
       className={cn(
-        "flex flex-col lg:grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 p-2 gap-2",
+        "flex flex-col items-start lg:grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 p-2 gap-2",
         "relative bg-fixed",
         "bg-[image:repeating-linear-gradient(315deg,_var(--accent)_0,_var(--primary)_1px,_transparent_0,_transparent_50%)]",
         "bg-[size:5px_5px] [--pattern-fg:var(--accent)]/5 dark:[--pattern-fg:var(--accent)]/10",
