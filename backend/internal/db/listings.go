@@ -13,6 +13,8 @@ type ListingsRepository interface {
 	InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error
 	UpdateListingsImageLoaded(ctx context.Context, dbtx DBTX, id int64, imageLoaded bool) error
 	UnlistOldPagibigListings(ctx context.Context, dbtx DBTX) error
+	GetListingNotGeocoded(ctx context.Context, dbtx DBTX) (*GetListingNotGeocodedRow, error)
+	UpdateListingCoordinate(ctx context.Context, dbtx DBTX, id int64, lat float64, long float64) error
 }
 
 type ListingsRepositoryImpl struct{}
@@ -72,6 +74,21 @@ func (l ListingsRepositoryImpl) UpdateListingsImageLoaded(ctx context.Context, d
 
 func (l ListingsRepositoryImpl) UnlistOldPagibigListings(ctx context.Context, dbtx DBTX) error {
 	return New(dbtx).UnlistOldPagibigListings(ctx)
+}
+func (l ListingsRepositoryImpl) GetListingNotGeocoded(ctx context.Context, dbtx DBTX) (*GetListingNotGeocodedRow, error) {
+	return New(dbtx).GetListingNotGeocoded(ctx)
+}
+
+func (l ListingsRepositoryImpl) UpdateListingCoordinate(ctx context.Context, dbtx DBTX, id int64, lat float64, long float64) error {
+	var coordinate pgtype.Point
+	if err := coordinate.Scan(fmt.Sprintf("(%f,%f)", long, lat)); err != nil {
+		return err
+	}
+
+	return New(dbtx).UpdateListingCoordinate(ctx, UpdateListingCoordinateParams{
+		ID:         id,
+		Coordinate: coordinate,
+	})
 }
 
 func NewListingsRepository() ListingsRepository {

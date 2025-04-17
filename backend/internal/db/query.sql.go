@@ -57,6 +57,25 @@ func (q *Queries) GetListingImagesByListingIds(ctx context.Context, ids []int64)
 	return items, nil
 }
 
+const getListingNotGeocoded = `-- name: GetListingNotGeocoded :one
+SELECT id, address
+FROM listings
+WHERE coordinate IS NULL
+LIMIT 1
+`
+
+type GetListingNotGeocodedRow struct {
+	ID      int64
+	Address string
+}
+
+func (q *Queries) GetListingNotGeocoded(ctx context.Context) (*GetListingNotGeocodedRow, error) {
+	row := q.db.QueryRow(ctx, getListingNotGeocoded)
+	var i GetListingNotGeocodedRow
+	err := row.Scan(&i.ID, &i.Address)
+	return &i, err
+}
+
 const getListingsNextPage = `-- name: GetListingsNextPage :many
 SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate
 FROM listings
@@ -256,6 +275,22 @@ WHERE listings.source = 'pagibig'::source AND listings.updated_at::date < CURREN
 
 func (q *Queries) UnlistOldPagibigListings(ctx context.Context) error {
 	_, err := q.db.Exec(ctx, unlistOldPagibigListings)
+	return err
+}
+
+const updateListingCoordinate = `-- name: UpdateListingCoordinate :exec
+UPDATE listings
+SET coordinate = $1::point
+WHERE id = $2::bigint
+`
+
+type UpdateListingCoordinateParams struct {
+	Coordinate pgtype.Point
+	ID         int64
+}
+
+func (q *Queries) UpdateListingCoordinate(ctx context.Context, arg UpdateListingCoordinateParams) error {
+	_, err := q.db.Exec(ctx, updateListingCoordinate, arg.Coordinate, arg.ID)
 	return err
 }
 

@@ -57,6 +57,17 @@ UPDATE listings
 SET status = 'unlisted'::listing_status
 WHERE listings.source = 'pagibig'::source AND listings.updated_at::date < CURRENT_DATE;
 
+-- name: GetListingNotGeocoded :one
+SELECT id, address
+FROM listings
+WHERE coordinate IS NULL
+LIMIT 1;
+
+-- name: UpdateListingCoordinate :exec
+UPDATE listings
+SET coordinate = @coordinate::point
+WHERE id = @id::bigint;
+
 -- name: GetListingImagesByListingIds :many
 SELECT *
 FROM listing_images

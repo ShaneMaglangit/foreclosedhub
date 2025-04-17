@@ -2,6 +2,7 @@ package cron
 
 import (
 	"github.com/robfig/cron/v3"
+	"homagochi/internal/geocode"
 	"homagochi/internal/source/pagibig"
 	"homagochi/internal/utils"
 	"log"
@@ -25,6 +26,12 @@ var jobEntries = []JobEntry{
 		schedule:   "* * * * *",
 		isDisabled: func() bool { return utils.IsDevelopment() },
 		factory:    func() Job { return &pagibig.ScrapeListingImageJob{} },
+	},
+	{
+		name:       "GeocodeListings",
+		schedule:   "* * * * *",
+		isDisabled: func() bool { return utils.IsDevelopment() },
+		factory:    func() Job { return &geocode.GeocodePropertyJob{} },
 	},
 }
 
