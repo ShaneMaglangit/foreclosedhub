@@ -77,7 +77,7 @@ func (q *Queries) GetListingNotGeocoded(ctx context.Context) (*GetListingNotGeoc
 }
 
 const getListingsNextPage = `-- name: GetListingsNextPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate, geocoded_at
 FROM listings
 WHERE id > $1::bigint
   AND address ILIKE $2::text
@@ -132,6 +132,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 			&i.Payload,
 			&i.Status,
 			&i.Coordinate,
+			&i.GeocodedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -144,7 +145,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 }
 
 const getListingsPrevPage = `-- name: GetListingsPrevPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate, geocoded_at
 FROM listings
 WHERE id < $1::bigint
   AND address ILIKE $2::text
@@ -199,6 +200,7 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 			&i.Payload,
 			&i.Status,
 			&i.Coordinate,
+			&i.GeocodedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -280,7 +282,7 @@ func (q *Queries) UnlistOldPagibigListings(ctx context.Context) error {
 
 const updateListingCoordinate = `-- name: UpdateListingCoordinate :exec
 UPDATE listings
-SET coordinate = $1::point
+SET coordinate = $1::point AND geocoded_at = NOW()
 WHERE id = $2::bigint
 `
 

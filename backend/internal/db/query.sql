@@ -65,7 +65,7 @@ LIMIT 1;
 
 -- name: UpdateListingCoordinate :exec
 UPDATE listings
-SET coordinate = @coordinate::point
+SET coordinate = @coordinate::point AND geocoded_at = NOW()
 WHERE id = @id::bigint;
 
 -- name: GetListingImagesByListingIds :many

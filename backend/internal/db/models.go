@@ -151,6 +151,7 @@ type Listing struct {
 	Payload         []byte
 	Status          ListingStatus
 	Coordinate      pgtype.Point
+	GeocodedAt      pgtype.Timestamptz
 }
 
 type ListingImage struct {
