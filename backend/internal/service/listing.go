@@ -14,6 +14,34 @@ func NewListingService() *ListingService {
 	return &ListingService{}
 }
 
+func (s *ListingService) GetNearbyListingsWithImages(ctx context.Context, params db.GetNearbyListingsParams) ([]*db.ListingWithImages, error) {
+	pool, err := db.Connect(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer pool.Close()
+
+	listingsRepository := db.NewListingsRepository()
+	listings, err := listingsRepository.GetNearbyListings(ctx, pool, params)
+	if err != nil {
+		return nil, err
+	}
+
+	listingImagesRepository := db.NewListingImagesRepository()
+	images, err := listingImagesRepository.GetListingImagesByListings(ctx, pool, listings)
+	if err != nil {
+		return nil, err
+	}
+
+	listingImagesLookup := mapListingImages(images)
+	listingWithImage, err := buildListingsWithImages(listings, listingImagesLookup)
+	if err != nil {
+		return nil, err
+	}
+
+	return listingWithImage, nil
+}
+
 func (s *ListingService) GetNextWithImages(ctx context.Context, params db.GetListingsNextPageParams) ([]*db.ListingWithImages, *protobuf.PageInfo, error) {
 	pool, err := db.Connect(ctx)
 	if err != nil {

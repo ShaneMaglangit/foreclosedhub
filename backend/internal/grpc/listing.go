@@ -10,6 +10,7 @@ import (
 )
 
 const defaultLimit = 30
+const defaultNearbyLimit = 100
 
 type ListingServiceServer struct {
 	protobuf.UnimplementedListingServiceServer
@@ -20,6 +21,90 @@ func NewListingServiceServer() *ListingServiceServer {
 	return &ListingServiceServer{
 		listingService: service.NewListingService(),
 	}
+}
+
+func (s *ListingServiceServer) GetNearbyListings(ctx context.Context, request *protobuf.GetNearbyListingsRequest) (*protobuf.GetNearbyListingsResponse, error) {
+	setDefaultNearbyRequestParams(request)
+
+	sources, err := db.ParseSources(request.Sources)
+	if err != nil {
+		return nil, err
+	}
+
+	occupancyStatuses, err := db.ParseOccupancyStatuses(request.OccupancyStatuses)
+	if err != nil {
+		return nil, err
+	}
+
+	listingStatuses, err := db.ParseListingStatuses(request.Statuses)
+	if err != nil {
+		return nil, err
+	}
+
+	var maxPrice pgtype.Int8
+	if request.MaxPrice != nil {
+		maxPrice = pgtype.Int8{
+			Int64: *request.MaxPrice,
+			Valid: true,
+		}
+	}
+
+	listings, err := s.listingService.GetNearbyListingsWithImages(ctx, db.GetNearbyListingsParams{
+		Lng:               request.Longitude,
+		Lat:               request.Latitude,
+		Search:            request.Search,
+		OccupancyStatuses: occupancyStatuses,
+		Statuses:          listingStatuses,
+		Sources:           sources,
+		MinPrice:          request.MinPrice,
+		MaxPrice:          maxPrice,
+		RowLimit:          request.Limit,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return buildGetNearbyListingsResponse(listings)
+}
+
+func setDefaultNearbyRequestParams(request *protobuf.GetNearbyListingsRequest) {
+	if len(request.Sources) == 0 {
+		defaultSources := []string{string(db.SourcePagibig)}
+		request.Sources = defaultSources
+	}
+
+	if len(request.OccupancyStatuses) == 0 {
+		defaultOccupancyStatuses := []string{
+			string(db.OccupancyStatusOccupied),
+			string(db.OccupancyStatusUnoccupied),
+			string(db.OccupancyStatusUnspecified),
+		}
+		request.OccupancyStatuses = defaultOccupancyStatuses
+	}
+
+	if len(request.Statuses) == 0 {
+		defaultStatuses := []string{string(db.ListingStatusActive), string(db.ListingStatusUnlisted)}
+		request.Statuses = defaultStatuses
+	}
+
+	if request.Limit <= 0 {
+		request.Limit = defaultNearbyLimit
+	}
+}
+
+func buildGetNearbyListingsResponse(listings []*db.ListingWithImages) (*protobuf.GetNearbyListingsResponse, error) {
+	listingsResponse := make([]*protobuf.Listing, 0, len(listings))
+
+	for _, listing := range listings {
+		listing, err := convertListing(listing)
+		if err != nil {
+			return nil, err
+		}
+
+		listingsResponse = append(listingsResponse, listing)
+	}
+
+	return &protobuf.GetNearbyListingsResponse{Listings: listingsResponse}, nil
 }
 
 func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobuf.GetListingsRequest) (*protobuf.GetListingsResponse, error) {
