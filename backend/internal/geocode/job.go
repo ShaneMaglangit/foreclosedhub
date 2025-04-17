@@ -2,45 +2,36 @@ package geocode
 
 import (
 	"context"
-	"errors"
-	"github.com/alexliesenfeld/opencage"
+	"fmt"
 	"homagochi/internal/db"
-	"os"
 )
 
-type GeocodePropertyJob struct{}
+type GeocodeListingJob struct{}
 
-func (job *GeocodePropertyJob) Run() error {
+func (job *GeocodeListingJob) Run() error {
 	ctx := context.Background()
 
 	pool, err := db.Connect(ctx)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to connect to DB: %w", err)
 	}
 	defer pool.Close()
 
-	listingsRepository := db.NewListingsRepository()
-	listing, err := listingsRepository.GetListingNotGeocoded(ctx, pool)
+	listingsRepo := db.NewListingsRepository()
+
+	listing, err := listingsRepo.GetListingNotGeocoded(ctx, pool)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to fetch listing: %w", err)
 	}
 
-	client := opencage.New(os.Getenv("OPENCAGE_API_KEY"))
-	response, err := client.Geocode(ctx, listing.Address, &opencage.GeocodingParams{})
+	lat, long, err := geocodeAddress(listing.Address)
 	if err != nil {
-		return err
-	} else if response.Status.Code != 200 {
-		return errors.New(response.Status.Message)
+		return fmt.Errorf("geocoding failed: %w", err)
 	}
 
-	var lat float64
-	var long float64
-
-	if len(response.Results) > 0 {
-		result := response.Results[0]
-		lat = result.Geometry.Lat
-		long = result.Geometry.Lng
+	if err := listingsRepo.UpdateListingCoordinate(ctx, pool, listing.ID, lat, long); err != nil {
+		return fmt.Errorf("failed to update listing coordinates: %w", err)
 	}
 
-	return listingsRepository.UpdateListingCoordinate(ctx, pool, listing.ID, lat, long)
+	return nil
 }

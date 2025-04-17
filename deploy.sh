@@ -75,7 +75,7 @@ Environment=\"NEON_DATABASE_URL=${NEON_DATABASE_URL}\"
 Environment=\"GCP_PROJECT_ID=${GCP_PROJECT_ID}\"
 Environment=\"GCP_BUCKET_NAME=${GCP_BUCKET_NAME}\"
 Environment=\"CERTS_DIR=${CERTS_DIR}\"
-Environment=\"OPENCAGE_API_KEY=${OPENCAGE_API_KEY}\"
+Environment=\"MAPBOX_API_KEY=${MAPBOX_API_KEY}\"
 
 [Install]
 WantedBy=multi-user.target' | sudo tee /etc/systemd/system/$SERVICE_NAME.service > /dev/null

@@ -39,7 +39,7 @@ var jobEntries = []JobEntry{
 		instance:   1,
 		schedule:   "* * * * *",
 		isDisabled: func() bool { return utils.IsDevelopment() },
-		factory:    func() Job { return &geocode.GeocodePropertyJob{} },
+		factory:    func() Job { return &geocode.GeocodeListingJob{} },
 	},
 }
 

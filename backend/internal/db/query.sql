@@ -60,7 +60,7 @@ WHERE listings.source = 'pagibig'::source AND listings.updated_at::date < CURREN
 -- name: GetListingNotGeocoded :one
 SELECT id, address
 FROM listings
-WHERE coordinate IS NULL
+WHERE coordinate IS NULL AND address != ''
 LIMIT 1;
 
 -- name: UpdateListingCoordinate :exec
