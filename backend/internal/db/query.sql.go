@@ -60,7 +60,9 @@ func (q *Queries) GetListingImagesByListingIds(ctx context.Context, ids []int64)
 const getListingNotGeocoded = `-- name: GetListingNotGeocoded :one
 SELECT id, address
 FROM listings
-WHERE coordinate IS NULL AND address != ''
+WHERE coordinate IS NULL
+  AND address != ''
+  AND status == 'active'::listing_status
 LIMIT 1
 `
 
@@ -272,7 +274,8 @@ func (q *Queries) InsertListings(ctx context.Context, arg InsertListingsParams) 
 const unlistOldPagibigListings = `-- name: UnlistOldPagibigListings :exec
 UPDATE listings
 SET status = 'unlisted'::listing_status
-WHERE listings.source = 'pagibig'::source AND listings.updated_at::date < CURRENT_DATE
+WHERE listings.source = 'pagibig'::source
+  AND listings.updated_at::date < CURRENT_DATE
 `
 
 func (q *Queries) UnlistOldPagibigListings(ctx context.Context) error {
@@ -282,7 +285,8 @@ func (q *Queries) UnlistOldPagibigListings(ctx context.Context) error {
 
 const updateListingCoordinate = `-- name: UpdateListingCoordinate :exec
 UPDATE listings
-SET coordinate = $1::point AND geocoded_at = NOW()
+SET coordinate  = $1::point,
+    geocoded_at = NOW()
 WHERE id = $2::bigint
 `
 

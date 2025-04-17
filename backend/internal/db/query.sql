@@ -55,17 +55,20 @@ WHERE listings.id = @id::bigint;
 -- name: UnlistOldPagibigListings :exec
 UPDATE listings
 SET status = 'unlisted'::listing_status
-WHERE listings.source = 'pagibig'::source AND listings.updated_at::date < CURRENT_DATE;
+WHERE listings.source = 'pagibig'::source
+  AND listings.updated_at::date < CURRENT_DATE;
 
 -- name: GetListingNotGeocoded :one
 SELECT id, address
 FROM listings
-WHERE coordinate IS NULL AND address != ''
+WHERE coordinate IS NULL
+  AND status == 'active'::listing_status
 LIMIT 1;
 
 -- name: UpdateListingCoordinate :exec
 UPDATE listings
-SET coordinate = @coordinate::point AND geocoded_at = NOW()
+SET coordinate  = @coordinate::point,
+    geocoded_at = NOW()
 WHERE id = @id::bigint;
 
 -- name: GetListingImagesByListingIds :many

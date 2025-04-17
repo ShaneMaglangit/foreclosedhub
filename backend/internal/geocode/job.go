@@ -23,7 +23,7 @@ func (job *GeocodeListingJob) Run() error {
 		return err
 	}
 
-	lat, long, err := geocodeAddress(listing.Address)
+	lat, long, err := geocodeAddress(ctx, listing.Address)
 	if err != nil {
 		return err
 	}
