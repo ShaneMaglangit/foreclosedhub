@@ -62,7 +62,7 @@ WHERE listings.source = 'pagibig'::source
 SELECT id, address
 FROM listings
 WHERE geocoded_at IS NULL
-  AND status == 'active'::listing_status
+  AND status = 'active'::listing_status
 LIMIT 1;
 
 -- name: UpdateListingCoordinate :exec
