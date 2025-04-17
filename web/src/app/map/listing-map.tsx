@@ -3,6 +3,7 @@
 import { Listing__Output } from "@web/lib/protobuf/listing/Listing";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { env } from "@web/env";
+import { ComponentProps } from "react";
 
 const DEFAULT_CENTER = {
   lat: 120.98281926920842,
@@ -11,9 +12,10 @@ const DEFAULT_CENTER = {
 
 export default function ListingMap({
   listings,
+  ...props
 }: {
   listings: Listing__Output[];
-}) {
+} & ComponentProps<typeof GoogleMap>) {
   const listingsWithCoords = listings.filter(
     (listing) => listing.latitude !== 0,
   );
@@ -27,7 +29,7 @@ export default function ListingMap({
 
   return (
     <LoadScript googleMapsApiKey={env.NEXT_PUBLIC_GCP_MAPS_API}>
-      <GoogleMap mapContainerClassName="w-dvw h-dvh" center={center} zoom={10}>
+      <GoogleMap {...props} center={center} zoom={10}>
         {listingsWithCoords.map((listing) => (
           <Marker
             key={listing.id}
