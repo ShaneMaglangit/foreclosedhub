@@ -41,7 +41,7 @@ export default async function Page({
           </div>
         </header>
         <ListingMap
-          mapContainerClassName="min-h-[calc(100dvh-(var(--spacing)*16))]"
+          mapContainerClassName="h-[calc(100dvh-(var(--spacing)*16))]"
           listings={listings}
         />
       </SidebarInset>
