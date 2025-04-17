@@ -58,7 +58,7 @@ func (q *Queries) GetListingImagesByListingIds(ctx context.Context, ids []int64)
 }
 
 const getListingsNextPage = `-- name: GetListingsNextPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate
 FROM listings
 WHERE id > $1::bigint
   AND address ILIKE $2::text
@@ -112,6 +112,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 			&i.UpdatedAt,
 			&i.Payload,
 			&i.Status,
+			&i.Coordinate,
 		); err != nil {
 			return nil, err
 		}
@@ -124,7 +125,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 }
 
 const getListingsPrevPage = `-- name: GetListingsPrevPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate
 FROM listings
 WHERE id < $1::bigint
   AND address ILIKE $2::text
@@ -178,6 +179,7 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 			&i.UpdatedAt,
 			&i.Payload,
 			&i.Status,
+			&i.Coordinate,
 		); err != nil {
 			return nil, err
 		}

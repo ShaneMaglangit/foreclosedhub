@@ -150,6 +150,7 @@ type Listing struct {
 	UpdatedAt       pgtype.Timestamptz
 	Payload         []byte
 	Status          ListingStatus
+	Coordinate      pgtype.Point
 }
 
 type ListingImage struct {
