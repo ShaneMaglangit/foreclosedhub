@@ -24,6 +24,23 @@ message GetListingsResponse {
   common.PageInfo pageInfo = 2;
 }
 
+message GetNearbyListingsRequest {
+  double latitude = 1;
+  double longitude = 2;
+  int32 limit = 3;
+  string search = 4;
+  repeated string sources = 5;
+  repeated string occupancy_statuses = 6;
+  repeated string statuses = 7;
+  int64 min_price = 8;
+  optional int64 max_price = 9;
+}
+
+message GetNearbyListingsResponse {
+  repeated Listing listings = 1;
+}
+
 service ListingService {
   rpc GetListings (GetListingsRequest) returns (GetListingsResponse);
+  rpc GetNearbyListings (GetNearbyListingsRequest) returns (GetNearbyListingsResponse);
 }

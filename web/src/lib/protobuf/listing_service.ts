@@ -14,6 +14,8 @@ export interface ProtoGrpcType {
   listing: {
     GetListingsRequest: MessageTypeDefinition
     GetListingsResponse: MessageTypeDefinition
+    GetNearbyListingsRequest: MessageTypeDefinition
+    GetNearbyListingsResponse: MessageTypeDefinition
     Listing: MessageTypeDefinition
     ListingService: SubtypeConstructor<typeof grpc.Client, _listing_ListingServiceClient> & { service: _listing_ListingServiceDefinition }
   }

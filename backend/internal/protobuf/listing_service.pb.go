@@ -181,6 +181,158 @@ func (x *GetListingsResponse) GetPageInfo() *PageInfo {
 	return nil
 }
 
+type GetNearbyListingsRequest struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	Latitude          float64                `protobuf:"fixed64,1,opt,name=latitude,proto3" json:"latitude,omitempty"`
+	Longitude         float64                `protobuf:"fixed64,2,opt,name=longitude,proto3" json:"longitude,omitempty"`
+	Limit             int32                  `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	Search            string                 `protobuf:"bytes,4,opt,name=search,proto3" json:"search,omitempty"`
+	Sources           []string               `protobuf:"bytes,5,rep,name=sources,proto3" json:"sources,omitempty"`
+	OccupancyStatuses []string               `protobuf:"bytes,6,rep,name=occupancy_statuses,json=occupancyStatuses,proto3" json:"occupancy_statuses,omitempty"`
+	Statuses          []string               `protobuf:"bytes,7,rep,name=statuses,proto3" json:"statuses,omitempty"`
+	MinPrice          int64                  `protobuf:"varint,8,opt,name=min_price,json=minPrice,proto3" json:"min_price,omitempty"`
+	MaxPrice          *int64                 `protobuf:"varint,9,opt,name=max_price,json=maxPrice,proto3,oneof" json:"max_price,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *GetNearbyListingsRequest) Reset() {
+	*x = GetNearbyListingsRequest{}
+	mi := &file_listing_service_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetNearbyListingsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetNearbyListingsRequest) ProtoMessage() {}
+
+func (x *GetNearbyListingsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_listing_service_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetNearbyListingsRequest.ProtoReflect.Descriptor instead.
+func (*GetNearbyListingsRequest) Descriptor() ([]byte, []int) {
+	return file_listing_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetNearbyListingsRequest) GetLatitude() float64 {
+	if x != nil {
+		return x.Latitude
+	}
+	return 0
+}
+
+func (x *GetNearbyListingsRequest) GetLongitude() float64 {
+	if x != nil {
+		return x.Longitude
+	}
+	return 0
+}
+
+func (x *GetNearbyListingsRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *GetNearbyListingsRequest) GetSearch() string {
+	if x != nil {
+		return x.Search
+	}
+	return ""
+}
+
+func (x *GetNearbyListingsRequest) GetSources() []string {
+	if x != nil {
+		return x.Sources
+	}
+	return nil
+}
+
+func (x *GetNearbyListingsRequest) GetOccupancyStatuses() []string {
+	if x != nil {
+		return x.OccupancyStatuses
+	}
+	return nil
+}
+
+func (x *GetNearbyListingsRequest) GetStatuses() []string {
+	if x != nil {
+		return x.Statuses
+	}
+	return nil
+}
+
+func (x *GetNearbyListingsRequest) GetMinPrice() int64 {
+	if x != nil {
+		return x.MinPrice
+	}
+	return 0
+}
+
+func (x *GetNearbyListingsRequest) GetMaxPrice() int64 {
+	if x != nil && x.MaxPrice != nil {
+		return *x.MaxPrice
+	}
+	return 0
+}
+
+type GetNearbyListingsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Listings      []*Listing             `protobuf:"bytes,1,rep,name=listings,proto3" json:"listings,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetNearbyListingsResponse) Reset() {
+	*x = GetNearbyListingsResponse{}
+	mi := &file_listing_service_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetNearbyListingsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetNearbyListingsResponse) ProtoMessage() {}
+
+func (x *GetNearbyListingsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_listing_service_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetNearbyListingsResponse.ProtoReflect.Descriptor instead.
+func (*GetNearbyListingsResponse) Descriptor() ([]byte, []int) {
+	return file_listing_service_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetNearbyListingsResponse) GetListings() []*Listing {
+	if x != nil {
+		return x.Listings
+	}
+	return nil
+}
+
 var File_listing_service_proto protoreflect.FileDescriptor
 
 const file_listing_service_proto_rawDesc = "" +
@@ -202,9 +354,24 @@ const file_listing_service_proto_rawDesc = "" +
 	"_max_price\"q\n" +
 	"\x13GetListingsResponse\x12,\n" +
 	"\blistings\x18\x01 \x03(\v2\x10.listing.ListingR\blistings\x12,\n" +
-	"\bpageInfo\x18\x02 \x01(\v2\x10.common.PageInfoR\bpageInfo2Z\n" +
+	"\bpageInfo\x18\x02 \x01(\v2\x10.common.PageInfoR\bpageInfo\"\xb4\x02\n" +
+	"\x18GetNearbyListingsRequest\x12\x1a\n" +
+	"\blatitude\x18\x01 \x01(\x01R\blatitude\x12\x1c\n" +
+	"\tlongitude\x18\x02 \x01(\x01R\tlongitude\x12\x14\n" +
+	"\x05limit\x18\x03 \x01(\x05R\x05limit\x12\x16\n" +
+	"\x06search\x18\x04 \x01(\tR\x06search\x12\x18\n" +
+	"\asources\x18\x05 \x03(\tR\asources\x12-\n" +
+	"\x12occupancy_statuses\x18\x06 \x03(\tR\x11occupancyStatuses\x12\x1a\n" +
+	"\bstatuses\x18\a \x03(\tR\bstatuses\x12\x1b\n" +
+	"\tmin_price\x18\b \x01(\x03R\bminPrice\x12 \n" +
+	"\tmax_price\x18\t \x01(\x03H\x00R\bmaxPrice\x88\x01\x01B\f\n" +
+	"\n" +
+	"_max_price\"I\n" +
+	"\x19GetNearbyListingsResponse\x12,\n" +
+	"\blistings\x18\x01 \x03(\v2\x10.listing.ListingR\blistings2\xb6\x01\n" +
 	"\x0eListingService\x12H\n" +
-	"\vGetListings\x12\x1b.listing.GetListingsRequest\x1a\x1c.listing.GetListingsResponseB?Z=gitlab.com/shanemaglangit/homagochi/backend/internal/protobufb\x06proto3"
+	"\vGetListings\x12\x1b.listing.GetListingsRequest\x1a\x1c.listing.GetListingsResponse\x12Z\n" +
+	"\x11GetNearbyListings\x12!.listing.GetNearbyListingsRequest\x1a\".listing.GetNearbyListingsResponseB?Z=gitlab.com/shanemaglangit/homagochi/backend/internal/protobufb\x06proto3"
 
 var (
 	file_listing_service_proto_rawDescOnce sync.Once
@@ -218,23 +385,28 @@ func file_listing_service_proto_rawDescGZIP() []byte {
 	return file_listing_service_proto_rawDescData
 }
 
-var file_listing_service_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_listing_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_listing_service_proto_goTypes = []any{
-	(*GetListingsRequest)(nil),  // 0: listing.GetListingsRequest
-	(*GetListingsResponse)(nil), // 1: listing.GetListingsResponse
-	(*Listing)(nil),             // 2: listing.Listing
-	(*PageInfo)(nil),            // 3: common.PageInfo
+	(*GetListingsRequest)(nil),        // 0: listing.GetListingsRequest
+	(*GetListingsResponse)(nil),       // 1: listing.GetListingsResponse
+	(*GetNearbyListingsRequest)(nil),  // 2: listing.GetNearbyListingsRequest
+	(*GetNearbyListingsResponse)(nil), // 3: listing.GetNearbyListingsResponse
+	(*Listing)(nil),                   // 4: listing.Listing
+	(*PageInfo)(nil),                  // 5: common.PageInfo
 }
 var file_listing_service_proto_depIdxs = []int32{
-	2, // 0: listing.GetListingsResponse.listings:type_name -> listing.Listing
-	3, // 1: listing.GetListingsResponse.pageInfo:type_name -> common.PageInfo
-	0, // 2: listing.ListingService.GetListings:input_type -> listing.GetListingsRequest
-	1, // 3: listing.ListingService.GetListings:output_type -> listing.GetListingsResponse
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	4, // 0: listing.GetListingsResponse.listings:type_name -> listing.Listing
+	5, // 1: listing.GetListingsResponse.pageInfo:type_name -> common.PageInfo
+	4, // 2: listing.GetNearbyListingsResponse.listings:type_name -> listing.Listing
+	0, // 3: listing.ListingService.GetListings:input_type -> listing.GetListingsRequest
+	2, // 4: listing.ListingService.GetNearbyListings:input_type -> listing.GetNearbyListingsRequest
+	1, // 5: listing.ListingService.GetListings:output_type -> listing.GetListingsResponse
+	3, // 6: listing.ListingService.GetNearbyListings:output_type -> listing.GetNearbyListingsResponse
+	5, // [5:7] is the sub-list for method output_type
+	3, // [3:5] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_listing_service_proto_init() }
@@ -245,13 +417,14 @@ func file_listing_service_proto_init() {
 	file_common_proto_init()
 	file_listing_proto_init()
 	file_listing_service_proto_msgTypes[0].OneofWrappers = []any{}
+	file_listing_service_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_listing_service_proto_rawDesc), len(file_listing_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

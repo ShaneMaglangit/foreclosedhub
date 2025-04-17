@@ -87,11 +87,77 @@
             }
           }
         },
+        "GetNearbyListingsRequest": {
+          "oneofs": {
+            "_maxPrice": {
+              "oneof": [
+                "maxPrice"
+              ]
+            }
+          },
+          "fields": {
+            "latitude": {
+              "type": "double",
+              "id": 1
+            },
+            "longitude": {
+              "type": "double",
+              "id": 2
+            },
+            "limit": {
+              "type": "int32",
+              "id": 3
+            },
+            "search": {
+              "type": "string",
+              "id": 4
+            },
+            "sources": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 5
+            },
+            "occupancyStatuses": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 6
+            },
+            "statuses": {
+              "rule": "repeated",
+              "type": "string",
+              "id": 7
+            },
+            "minPrice": {
+              "type": "int64",
+              "id": 8
+            },
+            "maxPrice": {
+              "type": "int64",
+              "id": 9,
+              "options": {
+                "proto3_optional": true
+              }
+            }
+          }
+        },
+        "GetNearbyListingsResponse": {
+          "fields": {
+            "listings": {
+              "rule": "repeated",
+              "type": "Listing",
+              "id": 1
+            }
+          }
+        },
         "ListingService": {
           "methods": {
             "GetListings": {
               "requestType": "GetListingsRequest",
               "responseType": "GetListingsResponse"
+            },
+            "GetNearbyListings": {
+              "requestType": "GetNearbyListingsRequest",
+              "responseType": "GetNearbyListingsResponse"
             }
           }
         },

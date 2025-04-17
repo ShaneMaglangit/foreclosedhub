@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ListingService_GetListings_FullMethodName = "/listing.ListingService/GetListings"
+	ListingService_GetListings_FullMethodName       = "/listing.ListingService/GetListings"
+	ListingService_GetNearbyListings_FullMethodName = "/listing.ListingService/GetNearbyListings"
 )
 
 // ListingServiceClient is the client API for ListingService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ListingServiceClient interface {
 	GetListings(ctx context.Context, in *GetListingsRequest, opts ...grpc.CallOption) (*GetListingsResponse, error)
+	GetNearbyListings(ctx context.Context, in *GetNearbyListingsRequest, opts ...grpc.CallOption) (*GetNearbyListingsResponse, error)
 }
 
 type listingServiceClient struct {
@@ -47,11 +49,22 @@ func (c *listingServiceClient) GetListings(ctx context.Context, in *GetListingsR
 	return out, nil
 }
 
+func (c *listingServiceClient) GetNearbyListings(ctx context.Context, in *GetNearbyListingsRequest, opts ...grpc.CallOption) (*GetNearbyListingsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetNearbyListingsResponse)
+	err := c.cc.Invoke(ctx, ListingService_GetNearbyListings_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ListingServiceServer is the server API for ListingService service.
 // All implementations must embed UnimplementedListingServiceServer
 // for forward compatibility.
 type ListingServiceServer interface {
 	GetListings(context.Context, *GetListingsRequest) (*GetListingsResponse, error)
+	GetNearbyListings(context.Context, *GetNearbyListingsRequest) (*GetNearbyListingsResponse, error)
 	mustEmbedUnimplementedListingServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedListingServiceServer struct{}
 
 func (UnimplementedListingServiceServer) GetListings(context.Context, *GetListingsRequest) (*GetListingsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetListings not implemented")
+}
+func (UnimplementedListingServiceServer) GetNearbyListings(context.Context, *GetNearbyListingsRequest) (*GetNearbyListingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNearbyListings not implemented")
 }
 func (UnimplementedListingServiceServer) mustEmbedUnimplementedListingServiceServer() {}
 func (UnimplementedListingServiceServer) testEmbeddedByValue()                        {}
@@ -104,6 +120,24 @@ func _ListingService_GetListings_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ListingService_GetNearbyListings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNearbyListingsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ListingServiceServer).GetNearbyListings(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ListingService_GetNearbyListings_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ListingServiceServer).GetNearbyListings(ctx, req.(*GetNearbyListingsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ListingService_ServiceDesc is the grpc.ServiceDesc for ListingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var ListingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetListings",
 			Handler:    _ListingService_GetListings_Handler,
+		},
+		{
+			MethodName: "GetNearbyListings",
+			Handler:    _ListingService_GetNearbyListings_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
