@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package listing;
 
-import "google/protobuf/timestamp.proto";
-
 option go_package = "gitlab.com/shanemaglangit/homagochi/backend/internal/protobuf";
 
 message Listing {
@@ -16,4 +14,6 @@ message Listing {
   string occupancy_status= 7;
   repeated string image_urls = 8;
   string payload = 9;
+  double latitude = 10;
+  double longitude = 11;
 }

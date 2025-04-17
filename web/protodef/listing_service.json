@@ -133,6 +133,14 @@
             "payload": {
               "type": "string",
               "id": 9
+            },
+            "latitude": {
+              "type": "double",
+              "id": 10
+            },
+            "longitude": {
+              "type": "double",
+              "id": 11
             }
           }
         }
@@ -164,26 +172,6 @@
             "hasPrevPage": {
               "type": "bool",
               "id": 6
-            }
-          }
-        }
-      }
-    },
-    "google": {
-      "nested": {
-        "protobuf": {
-          "nested": {
-            "Timestamp": {
-              "fields": {
-                "seconds": {
-                  "type": "int64",
-                  "id": 1
-                },
-                "nanos": {
-                  "type": "int32",
-                  "id": 2
-                }
-              }
             }
           }
         }

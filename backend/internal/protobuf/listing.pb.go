@@ -9,7 +9,6 @@ package protobuf
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -33,6 +32,8 @@ type Listing struct {
 	OccupancyStatus string                 `protobuf:"bytes,7,opt,name=occupancy_status,json=occupancyStatus,proto3" json:"occupancy_status,omitempty"`
 	ImageUrls       []string               `protobuf:"bytes,8,rep,name=image_urls,json=imageUrls,proto3" json:"image_urls,omitempty"`
 	Payload         string                 `protobuf:"bytes,9,opt,name=payload,proto3" json:"payload,omitempty"`
+	Latitude        float64                `protobuf:"fixed64,10,opt,name=latitude,proto3" json:"latitude,omitempty"`
+	Longitude       float64                `protobuf:"fixed64,11,opt,name=longitude,proto3" json:"longitude,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -130,11 +131,25 @@ func (x *Listing) GetPayload() string {
 	return ""
 }
 
+func (x *Listing) GetLatitude() float64 {
+	if x != nil {
+		return x.Latitude
+	}
+	return 0
+}
+
+func (x *Listing) GetLongitude() float64 {
+	if x != nil {
+		return x.Longitude
+	}
+	return 0
+}
+
 var File_listing_proto protoreflect.FileDescriptor
 
 const file_listing_proto_rawDesc = "" +
 	"\n" +
-	"\rlisting.proto\x12\alisting\x1a\x1fgoogle/protobuf/timestamp.proto\"\x85\x02\n" +
+	"\rlisting.proto\x12\alisting\"\xbf\x02\n" +
 	"\aListing\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x16\n" +
 	"\x06source\x18\x02 \x01(\tR\x06source\x12\x1f\n" +
@@ -147,7 +162,10 @@ const file_listing_proto_rawDesc = "" +
 	"\x10occupancy_status\x18\a \x01(\tR\x0foccupancyStatus\x12\x1d\n" +
 	"\n" +
 	"image_urls\x18\b \x03(\tR\timageUrls\x12\x18\n" +
-	"\apayload\x18\t \x01(\tR\apayloadB?Z=gitlab.com/shanemaglangit/homagochi/backend/internal/protobufb\x06proto3"
+	"\apayload\x18\t \x01(\tR\apayload\x12\x1a\n" +
+	"\blatitude\x18\n" +
+	" \x01(\x01R\blatitude\x12\x1c\n" +
+	"\tlongitude\x18\v \x01(\x01R\tlongitudeB?Z=gitlab.com/shanemaglangit/homagochi/backend/internal/protobufb\x06proto3"
 
 var (
 	file_listing_proto_rawDescOnce sync.Once

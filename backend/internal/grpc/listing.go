@@ -152,5 +152,7 @@ func convertListing(listing *db.ListingWithImages) (*protobuf.Listing, error) {
 		OccupancyStatus: string(listing.OccupancyStatus),
 		ImageUrls:       imageUrls,
 		Payload:         string(listing.Payload),
+		Longitude:       listing.Coordinate.P.X,
+		Latitude:        listing.Coordinate.P.Y,
 	}, nil
 }

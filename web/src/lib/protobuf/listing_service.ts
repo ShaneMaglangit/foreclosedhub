@@ -11,11 +11,6 @@ export interface ProtoGrpcType {
   common: {
     PageInfo: MessageTypeDefinition
   }
-  google: {
-    protobuf: {
-      Timestamp: MessageTypeDefinition
-    }
-  }
   listing: {
     GetListingsRequest: MessageTypeDefinition
     GetListingsResponse: MessageTypeDefinition

@@ -1,4 +1,4 @@
-// Original file: proto/listing_service.proto
+// Original file: ../proto/listing_service.proto
 
 import type { Long } from '@grpc/proto-loader';
 
@@ -9,6 +9,7 @@ export interface GetListingsRequest {
   'search'?: (string);
   'sources'?: (string)[];
   'occupancyStatuses'?: (string)[];
+  'statuses'?: (string)[];
   'minPrice'?: (number | string | Long);
   'maxPrice'?: (number | string | Long);
   '_after'?: "after";
@@ -23,6 +24,7 @@ export interface GetListingsRequest__Output {
   'search': (string);
   'sources': (string)[];
   'occupancyStatuses': (string)[];
+  'statuses': (string)[];
   'minPrice': (string);
   'maxPrice'?: (string);
   '_after': "after";
