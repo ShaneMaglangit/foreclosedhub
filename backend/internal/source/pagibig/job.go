@@ -2,9 +2,13 @@ package pagibig
 
 import (
 	"context"
+	"errors"
+	"github.com/jackc/pgx/v5"
 	"homagochi/internal/db"
 	"homagochi/internal/service"
 )
+
+const skipCountAfterNoop = 24 * 60
 
 type ScrapeListingJob struct{}
 
@@ -41,7 +45,14 @@ func (j *ScrapeListingJob) Run() error {
 
 type ScrapeListingImageJob struct{}
 
+var listingImageSkipCounter = 0
+
 func (j *ScrapeListingImageJob) Run() error {
+	if listingImageSkipCounter > 0 {
+		listingImageSkipCounter--
+		return nil
+	}
+
 	ctx := context.Background()
 
 	pool, err := db.Connect(ctx)
@@ -52,7 +63,10 @@ func (j *ScrapeListingImageJob) Run() error {
 
 	listingsRepository := db.NewListingsRepository()
 	listing, err := listingsRepository.GetListingByImageNotLoaded(ctx, pool, db.SourcePagibig)
-	if err != nil {
+	if errors.Is(err, pgx.ErrNoRows) {
+		listingImageSkipCounter = skipCountAfterNoop
+		return err
+	} else if err != nil {
 		return err
 	}
 
