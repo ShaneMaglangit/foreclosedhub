@@ -14,21 +14,29 @@ type Job interface {
 
 type JobEntry struct {
 	name       string
+	instance   int
 	schedule   string
 	isDisabled func() bool
 	factory    func() Job
 }
 
 var jobEntries = []JobEntry{
-	{name: "PagibigScrapeListing", schedule: "0 0 * * *", factory: func() Job { return &pagibig.ScrapeListingJob{} }},
+	{
+		name:     "PagibigScrapeListing",
+		instance: 1,
+		schedule: "0 0 * * *",
+		factory:  func() Job { return &pagibig.ScrapeListingJob{} },
+	},
 	{
 		name:       "PagibigScrapeListingImages",
+		instance:   5,
 		schedule:   "* * * * *",
 		isDisabled: func() bool { return utils.IsDevelopment() },
 		factory:    func() Job { return &pagibig.ScrapeListingImageJob{} },
 	},
 	{
 		name:       "GeocodeListings",
+		instance:   1,
 		schedule:   "* * * * *",
 		isDisabled: func() bool { return utils.IsDevelopment() },
 		factory:    func() Job { return &geocode.GeocodePropertyJob{} },
@@ -43,16 +51,20 @@ func Start() *cron.Cron {
 			continue
 		}
 
-		job := entry.factory()
+		for range entry.instance {
+			job := entry.factory()
 
-		_, err := c.AddFunc(entry.schedule, func() {
-			if err := job.Run(); err != nil {
-				log.Printf("%s: %v", entry.name, err)
+			_, err := c.AddFunc(entry.schedule, func() {
+				if err := job.Run(); err != nil {
+					log.Printf("%s: %v", entry.name, err)
+				}
+			})
+
+			if err != nil {
+				log.Printf("Error scheduling %s job: %v", entry.name, err)
 			}
-		})
 
-		if err != nil {
-			log.Printf("Error scheduling %s job: %v", entry.name, err)
+			log.Printf("Added %s job", entry.name)
 		}
 	}
 
