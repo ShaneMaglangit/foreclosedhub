@@ -213,6 +213,81 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 	return items, nil
 }
 
+const getNearbyListings = `-- name: GetNearbyListings :many
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate, geocoded_at
+FROM listings
+WHERE ST_DWithin(
+        location,
+        ST_MakePoint($1::double precision, $2::double precision)::geography,
+        $3::double precision
+      )
+  AND address ILIKE $4::text
+  AND source = ANY ($5::source[])
+  AND occupancy_status = ANY ($6::occupancy_status[])
+  AND price BETWEEN $7::bigint AND COALESCE($8, 9223372036854775807)
+  AND status = ANY ($9::listing_status[])
+LIMIT $10::int
+`
+
+type GetNearbyListingsParams struct {
+	Lng               float64
+	Lat               float64
+	RadiusMeters      float64
+	Search            string
+	Sources           []Source
+	OccupancyStatuses []OccupancyStatus
+	MinPrice          int64
+	MaxPrice          pgtype.Int8
+	Statuses          []ListingStatus
+	RowLimit          int32
+}
+
+func (q *Queries) GetNearbyListings(ctx context.Context, arg GetNearbyListingsParams) ([]*Listing, error) {
+	rows, err := q.db.Query(ctx, getNearbyListings,
+		arg.Lng,
+		arg.Lat,
+		arg.RadiusMeters,
+		arg.Search,
+		arg.Sources,
+		arg.OccupancyStatuses,
+		arg.MinPrice,
+		arg.MaxPrice,
+		arg.Statuses,
+		arg.RowLimit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*Listing
+	for rows.Next() {
+		var i Listing
+		if err := rows.Scan(
+			&i.ID,
+			&i.Source,
+			&i.ExternalID,
+			&i.Address,
+			&i.FloorArea,
+			&i.Price,
+			&i.ImageLoaded,
+			&i.OccupancyStatus,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Payload,
+			&i.Status,
+			&i.Coordinate,
+			&i.GeocodedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const insertListingImages = `-- name: InsertListingImages :exec
 INSERT INTO listing_images (listing_id, url)
 VALUES (unnest($1::bigint[]), unnest($2::text[]))
