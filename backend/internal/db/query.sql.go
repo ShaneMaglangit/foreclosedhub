@@ -60,8 +60,7 @@ func (q *Queries) GetListingImagesByListingIds(ctx context.Context, ids []int64)
 const getListingNotGeocoded = `-- name: GetListingNotGeocoded :one
 SELECT id, address
 FROM listings
-WHERE coordinate IS NULL
-  AND address != ''
+WHERE geocoded_at IS NULL
   AND status == 'active'::listing_status
 LIMIT 1
 `
