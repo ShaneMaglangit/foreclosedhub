@@ -78,7 +78,7 @@ func (q *Queries) GetListingNotGeocoded(ctx context.Context) (*GetListingNotGeoc
 }
 
 const getListingsNextPage = `-- name: GetListingsNextPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate, geocoded_at, coordinate_geog
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate_geog
 FROM listings
 WHERE id > $1::bigint
   AND address ILIKE $2::text
@@ -132,7 +132,6 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 			&i.UpdatedAt,
 			&i.Payload,
 			&i.Status,
-			&i.Coordinate,
 			&i.GeocodedAt,
 			&i.CoordinateGeog,
 		); err != nil {
@@ -147,7 +146,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 }
 
 const getListingsPrevPage = `-- name: GetListingsPrevPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate, geocoded_at, coordinate_geog
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate_geog
 FROM listings
 WHERE id < $1::bigint
   AND address ILIKE $2::text
@@ -201,7 +200,6 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 			&i.UpdatedAt,
 			&i.Payload,
 			&i.Status,
-			&i.Coordinate,
 			&i.GeocodedAt,
 			&i.CoordinateGeog,
 		); err != nil {
@@ -216,7 +214,7 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 }
 
 const getNearbyListings = `-- name: GetNearbyListings :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate, geocoded_at, coordinate_geog
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate_geog
 FROM listings
 WHERE ST_DWithin(
         coordinate_geog,
@@ -275,7 +273,6 @@ func (q *Queries) GetNearbyListings(ctx context.Context, arg GetNearbyListingsPa
 			&i.UpdatedAt,
 			&i.Payload,
 			&i.Status,
-			&i.Coordinate,
 			&i.GeocodedAt,
 			&i.CoordinateGeog,
 		); err != nil {

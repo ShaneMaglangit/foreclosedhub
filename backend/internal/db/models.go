@@ -151,7 +151,6 @@ type Listing struct {
 	UpdatedAt       pgtype.Timestamptz
 	Payload         []byte
 	Status          ListingStatus
-	Coordinate      pgtype.Point
 	GeocodedAt      pgtype.Timestamptz
 	CoordinateGeog  *geos.Geom
 }
