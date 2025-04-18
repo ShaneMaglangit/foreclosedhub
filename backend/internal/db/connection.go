@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/jackc/pgx/v5"
+	"github.com/twpayne/go-geos"
+	pgxgeos "github.com/twpayne/pgx-geos"
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -36,14 +38,13 @@ func createConfig() (*pgxpool.Config, error) {
 		return nil, err
 	}
 
-	config.AfterConnect = registerEnums
+	config.AfterConnect = registerCustomTypes
 
 	return config, nil
 }
 
-// SQLC does not have a built-in compatibility support for custom enums with query parameters
 // See https://github.com/jackc/pgx/discussions/1559
-func registerEnums(ctx context.Context, conn *pgx.Conn) error {
+func registerCustomTypes(ctx context.Context, conn *pgx.Conn) error {
 	enumNames := []string{"source", "_source", "occupancy_status", "_occupancy_status", "listing_status", "_listing_status"}
 	enumTypes, err := conn.LoadTypes(ctx, enumNames)
 	if err != nil {
@@ -52,6 +53,10 @@ func registerEnums(ctx context.Context, conn *pgx.Conn) error {
 
 	for _, enumType := range enumTypes {
 		conn.TypeMap().RegisterType(enumType)
+	}
+
+	if err := pgxgeos.Register(ctx, conn, geos.NewContext()); err != nil {
+		return err
 	}
 
 	return nil

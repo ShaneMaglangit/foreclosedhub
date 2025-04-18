@@ -360,18 +360,36 @@ func (q *Queries) UnlistOldPagibigListings(ctx context.Context) error {
 
 const updateListingCoordinate = `-- name: UpdateListingCoordinate :exec
 UPDATE listings
+SET coordinate_geog = ST_SetSRID(ST_MakePoint($1::double precision, $2::double precision), 4326)::geography,
+    geocoded_at = NOW()
+WHERE id = $3::bigint
+`
+
+type UpdateListingCoordinateParams struct {
+	Lng float64
+	Lat float64
+	ID  int64
+}
+
+func (q *Queries) UpdateListingCoordinate(ctx context.Context, arg UpdateListingCoordinateParams) error {
+	_, err := q.db.Exec(ctx, updateListingCoordinate, arg.Lng, arg.Lat, arg.ID)
+	return err
+}
+
+const updateListingCoordinateLegacy = `-- name: UpdateListingCoordinateLegacy :exec
+UPDATE listings
 SET coordinate  = $1::point,
     geocoded_at = NOW()
 WHERE id = $2::bigint
 `
 
-type UpdateListingCoordinateParams struct {
+type UpdateListingCoordinateLegacyParams struct {
 	Coordinate pgtype.Point
 	ID         int64
 }
 
-func (q *Queries) UpdateListingCoordinate(ctx context.Context, arg UpdateListingCoordinateParams) error {
-	_, err := q.db.Exec(ctx, updateListingCoordinate, arg.Coordinate, arg.ID)
+func (q *Queries) UpdateListingCoordinateLegacy(ctx context.Context, arg UpdateListingCoordinateLegacyParams) error {
+	_, err := q.db.Exec(ctx, updateListingCoordinateLegacy, arg.Coordinate, arg.ID)
 	return err
 }
 
