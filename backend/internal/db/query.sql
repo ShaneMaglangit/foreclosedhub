@@ -28,7 +28,7 @@ FROM listings
 WHERE ST_DWithin(
         coordinate,
         ST_SetSRID(ST_MakePoint(@lng::double precision, @lat::double precision), 4326)::geography,
-        100000
+        200000
       )
   AND address ILIKE @search::text
   AND source = ANY (@sources::source[])
