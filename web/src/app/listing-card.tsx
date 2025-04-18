@@ -25,12 +25,21 @@ import {
 import Image from "next/image";
 import { Button } from "@web/components/common/button";
 import { useIsMobile } from "@web/lib/hooks/use-mobile";
+import { ComponentProps } from "react";
 
-export function ListingCard({ listing }: { listing: Listing__Output }) {
+export function ListingCard({
+  listing,
+  className,
+  ...props
+}: { listing: Listing__Output } & ComponentProps<"div">) {
   const isMobile = useIsMobile();
 
   return (
-    <div key={listing.id} className="bg-background border w-full">
+    <div
+      key={listing.id}
+      className={cn("bg-background border w-full", className)}
+      {...props}
+    >
       <ListingCarousel listing={listing} />
       <Separator />
       {isMobile ? (

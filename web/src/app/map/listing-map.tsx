@@ -66,7 +66,7 @@ export default function ListingMap({
         {selectedListing && (
           <InfoWindow
             headerContent={
-              <h3 className="truncate capitalize">
+              <h3 className="max-w-[460px] truncate capitalize">
                 {selectedListing.address.toLowerCase()}
               </h3>
             }
@@ -76,7 +76,7 @@ export default function ListingMap({
             }}
             onCloseClick={() => setSelectedListing(null)}
           >
-            <ListingCard listing={selectedListing} />
+            <ListingCard className="max-w-[500px]" listing={selectedListing} />
           </InfoWindow>
         )}
       </Map>
