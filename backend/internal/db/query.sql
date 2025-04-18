@@ -26,7 +26,7 @@ LIMIT @row_limit::int;
 SELECT *
 FROM listings
 WHERE ST_DWithin(
-        coordinate_geog,
+        coordinate,
         ST_SetSRID(ST_MakePoint(@lat::double precision, @lng::double precision), 4326)::geography,
         100000
       )
@@ -82,7 +82,7 @@ LIMIT 1;
 
 -- name: UpdateListingCoordinate :exec
 UPDATE listings
-SET coordinate_geog = ST_SetSRID(ST_MakePoint(@lng::double precision, @lat::double precision), 4326)::geography,
+SET coordinate = ST_SetSRID(ST_MakePoint(@lng::double precision, @lat::double precision), 4326)::geography,
     geocoded_at = NOW()
 WHERE id = @id::bigint;
 

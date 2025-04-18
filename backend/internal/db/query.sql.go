@@ -78,7 +78,7 @@ func (q *Queries) GetListingNotGeocoded(ctx context.Context) (*GetListingNotGeoc
 }
 
 const getListingsNextPage = `-- name: GetListingsNextPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate_geog
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate
 FROM listings
 WHERE id > $1::bigint
   AND address ILIKE $2::text
@@ -133,7 +133,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 			&i.Payload,
 			&i.Status,
 			&i.GeocodedAt,
-			&i.CoordinateGeog,
+			&i.Coordinate,
 		); err != nil {
 			return nil, err
 		}
@@ -146,7 +146,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 }
 
 const getListingsPrevPage = `-- name: GetListingsPrevPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate_geog
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate
 FROM listings
 WHERE id < $1::bigint
   AND address ILIKE $2::text
@@ -201,7 +201,7 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 			&i.Payload,
 			&i.Status,
 			&i.GeocodedAt,
-			&i.CoordinateGeog,
+			&i.Coordinate,
 		); err != nil {
 			return nil, err
 		}
@@ -214,10 +214,10 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 }
 
 const getNearbyListings = `-- name: GetNearbyListings :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate_geog
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate
 FROM listings
 WHERE ST_DWithin(
-        coordinate_geog,
+        coordinate,
         ST_SetSRID(ST_MakePoint($1::double precision, $2::double precision), 4326)::geography,
         100000
       )
@@ -274,7 +274,7 @@ func (q *Queries) GetNearbyListings(ctx context.Context, arg GetNearbyListingsPa
 			&i.Payload,
 			&i.Status,
 			&i.GeocodedAt,
-			&i.CoordinateGeog,
+			&i.Coordinate,
 		); err != nil {
 			return nil, err
 		}
@@ -357,7 +357,7 @@ func (q *Queries) UnlistOldPagibigListings(ctx context.Context) error {
 
 const updateListingCoordinate = `-- name: UpdateListingCoordinate :exec
 UPDATE listings
-SET coordinate_geog = ST_SetSRID(ST_MakePoint($1::double precision, $2::double precision), 4326)::geography,
+SET coordinate = ST_SetSRID(ST_MakePoint($1::double precision, $2::double precision), 4326)::geography,
     geocoded_at = NOW()
 WHERE id = $3::bigint
 `

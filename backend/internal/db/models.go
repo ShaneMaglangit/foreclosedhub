@@ -152,7 +152,7 @@ type Listing struct {
 	Payload         []byte
 	Status          ListingStatus
 	GeocodedAt      pgtype.Timestamptz
-	CoordinateGeog  *geos.Geom
+	Coordinate      *geos.Geom
 }
 
 type ListingImage struct {

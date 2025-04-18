@@ -1,0 +1,1 @@
+ALTER TABLE listings RENAME COLUMN coordinate_geog TO coordinate;

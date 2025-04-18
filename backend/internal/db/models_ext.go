@@ -18,5 +18,5 @@ type ListingWithImages struct {
 	CreatedAt       pgtype.Timestamptz
 	UpdatedAt       pgtype.Timestamptz
 	Payload         []byte
-	CoordinateGeog  *geos.Geom
+	Coordinate      *geos.Geom
 }
