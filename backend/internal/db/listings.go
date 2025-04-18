@@ -16,7 +16,6 @@ type ListingsRepository interface {
 	UnlistOldPagibigListings(ctx context.Context, dbtx DBTX) error
 	GetListingNotGeocoded(ctx context.Context, dbtx DBTX) (*GetListingNotGeocodedRow, error)
 	UpdateListingCoordinate(ctx context.Context, dbtx DBTX, id int64, lat float64, long float64) error
-	UpdateListingCoordinateLegacy(ctx context.Context, dbtx DBTX, id int64, lat float64, long float64) error
 }
 
 type ListingsRepositoryImpl struct{}
@@ -84,18 +83,6 @@ func (l ListingsRepositoryImpl) UnlistOldPagibigListings(ctx context.Context, db
 }
 func (l ListingsRepositoryImpl) GetListingNotGeocoded(ctx context.Context, dbtx DBTX) (*GetListingNotGeocodedRow, error) {
 	return New(dbtx).GetListingNotGeocoded(ctx)
-}
-
-func (l ListingsRepositoryImpl) UpdateListingCoordinateLegacy(ctx context.Context, dbtx DBTX, id int64, lat float64, long float64) error {
-	var coordinate pgtype.Point
-	if err := coordinate.Scan(fmt.Sprintf("(%f,%f)", long, lat)); err != nil {
-		return err
-	}
-
-	return New(dbtx).UpdateListingCoordinateLegacy(ctx, UpdateListingCoordinateLegacyParams{
-		ID:         id,
-		Coordinate: coordinate,
-	})
 }
 
 func (l ListingsRepositoryImpl) UpdateListingCoordinate(ctx context.Context, dbtx DBTX, id int64, lat float64, long float64) error {

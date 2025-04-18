@@ -86,12 +86,6 @@ SET coordinate_geog = ST_SetSRID(ST_MakePoint(@lng::double precision, @lat::doub
     geocoded_at = NOW()
 WHERE id = @id::bigint;
 
--- name: UpdateListingCoordinateLegacy :exec
-UPDATE listings
-SET coordinate  = @coordinate::point,
-    geocoded_at = NOW()
-WHERE id = @id::bigint;
-
 -- name: GetListingImagesByListingIds :many
 SELECT *
 FROM listing_images
