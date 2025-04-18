@@ -25,7 +25,6 @@ export default function ListingMap({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [center, setCenter] = useState(defaultCenter);
   const [selectedListing, setSelectedListing] =
     useState<Listing__Output | null>(null);
 
@@ -45,9 +44,8 @@ export default function ListingMap({
     <APIProvider apiKey={env.NEXT_PUBLIC_GCP_MAPS_API}>
       <Map
         defaultZoom={10}
-        center={center}
+        defaultCenter={defaultCenter}
         onCameraChanged={(ev: MapCameraChangedEvent) => {
-          setCenter(ev.detail.center);
           handleCenterChanged(ev.detail.center);
         }}
         {...props}
@@ -57,7 +55,6 @@ export default function ListingMap({
             key={listing.id}
             position={{ lat: listing.latitude, lng: listing.longitude }}
             onClick={() => {
-              setCenter({ lat: listing.latitude, lng: listing.longitude });
               setSelectedListing(listing);
             }}
           />
