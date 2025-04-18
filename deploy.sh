@@ -14,6 +14,12 @@ gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS
 echo "Initializing SSH"
 gcloud compute ssh "$USER@$INSTANCE_NAME" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --command "echo hi"
 
+echo "Installing geo dependency"
+gcloud compute ssh "$USER@$INSTANCE_NAME" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --command "
+  sudo apt update -y
+  sudo apt install -y libgeos-dev
+"
+
 echo "Stopping running service..."
 gcloud compute ssh "$USER@$INSTANCE_NAME" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --command "
   sudo systemctl stop $SERVICE_NAME || true
@@ -60,7 +66,6 @@ echo "Setting up systemd service..."
 gcloud compute ssh "$USER@$INSTANCE_NAME" --project="$GCP_PROJECT_ID" --zone="$GCP_ZONE" --command "
   chmod +x $REMOTE_BINARY_PATH
 
-  # Create systemd service file
   echo '[Unit]
 Description=App
 After=network.target
