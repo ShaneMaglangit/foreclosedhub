@@ -6,8 +6,8 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Homagochi",
-  description: "Properties fore you",
+  title: "ForeclosedHub",
+  description: "Foreclosed property listings in the Philippines.",
 };
 
 export default function RootLayout({

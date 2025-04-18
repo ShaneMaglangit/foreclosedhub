@@ -12,7 +12,7 @@ export function NavUtility() {
       <SidebarMenuItem>
         <SidebarMenuButton asChild>
           <a
-            href="https://gitlab.com/ShaneMaglangit/homagochi/-/issues/new"
+            href="https://gitlab.com/ShaneMaglangit/foreclosedhub/-/issues/new"
             target="_blank"
           >
             <Send />

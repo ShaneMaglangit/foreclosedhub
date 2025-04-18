@@ -26,7 +26,7 @@ export function AppSidebar({
         <Link href="/" className="flex gap-2">
           <Logo className="h-8 w-8" />
           <div className="grid flex-1 text-left  leading-tight">
-            <span className="truncate font-medium">Homagochi</span>
+            <span className="truncate font-medium">ForeclosedHub</span>
             <span className="truncate text-xs">Foreclosed properties</span>
           </div>
         </Link>
