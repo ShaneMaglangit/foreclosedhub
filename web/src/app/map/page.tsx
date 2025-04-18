@@ -34,7 +34,6 @@ export default async function Page({
           </div>
         </header>
         <ListingMap
-          mapContainerClassName="h-[calc(100dvh-(var(--spacing)*16))]"
           center={{ lat: params.latitude, lng: params.longitude }}
           listings={listings}
         />
