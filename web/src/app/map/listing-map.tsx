@@ -28,17 +28,13 @@ export default function ListingMap({
     useState<Listing__Output | null>(null);
 
   const handleCenterChanged = useDebounceCallback(() => {
-    if (!mapRef.current) return;
-
-    const newCenter = mapRef.current.getCenter();
+    const newCenter = mapRef?.current?.getCenter();
     if (!newCenter) return;
-
-    const newLatLng = { lat: newCenter.lat(), lng: newCenter.lng() };
 
     const currentParams = new URLSearchParams(searchParams.toString());
 
-    currentParams.set("longitude", newLatLng.lat.toFixed(6));
-    currentParams.set("latitude", newLatLng.lng.toFixed(6));
+    currentParams.set("longitude", newCenter.lat().toFixed(6));
+    currentParams.set("latitude", newCenter.lng().toFixed(6));
 
     router.push(`?${currentParams.toString()}`);
   }, 500);

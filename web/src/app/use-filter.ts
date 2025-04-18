@@ -1,12 +1,17 @@
 import { ListingParams } from "@web/app/schema";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useDebounceCallback } from "usehooks-ts";
 
 export function useFilter(initial: ListingParams) {
   const pathname = usePathname();
   const router = useRouter();
 
   const [filters, setFilters] = useState(initial);
+
+  const pushRouter = useDebounceCallback((path: string) => {
+    router.push(path);
+  }, 500);
 
   const setArrayParam = (
     key: string,
@@ -85,8 +90,8 @@ export function useFilter(initial: ListingParams) {
     setArrayParam("sources", sources, urlParams);
     setArrayParam("statuses", statuses, urlParams);
 
-    router.push(`${pathname}?${urlParams.toString()}`);
-  }, [pathname, router, filters]);
+    pushRouter(`${pathname}?${urlParams.toString()}`);
+  }, [filters]);
 
   return {
     filters,
