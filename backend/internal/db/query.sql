@@ -26,9 +26,9 @@ LIMIT @row_limit::int;
 SELECT *
 FROM listings
 WHERE ST_DWithin(
-        location,
-        ST_MakePoint(@lng::double precision, @lat::double precision)::geography,
-        @radius_meters::double precision
+        coordinate_geog,
+        ST_SetSRID(ST_MakePoint(@lng::double precision, @lat::double precision), 4326)::geography,
+        1000
       )
   AND address ILIKE @search::text
   AND source = ANY (@sources::source[])

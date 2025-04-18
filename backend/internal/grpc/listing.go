@@ -60,6 +60,7 @@ func (s *ListingServiceServer) GetNearbyListings(ctx context.Context, request *p
 		MaxPrice:          maxPrice,
 		RowLimit:          request.Limit,
 	})
+
 	if err != nil {
 		return nil, err
 	}

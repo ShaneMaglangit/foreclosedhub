@@ -7,6 +7,8 @@ import { GetListingsResponse__Output } from "@web/lib/protobuf/listing/GetListin
 import { env } from "@web/env";
 import { GetListingsRequest } from "@web/lib/protobuf/listing/GetListingsRequest";
 import { promises as fs } from "fs";
+import { GetNearbyListingsRequest } from "@web/lib/protobuf/listing/GetNearbyListingsRequest";
+import { GetNearbyListingsResponse__Output } from "@web/lib/protobuf/listing/GetNearbyListingsResponse";
 
 const PROTO_PATH = path.join(process.cwd(), "./protodef/listing_service.json");
 
@@ -39,6 +41,24 @@ export function getListings(
       (
         err: ServiceError | null,
         response: GetListingsResponse__Output | undefined,
+      ) => {
+        if (err) return reject(err);
+        if (!response) return reject({ reason: "Empty response" });
+        resolve(response);
+      },
+    );
+  });
+}
+
+export function getNearbyListings(
+  request: GetNearbyListingsRequest,
+): Promise<GetNearbyListingsResponse__Output> {
+  return new Promise((resolve, reject) => {
+    client.GetNearbyListings(
+      request,
+      (
+        err: ServiceError | null,
+        response: GetNearbyListingsResponse__Output | undefined,
       ) => {
         if (err) return reject(err);
         if (!response) return reject({ reason: "Empty response" });

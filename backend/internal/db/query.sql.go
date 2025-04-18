@@ -78,7 +78,7 @@ func (q *Queries) GetListingNotGeocoded(ctx context.Context) (*GetListingNotGeoc
 }
 
 const getListingsNextPage = `-- name: GetListingsNextPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate, geocoded_at
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate, geocoded_at, coordinate_geog
 FROM listings
 WHERE id > $1::bigint
   AND address ILIKE $2::text
@@ -134,6 +134,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 			&i.Status,
 			&i.Coordinate,
 			&i.GeocodedAt,
+			&i.CoordinateGeog,
 		); err != nil {
 			return nil, err
 		}
@@ -146,7 +147,7 @@ func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPa
 }
 
 const getListingsPrevPage = `-- name: GetListingsPrevPage :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate, geocoded_at
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate, geocoded_at, coordinate_geog
 FROM listings
 WHERE id < $1::bigint
   AND address ILIKE $2::text
@@ -202,6 +203,7 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 			&i.Status,
 			&i.Coordinate,
 			&i.GeocodedAt,
+			&i.CoordinateGeog,
 		); err != nil {
 			return nil, err
 		}
@@ -214,25 +216,24 @@ func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPa
 }
 
 const getNearbyListings = `-- name: GetNearbyListings :many
-SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate, geocoded_at
+SELECT id, source, external_id, address, floor_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, coordinate, geocoded_at, coordinate_geog
 FROM listings
 WHERE ST_DWithin(
-        location,
-        ST_MakePoint($1::double precision, $2::double precision)::geography,
-        $3::double precision
+        coordinate_geog,
+        ST_SetSRID(ST_MakePoint($1::double precision, $2::double precision), 4326)::geography,
+        1000
       )
-  AND address ILIKE $4::text
-  AND source = ANY ($5::source[])
-  AND occupancy_status = ANY ($6::occupancy_status[])
-  AND price BETWEEN $7::bigint AND COALESCE($8, 9223372036854775807)
-  AND status = ANY ($9::listing_status[])
-LIMIT $10::int
+  AND address ILIKE $3::text
+  AND source = ANY ($4::source[])
+  AND occupancy_status = ANY ($5::occupancy_status[])
+  AND price BETWEEN $6::bigint AND COALESCE($7, 9223372036854775807)
+  AND status = ANY ($8::listing_status[])
+LIMIT $9::int
 `
 
 type GetNearbyListingsParams struct {
 	Lng               float64
 	Lat               float64
-	RadiusMeters      float64
 	Search            string
 	Sources           []Source
 	OccupancyStatuses []OccupancyStatus
@@ -246,7 +247,6 @@ func (q *Queries) GetNearbyListings(ctx context.Context, arg GetNearbyListingsPa
 	rows, err := q.db.Query(ctx, getNearbyListings,
 		arg.Lng,
 		arg.Lat,
-		arg.RadiusMeters,
 		arg.Search,
 		arg.Sources,
 		arg.OccupancyStatuses,
@@ -277,6 +277,7 @@ func (q *Queries) GetNearbyListings(ctx context.Context, arg GetNearbyListingsPa
 			&i.Status,
 			&i.Coordinate,
 			&i.GeocodedAt,
+			&i.CoordinateGeog,
 		); err != nil {
 			return nil, err
 		}

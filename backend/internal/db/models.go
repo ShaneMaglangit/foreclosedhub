@@ -152,6 +152,7 @@ type Listing struct {
 	Status          ListingStatus
 	Coordinate      pgtype.Point
 	GeocodedAt      pgtype.Timestamptz
+	CoordinateGeog  interface{}
 }
 
 type ListingImage struct {
