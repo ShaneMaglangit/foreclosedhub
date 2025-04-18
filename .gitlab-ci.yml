@@ -20,6 +20,9 @@ stages:
 compile:
   stage: build
   image: golang:latest
+  before_script:
+    - apt-get update
+    - apt-get install -y pkg-config libgeos-dev
   script:
     - cd backend
     - go mod tidy

@@ -228,6 +228,13 @@ func convertListing(listing *db.ListingWithImages) (*protobuf.Listing, error) {
 		imageUrls = append(imageUrls, image.Url)
 	}
 
+	var longitude float64
+	var latitude float64
+	if listing.Coordinate != nil {
+		longitude = listing.Coordinate.X()
+		latitude = listing.Coordinate.Y()
+	}
+
 	return &protobuf.Listing{
 		Id:              listing.ID,
 		Source:          string(listing.Source),
@@ -238,7 +245,7 @@ func convertListing(listing *db.ListingWithImages) (*protobuf.Listing, error) {
 		OccupancyStatus: string(listing.OccupancyStatus),
 		ImageUrls:       imageUrls,
 		Payload:         string(listing.Payload),
-		Longitude:       listing.Coordinate.X(),
-		Latitude:        listing.Coordinate.Y(),
+		Longitude:       longitude,
+		Latitude:        latitude,
 	}, nil
 }
