@@ -10,8 +10,8 @@ import {
 import { env } from "@web/env";
 import { useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useDebounceCallback } from "usehooks-ts";
 import { ListingCard } from "@web/app/listing-card";
+import { useDebounceCallback } from "usehooks-ts";
 
 export default function ListingMap({
   listings,
@@ -34,8 +34,8 @@ export default function ListingMap({
 
     const currentParams = new URLSearchParams(searchParams.toString());
 
-    currentParams.set("longitude", newCenter.lat().toFixed(6));
-    currentParams.set("latitude", newCenter.lng().toFixed(6));
+    currentParams.set("longitude", newCenter.lng().toFixed(5));
+    currentParams.set("latitude", newCenter.lat().toFixed(5));
 
     router.push(`?${currentParams.toString()}`);
   }, 500);

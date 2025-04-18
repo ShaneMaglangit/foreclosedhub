@@ -219,7 +219,7 @@ FROM listings
 WHERE ST_DWithin(
         coordinate,
         ST_SetSRID(ST_MakePoint($1::double precision, $2::double precision), 4326)::geography,
-        100000
+      100000
       )
   AND address ILIKE $3::text
   AND source = ANY ($4::source[])
@@ -230,8 +230,8 @@ LIMIT $9::int
 `
 
 type GetNearbyListingsParams struct {
-	Lat               float64
 	Lng               float64
+	Lat               float64
 	Search            string
 	Sources           []Source
 	OccupancyStatuses []OccupancyStatus
@@ -243,8 +243,8 @@ type GetNearbyListingsParams struct {
 
 func (q *Queries) GetNearbyListings(ctx context.Context, arg GetNearbyListingsParams) ([]*Listing, error) {
 	rows, err := q.db.Query(ctx, getNearbyListings,
-		arg.Lat,
 		arg.Lng,
+		arg.Lat,
 		arg.Search,
 		arg.Sources,
 		arg.OccupancyStatuses,
@@ -363,13 +363,13 @@ WHERE id = $3::bigint
 `
 
 type UpdateListingCoordinateParams struct {
-	Lng float64
 	Lat float64
+	Lng float64
 	ID  int64
 }
 
 func (q *Queries) UpdateListingCoordinate(ctx context.Context, arg UpdateListingCoordinateParams) error {
-	_, err := q.db.Exec(ctx, updateListingCoordinate, arg.Lng, arg.Lat, arg.ID)
+	_, err := q.db.Exec(ctx, updateListingCoordinate, arg.Lat, arg.Lng, arg.ID)
 	return err
 }
 

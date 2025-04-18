@@ -1,6 +1,4 @@
-import { nearbyListingParams } from "@web/app/schema";
-import { getNearbyListings } from "@web/lib/grpc/client";
-import ListingMap from "@web/app/map/listing-map";
+import { nearbyListingParams, NearbyListingParams } from "@web/app/schema";
 import {
   SidebarInset,
   SidebarProvider,
@@ -9,18 +7,13 @@ import {
 import { AppSidebar } from "@web/app/app-sidebar";
 import { Button } from "@web/components/common/button";
 import Link from "next/link";
+import { getNearbyListings } from "@web/lib/grpc/client";
+import ListingMap from "@web/app/map/listing-map";
 
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: Promise<{
-    latitude?: number;
-    longitude?: number;
-    limit?: number;
-    search?: string;
-    sources?: string[] | string;
-    occupancyStatuses?: string[] | string;
-  }>;
+  searchParams?: Promise<NearbyListingParams>;
 }) {
   const params = nearbyListingParams.parse(await searchParams);
   const { listings } = await getNearbyListings(params);
