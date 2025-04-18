@@ -219,13 +219,15 @@ FROM listings
 WHERE ST_DWithin(
         coordinate,
         ST_SetSRID(ST_MakePoint($1::double precision, $2::double precision), 4326)::geography,
-      100000
+        100000
       )
   AND address ILIKE $3::text
   AND source = ANY ($4::source[])
   AND occupancy_status = ANY ($5::occupancy_status[])
   AND price BETWEEN $6::bigint AND COALESCE($7, 9223372036854775807)
   AND status = ANY ($8::listing_status[])
+ORDER BY ST_Distance(coordinate,
+                     ST_SetSRID(ST_MakePoint($1::double precision, $2::double precision), 4326)::geography)
 LIMIT $9::int
 `
 
@@ -357,7 +359,7 @@ func (q *Queries) UnlistOldPagibigListings(ctx context.Context) error {
 
 const updateListingCoordinate = `-- name: UpdateListingCoordinate :exec
 UPDATE listings
-SET coordinate = ST_SetSRID(ST_MakePoint($1::double precision, $2::double precision), 4326)::geography,
+SET coordinate  = ST_SetSRID(ST_MakePoint($1::double precision, $2::double precision), 4326)::geography,
     geocoded_at = NOW()
 WHERE id = $3::bigint
 `

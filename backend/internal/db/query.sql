@@ -28,13 +28,15 @@ FROM listings
 WHERE ST_DWithin(
         coordinate,
         ST_SetSRID(ST_MakePoint(@lng::double precision, @lat::double precision), 4326)::geography,
-      100000
+        100000
       )
   AND address ILIKE @search::text
   AND source = ANY (@sources::source[])
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
   AND status = ANY (@statuses::listing_status[])
+ORDER BY ST_Distance(coordinate,
+                     ST_SetSRID(ST_MakePoint(@lng::double precision, @lat::double precision), 4326)::geography)
 LIMIT @row_limit::int;
 
 -- name: GetListingByImageNotLoaded :one
@@ -82,7 +84,7 @@ LIMIT 1;
 
 -- name: UpdateListingCoordinate :exec
 UPDATE listings
-SET coordinate = ST_SetSRID(ST_MakePoint(@lng::double precision, @lat::double precision), 4326)::geography,
+SET coordinate  = ST_SetSRID(ST_MakePoint(@lng::double precision, @lat::double precision), 4326)::geography,
     geocoded_at = NOW()
 WHERE id = @id::bigint;
 

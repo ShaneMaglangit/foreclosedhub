@@ -1,0 +1,1 @@
+CREATE INDEX CONCURRENTLY idx_listings_on_coordinate ON listings USING gist (coordinate);
