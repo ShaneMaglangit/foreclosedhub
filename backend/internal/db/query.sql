@@ -82,7 +82,7 @@ LIMIT 1;
 
 -- name: UpdateListingCoordinate :exec
 UPDATE listings
-SET coordinate = ST_SetSRID(ST_MakePoint(@lat::double precision, @lng::double precision), 4326)::geography,
+SET coordinate = ST_SetSRID(ST_MakePoint(@lng::double precision, @lat::double precision), 4326)::geography,
     geocoded_at = NOW()
 WHERE id = @id::bigint;
 

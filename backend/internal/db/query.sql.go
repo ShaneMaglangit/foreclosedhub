@@ -363,13 +363,13 @@ WHERE id = $3::bigint
 `
 
 type UpdateListingCoordinateParams struct {
-	Lat float64
 	Lng float64
+	Lat float64
 	ID  int64
 }
 
 func (q *Queries) UpdateListingCoordinate(ctx context.Context, arg UpdateListingCoordinateParams) error {
-	_, err := q.db.Exec(ctx, updateListingCoordinate, arg.Lat, arg.Lng, arg.ID)
+	_, err := q.db.Exec(ctx, updateListingCoordinate, arg.Lng, arg.Lat, arg.ID)
 	return err
 }
 
