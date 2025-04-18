@@ -39,8 +39,8 @@ export const nearbyListingParams = z.object({
     .default([]),
   minPrice: z.coerce.number().optional(),
   maxPrice: z.coerce.number().optional(),
-  longitude: z.coerce.number().optional(),
-  latitude: z.coerce.number().optional(),
+  longitude: z.coerce.number().optional().default(120.98281926920842),
+  latitude: z.coerce.number().optional().default(14.600058768732925),
   limit: z.coerce.number().optional(),
 });
 

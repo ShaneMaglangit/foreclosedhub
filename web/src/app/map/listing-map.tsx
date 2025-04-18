@@ -8,37 +8,55 @@ import {
   Marker,
 } from "@react-google-maps/api";
 import { env } from "@web/env";
-import { useState } from "react";
-
-const DEFAULT_CENTER = {
-  lat: 120.98281926920842,
-  lng: 14.600058768732925,
-};
+import { useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useDebounceCallback } from "usehooks-ts";
 
 export default function ListingMap({
   listings,
+  center,
   ...props
 }: {
   listings: Listing__Output[];
 } & React.ComponentProps<typeof GoogleMap>) {
-  const listingsWithCoords = listings.filter(
-    (listing) => listing.latitude !== 0,
-  );
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const mapRef = useRef<google.maps.Map | null>(null);
 
-  const center = listingsWithCoords.length
-    ? {
-        lat: listingsWithCoords[0].latitude,
-        lng: listingsWithCoords[0].longitude,
-      }
-    : DEFAULT_CENTER;
-
+  const [initialCenter] = useState(center);
   const [selectedListing, setSelectedListing] =
     useState<Listing__Output | null>(null);
 
+  const handleCenterChanged = useDebounceCallback(() => {
+    if (!mapRef.current) return;
+
+    const newCenter = mapRef.current.getCenter();
+    if (!newCenter) return;
+
+    const newLatLng = { lat: newCenter.lat(), lng: newCenter.lng() };
+
+    const currentParams = new URLSearchParams(searchParams.toString());
+
+    currentParams.set("longitude", newLatLng.lat.toFixed(6));
+    currentParams.set("latitude", newLatLng.lng.toFixed(6));
+
+    router.push(`?${currentParams.toString()}`);
+  }, 500);
+
+  const handleOnLoad = (map: google.maps.Map) => {
+    mapRef.current = map;
+  };
+
   return (
     <LoadScript googleMapsApiKey={env.NEXT_PUBLIC_GCP_MAPS_API}>
-      <GoogleMap {...props} center={center} zoom={10}>
-        {listingsWithCoords.map((listing) => (
+      <GoogleMap
+        {...props}
+        center={initialCenter}
+        zoom={10}
+        onLoad={handleOnLoad}
+        onCenterChanged={handleCenterChanged}
+      >
+        {listings.map((listing) => (
           <Marker
             key={listing.id}
             position={{ lat: listing.latitude, lng: listing.longitude }}

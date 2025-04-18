@@ -221,7 +221,7 @@ FROM listings
 WHERE ST_DWithin(
         coordinate_geog,
         ST_SetSRID(ST_MakePoint($1::double precision, $2::double precision), 4326)::geography,
-        1000
+        100000
       )
   AND address ILIKE $3::text
   AND source = ANY ($4::source[])
@@ -232,8 +232,8 @@ LIMIT $9::int
 `
 
 type GetNearbyListingsParams struct {
-	Lng               float64
 	Lat               float64
+	Lng               float64
 	Search            string
 	Sources           []Source
 	OccupancyStatuses []OccupancyStatus
@@ -245,8 +245,8 @@ type GetNearbyListingsParams struct {
 
 func (q *Queries) GetNearbyListings(ctx context.Context, arg GetNearbyListingsParams) ([]*Listing, error) {
 	rows, err := q.db.Query(ctx, getNearbyListings,
-		arg.Lng,
 		arg.Lat,
+		arg.Lng,
 		arg.Search,
 		arg.Sources,
 		arg.OccupancyStatuses,
@@ -373,23 +373,6 @@ type UpdateListingCoordinateParams struct {
 
 func (q *Queries) UpdateListingCoordinate(ctx context.Context, arg UpdateListingCoordinateParams) error {
 	_, err := q.db.Exec(ctx, updateListingCoordinate, arg.Lng, arg.Lat, arg.ID)
-	return err
-}
-
-const updateListingCoordinateLegacy = `-- name: UpdateListingCoordinateLegacy :exec
-UPDATE listings
-SET coordinate  = $1::point,
-    geocoded_at = NOW()
-WHERE id = $2::bigint
-`
-
-type UpdateListingCoordinateLegacyParams struct {
-	Coordinate pgtype.Point
-	ID         int64
-}
-
-func (q *Queries) UpdateListingCoordinateLegacy(ctx context.Context, arg UpdateListingCoordinateLegacyParams) error {
-	_, err := q.db.Exec(ctx, updateListingCoordinateLegacy, arg.Coordinate, arg.ID)
 	return err
 }
 
