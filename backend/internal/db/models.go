@@ -9,6 +9,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5/pgtype"
+	geos "github.com/twpayne/go-geos"
 )
 
 type ListingStatus string
@@ -152,7 +153,7 @@ type Listing struct {
 	Status          ListingStatus
 	Coordinate      pgtype.Point
 	GeocodedAt      pgtype.Timestamptz
-	CoordinateGeog  interface{}
+	CoordinateGeog  *geos.Geom
 }
 
 type ListingImage struct {
