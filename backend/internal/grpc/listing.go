@@ -70,7 +70,7 @@ func (s *ListingServiceServer) GetNearbyListings(ctx context.Context, request *p
 
 func setDefaultNearbyRequestParams(request *protobuf.GetNearbyListingsRequest) {
 	if len(request.Sources) == 0 {
-		defaultSources := []string{string(db.SourcePagibig)}
+		defaultSources := []string{string(db.SourcePagibig), string(db.SourceSecbank)}
 		request.Sources = defaultSources
 	}
 
@@ -176,7 +176,7 @@ func (s *ListingServiceServer) GetListings(ctx context.Context, request *protobu
 
 func setDefaultRequestParams(request *protobuf.GetListingsRequest) {
 	if len(request.Sources) == 0 {
-		defaultSources := []string{string(db.SourcePagibig)}
+		defaultSources := []string{string(db.SourcePagibig), string(db.SourceSecbank)}
 		request.Sources = defaultSources
 	}
 

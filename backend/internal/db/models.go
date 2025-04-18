@@ -101,6 +101,7 @@ type Source string
 
 const (
 	SourcePagibig Source = "pagibig"
+	SourceSecbank Source = "secbank"
 )
 
 func (e *Source) Scan(src interface{}) error {

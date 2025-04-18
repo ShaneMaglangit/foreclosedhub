@@ -4,6 +4,7 @@ import (
 	"github.com/robfig/cron/v3"
 	"homagochi/internal/geocode"
 	"homagochi/internal/source/pagibig"
+	"homagochi/internal/source/secbank"
 	"homagochi/internal/utils"
 	"log"
 )
@@ -40,6 +41,12 @@ var jobEntries = []JobEntry{
 		schedule:   "* * * * *",
 		isDisabled: func() bool { return utils.IsDevelopment() },
 		factory:    func() Job { return &geocode.GeocodeListingJob{} },
+	},
+	{
+		name:     "SecbankScrapeListing",
+		instance: 1,
+		schedule: "0 0 * * *",
+		factory:  func() Job { return &secbank.ScrapeListingJob{} },
 	},
 }
 

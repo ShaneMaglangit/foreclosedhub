@@ -75,6 +75,7 @@ export function Filters({ initialFilters }: { initialFilters: ListingParams }) {
 
 const sourceLabel = {
   Pagibig: "Pagibig Fund",
+  Secbank: "Security Bank",
 } satisfies Record<Source, string>;
 
 function SourceFilter({
