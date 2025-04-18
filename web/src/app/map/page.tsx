@@ -34,7 +34,7 @@ export default async function Page({
           </div>
         </header>
         <ListingMap
-          center={{ lat: params.latitude, lng: params.longitude }}
+          defaultCenter={{ lat: params.latitude, lng: params.longitude }}
           listings={listings}
         />
       </SidebarInset>

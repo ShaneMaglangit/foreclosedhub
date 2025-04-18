@@ -16,15 +16,16 @@ import { useState } from "react";
 
 export default function ListingMap({
   listings,
-  center,
+  defaultCenter,
   ...props
 }: {
   listings: Listing__Output[];
-  center: google.maps.LatLngLiteral;
+  defaultCenter: google.maps.LatLngLiteral;
 } & React.ComponentProps<typeof Map>) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [center, setCenter] = useState(defaultCenter);
   const [selectedListing, setSelectedListing] =
     useState<Listing__Output | null>(null);
 
@@ -44,17 +45,21 @@ export default function ListingMap({
     <APIProvider apiKey={env.NEXT_PUBLIC_GCP_MAPS_API}>
       <Map
         defaultZoom={10}
-        defaultCenter={center}
-        onCameraChanged={(ev: MapCameraChangedEvent) =>
-          handleCenterChanged(ev.detail.center)
-        }
+        center={center}
+        onCameraChanged={(ev: MapCameraChangedEvent) => {
+          setCenter(ev.detail.center);
+          handleCenterChanged(ev.detail.center);
+        }}
         {...props}
       >
         {listings.map((listing) => (
           <Marker
             key={listing.id}
             position={{ lat: listing.latitude, lng: listing.longitude }}
-            onClick={() => setSelectedListing(listing)}
+            onClick={() => {
+              setCenter({ lat: listing.latitude, lng: listing.longitude });
+              setSelectedListing(listing);
+            }}
           />
         ))}
 
