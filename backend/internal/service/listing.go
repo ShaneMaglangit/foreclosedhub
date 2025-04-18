@@ -188,7 +188,7 @@ func buildListingsWithImages(listings []*db.Listing, imagesLookup map[int64][]*d
 			CreatedAt:       listing.CreatedAt,
 			UpdatedAt:       listing.UpdatedAt,
 			Payload:         listing.Payload,
-			Coordinate:      listing.Coordinate,
+			CoordinateGeog:  listing.CoordinateGeog,
 		})
 	}
 

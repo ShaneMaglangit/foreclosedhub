@@ -2,6 +2,7 @@ package db
 
 import (
 	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/twpayne/go-geos"
 )
 
 type ListingWithImages struct {
@@ -17,5 +18,5 @@ type ListingWithImages struct {
 	CreatedAt       pgtype.Timestamptz
 	UpdatedAt       pgtype.Timestamptz
 	Payload         []byte
-	Coordinate      pgtype.Point
+	CoordinateGeog  *geos.Geom
 }
