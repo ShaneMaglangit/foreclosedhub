@@ -11,6 +11,7 @@ import { env } from "@web/env";
 import { useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDebounceCallback } from "usehooks-ts";
+import { ListingCard } from "@web/app/listing-card";
 
 export default function ListingMap({
   listings,
@@ -68,16 +69,16 @@ export default function ListingMap({
 
         {selectedListing && (
           <InfoWindow
+            options={{
+              headerContent: selectedListing.address,
+            }}
             position={{
               lat: selectedListing.latitude,
               lng: selectedListing.longitude,
             }}
             onCloseClick={() => setSelectedListing(null)}
           >
-            <div>
-              <h2 className="font-bold text-sm">{selectedListing.address}</h2>
-              <p>₱{selectedListing.price.toLocaleString()}</p>
-            </div>
+            <ListingCard listing={selectedListing} />
           </InfoWindow>
         )}
       </GoogleMap>
