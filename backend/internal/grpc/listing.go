@@ -9,8 +9,8 @@ import (
 	"homagochi/internal/service"
 )
 
-const defaultLimit = 30
-const defaultNearbyLimit = 100
+const defaultLimit = 50
+const defaultNearbyLimit = 300
 
 type ListingServiceServer struct {
 	protobuf.UnimplementedListingServiceServer
