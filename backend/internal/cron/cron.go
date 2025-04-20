@@ -48,6 +48,13 @@ var jobEntries = []JobEntry{
 		schedule: "0 0 * * *",
 		factory:  func() Job { return &secbank.ScrapeListingJob{} },
 	},
+	{
+		name:       "SecbankScrapeListingImages",
+		instance:   5,
+		schedule:   "* * * * *",
+		isDisabled: func() bool { return utils.IsDevelopment() },
+		factory:    func() Job { return &secbank.ScrapeListingImageJob{} },
+	},
 }
 
 func Start() *cron.Cron {

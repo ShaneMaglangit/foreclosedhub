@@ -12,7 +12,7 @@ import (
 )
 
 const getListingByImageNotLoaded = `-- name: GetListingByImageNotLoaded :one
-SELECT id, external_id
+SELECT id, external_id, payload
 FROM listings
 WHERE source = $1::source
   AND image_loaded = FALSE
@@ -22,12 +22,13 @@ LIMIT 1
 type GetListingByImageNotLoadedRow struct {
 	ID         int64
 	ExternalID string
+	Payload    []byte
 }
 
 func (q *Queries) GetListingByImageNotLoaded(ctx context.Context, source Source) (*GetListingByImageNotLoadedRow, error) {
 	row := q.db.QueryRow(ctx, getListingByImageNotLoaded, source)
 	var i GetListingByImageNotLoadedRow
-	err := row.Scan(&i.ID, &i.ExternalID)
+	err := row.Scan(&i.ID, &i.ExternalID, &i.Payload)
 	return &i, err
 }
 

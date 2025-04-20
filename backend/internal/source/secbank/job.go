@@ -2,8 +2,15 @@ package secbank
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/jackc/pgx/v5"
 	"homagochi/internal/db"
+	"homagochi/internal/service"
 )
+
+const skipCountAfterNoop = 24 * 60
 
 type ScrapeListingJob struct{}
 
@@ -42,4 +49,47 @@ func (j *ScrapeListingJob) Run() error {
 	}
 
 	return tx.Commit(ctx)
+}
+
+type ScrapeListingImageJob struct{}
+
+var listingImageSkipCounter = 0
+
+func (j *ScrapeListingImageJob) Run() error {
+	if listingImageSkipCounter > 0 {
+		listingImageSkipCounter--
+		return nil
+	}
+
+	ctx := context.Background()
+
+	pool, err := db.Connect(ctx)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+
+	listingsRepository := db.NewListingsRepository()
+	listing, err := listingsRepository.GetListingByImageNotLoaded(ctx, pool, db.SourceSecbank)
+	if errors.Is(err, pgx.ErrNoRows) {
+		listingImageSkipCounter = skipCountAfterNoop
+		return err
+	} else if err != nil {
+		return err
+	}
+
+	var payload map[string]interface{}
+	if err := json.Unmarshal(listing.Payload, &payload); err != nil {
+		return fmt.Errorf("failed to unmarshal listing payload: %w", err)
+	}
+
+	var urls []string
+	if imageURL, ok := payload["ImageUrl"].(string); ok && imageURL != "" {
+		urls = []string{imageURL}
+	}
+
+	imageUrlUploadService := service.NewImageUrlUploadService(urls)
+	listingImageService := service.NewListingImageService()
+
+	return listingImageService.Create(imageUrlUploadService, listing.ID)
 }

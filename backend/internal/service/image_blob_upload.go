@@ -4,11 +4,9 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"os"
 	"time"
 
 	"cloud.google.com/go/storage"
-	"github.com/google/uuid"
 )
 
 type ImageBlobUploadService struct {
@@ -46,12 +44,6 @@ func (s *ImageBlobUploadService) ExecuteBatch() ([]string, error) {
 	}
 
 	return urls, nil
-}
-
-func createObject(client *storage.Client) *storage.ObjectHandle {
-	bucketName := os.Getenv("GCP_BUCKET_NAME")
-	objectName := fmt.Sprintf("%v.jpg", uuid.New())
-	return client.Bucket(bucketName).Object(objectName)
 }
 
 func uploadImage(ctx context.Context, object *storage.ObjectHandle, blob string) error {

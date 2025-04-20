@@ -40,7 +40,7 @@ ORDER BY ST_Distance(coordinate,
 LIMIT @row_limit::int;
 
 -- name: GetListingByImageNotLoaded :one
-SELECT id, external_id
+SELECT id, external_id, payload
 FROM listings
 WHERE source = @source::source
   AND image_loaded = FALSE
