@@ -40,7 +40,7 @@ func (j *ScrapeListingJob) Run() error {
 		return err
 	}
 
-	return listingsRepository.UnlistOldPagibigListings(ctx, pool)
+	return listingsRepository.UnlistOldListings(ctx, pool, db.SourcePagibig)
 }
 
 type ScrapeListingImageJob struct{}
