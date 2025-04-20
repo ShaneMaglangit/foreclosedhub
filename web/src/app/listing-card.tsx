@@ -26,6 +26,7 @@ import Image from "next/image";
 import { Button } from "@web/components/common/button";
 import { useIsMobile } from "@web/lib/hooks/use-mobile";
 import { ComponentProps } from "react";
+import Link from "next/link";
 
 export function ListingCard({
   listing,
@@ -76,8 +77,28 @@ export function ListingCard({
         {listing.source === "pagibig" && (
           <PagibigFormButton listing={listing} />
         )}
+        {listing.source === "secbank" && <SecbankButton />}
       </div>
     </div>
+  );
+}
+
+function SecbankButton() {
+  return (
+    <Button
+      variant="link"
+      size="sm"
+      className="h-auto has-[>svg]:p-0 justify-start"
+      asChild
+    >
+      <Link
+        href="https://www.securitybank.com/personal/loans/repossessed-assets/properties-for-sale/"
+        target="_blank"
+      >
+        <ExternalLink />
+        Bank Website
+      </Link>
+    </Button>
   );
 }
 
