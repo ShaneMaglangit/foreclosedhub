@@ -15,7 +15,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@web/components/common/collapsible";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Star } from "lucide-react";
 import { useFilter } from "@web/app/use-filter";
 import { Checkbox } from "@web/components/common/checkbox";
 import { Source, sources } from "@web/types/source";
@@ -26,6 +26,18 @@ import {
 import { typedEntries } from "@web/lib/utils";
 import { Input } from "@web/components/common/input";
 import { ListingStatus, listingStatuses } from "@web/types/listing-status";
+import { Button } from "@web/components/common/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@web/components/common/alert-dialog";
 
 export function Filters({ initialFilters }: { initialFilters: ListingParams }) {
   const {
@@ -85,6 +97,8 @@ function SourceFilter({
   currentValues: string[];
   onCheckChanged: (value: string) => unknown;
 }) {
+  const premiumSources = ["UnionBank", "BDO", "RCBC"];
+
   return (
     <SidebarFilterGroup title="Source">
       {typedEntries(sources).map(([key, value]) => (
@@ -100,6 +114,46 @@ function SourceFilter({
             {sourceLabel[key]}
           </span>
         </label>
+      ))}
+
+      {premiumSources.map((source) => (
+        <AlertDialog key={source}>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              className="w-full justify-start gap-2 has-[>svg]:pl-2"
+              size="sm"
+            >
+              <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+              <span className="text-sm font-medium leading-none">{source}</span>
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Get Early Access to {source} Listings
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-base">
+                Properties from {source} will soon be available through our
+                premium service. Be the first to know when it launches—join the
+                waitlist today.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="flex-1">Close</AlertDialogCancel>
+              <AlertDialogAction asChild>
+                <a
+                  href="https://forms.gle/BDu3ZLiAquWGcNJr8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1"
+                >
+                  Join Waitlist
+                </a>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       ))}
     </SidebarFilterGroup>
   );

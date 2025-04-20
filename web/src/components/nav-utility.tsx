@@ -11,10 +11,7 @@ export function NavUtility() {
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton asChild>
-          <a
-            href="https://gitlab.com/ShaneMaglangit/foreclosedhub/-/issues/new"
-            target="_blank"
-          >
+          <a href="https://forms.gle/qf68kUkEWkti7D7f6" target="_blank">
             <Send />
             <span>Feedback</span>
           </a>
