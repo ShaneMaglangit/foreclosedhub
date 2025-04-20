@@ -161,3 +161,5 @@ function ListingCarousel({ listing }: { listing: Listing__Output }) {
     </Carousel>
   );
 }
+
+ListingCard.displayName = "ListingCard";
