@@ -1,7 +1,6 @@
 "use client";
 
-import { Listing__Output } from "@web/lib/protobuf/listing/Listing";
-import { env } from "@web/env";
+import { ComponentProps, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDebounceCallback } from "usehooks-ts";
 import {
@@ -11,22 +10,26 @@ import {
   MapCameraChangedEvent,
   Marker,
 } from "@vis.gl/react-google-maps";
-import { ListingCard } from "@web/app/listing-card";
-import { useState } from "react";
 
-export default function ListingMap({
-  listings,
-  defaultCenter,
-  ...props
-}: {
+import { Listing__Output } from "@web/lib/protobuf/listing/Listing";
+import { ListingCard } from "@web/app/listing-card";
+import { env } from "@web/env";
+import { cn } from "@web/lib/utils";
+import { useIsMobile } from "@web/lib/hooks/use-mobile";
+import { Info } from "lucide-react";
+
+type ListingMapProps = {
   listings: Listing__Output[];
   defaultCenter: google.maps.LatLngLiteral;
-} & React.ComponentProps<typeof Map>) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+} & ComponentProps<typeof Map>;
 
+export default function ListingMap(props: ListingMapProps) {
+  const isMobile = useIsMobile();
   const [selectedListing, setSelectedListing] =
     useState<Listing__Output | null>(null);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const handleCenterChanged = useDebounceCallback(
     (newCenter: google.maps.LatLngLiteral) => {
@@ -40,6 +43,52 @@ export default function ListingMap({
     500,
   );
 
+  const contentProps = {
+    selectedListing,
+    setSelectedListing,
+    handleCenterChanged,
+    ...props,
+  };
+
+  return (
+    <div className="relative flex w-full h-[calc(100dvh-(var(--spacing)*16))]">
+      {isMobile ? (
+        <>
+          <Content {...contentProps} />
+          <div className="absolute flex items-center gap-2 bottom-4 left-1/4 -translate-x-1/4 rounded-xl bg-background px-4 py-2 shadow-lg text-sm text-muted-foreground">
+            Some listings may be hidden due to overlapping pins. For better
+            navigation, try using a desktop or laptop to access additional
+            sidebars.
+          </div>
+        </>
+      ) : (
+        <>
+          <ContentWithSidebar {...contentProps} />
+          <div className="absolute flex items-center gap-2 bottom-4 left-1/2 -translate-x-1/2 rounded-xl bg-background px-4 py-2 shadow-lg text-sm text-muted-foreground">
+            <Info className="h-4 w-4" />
+            Some listings may be hidden due to overlapping pins. Use the right
+            sidebar to help easily navigate all properties in the current area.
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+type ContentProps = {
+  selectedListing: Listing__Output | null;
+  setSelectedListing: (listing: Listing__Output | null) => void;
+  handleCenterChanged: (center: google.maps.LatLngLiteral) => void;
+} & ListingMapProps;
+
+function Content({
+  listings,
+  defaultCenter,
+  selectedListing,
+  setSelectedListing,
+  handleCenterChanged,
+  ...props
+}: ContentProps) {
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GCP_MAPS_API}>
       <Map
@@ -54,9 +103,7 @@ export default function ListingMap({
           <Marker
             key={listing.id}
             position={{ lat: listing.latitude, lng: listing.longitude }}
-            onClick={() => {
-              setSelectedListing(listing);
-            }}
+            onClick={() => setSelectedListing(listing)}
           />
         ))}
 
@@ -78,5 +125,64 @@ export default function ListingMap({
         )}
       </Map>
     </APIProvider>
+  );
+}
+
+function ContentWithSidebar(props: ContentProps) {
+  const { listings, selectedListing, setSelectedListing } = props;
+
+  const listingRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  useEffect(() => {
+    if (selectedListing) {
+      const node = listingRefs.current[selectedListing.id];
+      if (node) {
+        node.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  }, [selectedListing]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+
+        const currentIndex = listings.findIndex(
+          (l) => l.id === selectedListing?.id,
+        );
+
+        if (e.key === "ArrowDown" && currentIndex < listings.length - 1) {
+          setSelectedListing(listings[currentIndex + 1]);
+        } else if (e.key === "ArrowUp" && currentIndex > 0) {
+          setSelectedListing(listings[currentIndex - 1]);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [listings, selectedListing, setSelectedListing]);
+
+  return (
+    <>
+      <Content {...props} />
+
+      <div className="w-[500px] flex flex-col gap-2 p-2 overflow-x-scroll">
+        {listings.map((listing) => (
+          <ListingCard
+            key={listing.id}
+            ref={(node) => {
+              listingRefs.current[listing.id] = node;
+            }}
+            className={cn(
+              "cursor-pointer",
+              listing === selectedListing ? "border-4" : "",
+            )}
+            listing={listing}
+            onClick={() => setSelectedListing(listing)}
+          />
+        ))}
+      </div>
+    </>
   );
 }

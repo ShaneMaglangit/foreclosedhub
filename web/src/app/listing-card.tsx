@@ -25,19 +25,18 @@ import {
 import Image from "next/image";
 import { Button } from "@web/components/common/button";
 import { useIsMobile } from "@web/lib/hooks/use-mobile";
-import { ComponentProps } from "react";
+import { ComponentProps, forwardRef } from "react";
 import Link from "next/link";
 
-export function ListingCard({
-  listing,
-  className,
-  ...props
-}: { listing: Listing__Output } & ComponentProps<"div">) {
+export const ListingCard = forwardRef<
+  HTMLDivElement,
+  { listing: Listing__Output } & ComponentProps<"div">
+>(({ listing, className, ...props }, ref) => {
   const isMobile = useIsMobile();
 
   return (
     <div
-      key={listing.id}
+      ref={ref}
       className={cn("bg-background border w-full", className)}
       {...props}
     >
@@ -50,7 +49,7 @@ export function ListingCard({
       ) : (
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger className="w-full">
+            <TooltipTrigger className="w-full focus:outline-none">
               <h6 className="text-left font-medium truncate capitalize p-2">
                 {listing.address.toLowerCase()}
               </h6>
@@ -81,7 +80,7 @@ export function ListingCard({
       </div>
     </div>
   );
-}
+});
 
 function SecbankButton() {
   return (
