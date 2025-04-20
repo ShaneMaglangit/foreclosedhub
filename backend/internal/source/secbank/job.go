@@ -37,10 +37,6 @@ func (j *ScrapeListingJob) Run() error {
 		return err
 	}
 
-	if err = db.New(tx).InsertListingImagesSecbank(ctx); err != nil {
-		return err
-	}
-
 	if err = listingsRepository.UnlistOldListings(ctx, tx, db.SourceSecbank); err != nil {
 		return err
 	}

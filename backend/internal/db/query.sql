@@ -96,21 +96,3 @@ WHERE listing_id = ANY (@ids::bigint[]);
 -- name: InsertListingImages :exec
 INSERT INTO listing_images (listing_id, url)
 VALUES (unnest(@listing_ids::bigint[]), unnest(@urls::text[]));
-
--- name: InsertListingImagesSecbank :exec
-WITH valid_listings AS (SELECT id,
-                               payload ->> 'ImageUrl' AS image_url
-                        FROM listings
-                        WHERE source = 'secbank'
-                          AND image_loaded = false
-                          AND payload ->> 'ImageUrl' IS NOT NULL
-                          AND payload ->> 'ImageUrl' <> ''),
-     inserted AS (
-         INSERT INTO listing_images (listing_id, url)
-             SELECT id, image_url
-             FROM valid_listings
-             RETURNING listing_id)
-UPDATE listings
-SET image_loaded = true
-WHERE id IN (SELECT listing_id FROM inserted);
-
