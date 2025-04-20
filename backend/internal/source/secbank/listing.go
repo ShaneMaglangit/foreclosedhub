@@ -99,19 +99,6 @@ func extractSQM(input string) (float64, error) {
 	return strconv.ParseFloat(clean, 64)
 }
 
-func parseNumeric(raw string) (pgtype.Numeric, error) {
-	if raw == "N/A" {
-		return pgtype.Numeric{}, nil
-	}
-
-	floorArea, err := strconv.ParseFloat(raw, 64)
-	if err != nil {
-		return pgtype.Numeric{}, err
-	}
-
-	return pgtype.Numeric{Int: big.NewInt(int64(floorArea * 100)), Exp: -2, Valid: true}, nil
-}
-
 func extractListings(reader io.Reader) (Listings, error) {
 	saleSep := "Sale Price:"
 

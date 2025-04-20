@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
         pathname: "/*-homagochi/**",
         search: "",
       },
+      {
+        protocol: "https",
+        hostname: "www.securitybank.com",
+        port: "",
+        pathname: "/wp-content/uploads/**",
+        search: "",
+      },
     ],
   },
 };

@@ -303,6 +303,29 @@ func (q *Queries) InsertListingImages(ctx context.Context, arg InsertListingImag
 	return err
 }
 
+const insertListingImagesSecbank = `-- name: InsertListingImagesSecbank :exec
+WITH valid_listings AS (SELECT id,
+                               payload ->> 'ImageUrl' AS image_url
+                        FROM listings
+                        WHERE source = 'secbank'
+                          AND image_loaded = false
+                          AND payload ->> 'ImageUrl' IS NOT NULL
+                          AND payload ->> 'ImageUrl' <> ''),
+     inserted AS (
+         INSERT INTO listing_images (listing_id, url)
+             SELECT id, image_url
+             FROM valid_listings
+             RETURNING listing_id)
+UPDATE listings
+SET image_loaded = true
+WHERE id IN (SELECT listing_id FROM inserted)
+`
+
+func (q *Queries) InsertListingImagesSecbank(ctx context.Context) error {
+	_, err := q.db.Exec(ctx, insertListingImagesSecbank)
+	return err
+}
+
 const insertListings = `-- name: InsertListings :exec
 INSERT INTO listings (external_id, source, address, floor_area, price, occupancy_status, payload)
 VALUES (unnest($1::text[]),

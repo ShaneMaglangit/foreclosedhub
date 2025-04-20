@@ -5,8 +5,6 @@ import (
 	"homagochi/internal/db"
 )
 
-const skipCountAfterNoop = 24 * 60
-
 type ScrapeListingJob struct{}
 
 func (j *ScrapeListingJob) Run() error {
@@ -27,6 +25,20 @@ func (j *ScrapeListingJob) Run() error {
 	}
 	defer pool.Close()
 
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
 	listingsRepository := db.NewListingsRepository()
-	return listingsRepository.InsertListings(ctx, pool, dbListings)
+	if err = listingsRepository.InsertListings(ctx, pool, dbListings); err != nil {
+		return err
+	}
+
+	if err = db.New(tx).InsertListingImagesSecbank(ctx); err != nil {
+		return err
+	}
+
+	return tx.Commit(ctx)
 }
