@@ -368,15 +368,15 @@ func (q *Queries) InsertListings(ctx context.Context, arg InsertListingsParams) 
 	return err
 }
 
-const unlistOldPagibigListings = `-- name: UnlistOldPagibigListings :exec
+const unlistOldListings = `-- name: UnlistOldListings :exec
 UPDATE listings
 SET status = 'unlisted'::listing_status
-WHERE listings.source = 'pagibig'::source
+WHERE listings.source = $1::source
   AND listings.updated_at::date < CURRENT_DATE
 `
 
-func (q *Queries) UnlistOldPagibigListings(ctx context.Context) error {
-	_, err := q.db.Exec(ctx, unlistOldPagibigListings)
+func (q *Queries) UnlistOldListings(ctx context.Context, source Source) error {
+	_, err := q.db.Exec(ctx, unlistOldListings, source)
 	return err
 }
 

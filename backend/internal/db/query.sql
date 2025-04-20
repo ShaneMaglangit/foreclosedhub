@@ -69,10 +69,10 @@ UPDATE listings
 SET image_loaded = @image_loaded::boolean
 WHERE listings.id = @id::bigint;
 
--- name: UnlistOldPagibigListings :exec
+-- name: UnlistOldListings :exec
 UPDATE listings
 SET status = 'unlisted'::listing_status
-WHERE listings.source = 'pagibig'::source
+WHERE listings.source = @source::source
   AND listings.updated_at::date < CURRENT_DATE;
 
 -- name: GetListingNotGeocoded :one

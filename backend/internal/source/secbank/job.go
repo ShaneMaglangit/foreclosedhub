@@ -32,11 +32,16 @@ func (j *ScrapeListingJob) Run() error {
 	defer tx.Rollback(ctx)
 
 	listingsRepository := db.NewListingsRepository()
-	if err = listingsRepository.InsertListings(ctx, pool, dbListings); err != nil {
+
+	if err = listingsRepository.InsertListings(ctx, tx, dbListings); err != nil {
 		return err
 	}
 
 	if err = db.New(tx).InsertListingImagesSecbank(ctx); err != nil {
+		return err
+	}
+
+	if err = listingsRepository.UnlistOldListings(ctx, tx, db.SourceSecbank); err != nil {
 		return err
 	}
 

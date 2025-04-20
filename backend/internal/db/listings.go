@@ -13,7 +13,7 @@ type ListingsRepository interface {
 	GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error)
 	InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error
 	UpdateListingsImageLoaded(ctx context.Context, dbtx DBTX, id int64, imageLoaded bool) error
-	UnlistOldPagibigListings(ctx context.Context, dbtx DBTX) error
+	UnlistOldListings(ctx context.Context, dbtx DBTX, source Source) error
 	GetListingNotGeocoded(ctx context.Context, dbtx DBTX) (*GetListingNotGeocodedRow, error)
 	UpdateListingCoordinate(ctx context.Context, dbtx DBTX, id int64, lat float64, long float64) error
 }
@@ -78,8 +78,8 @@ func (l ListingsRepositoryImpl) UpdateListingsImageLoaded(ctx context.Context, d
 	return New(dbtx).UpdateListingsImageLoaded(ctx, params)
 }
 
-func (l ListingsRepositoryImpl) UnlistOldPagibigListings(ctx context.Context, dbtx DBTX) error {
-	return New(dbtx).UnlistOldPagibigListings(ctx)
+func (l ListingsRepositoryImpl) UnlistOldListings(ctx context.Context, dbtx DBTX, source Source) error {
+	return New(dbtx).UnlistOldListings(ctx, source)
 }
 func (l ListingsRepositoryImpl) GetListingNotGeocoded(ctx context.Context, dbtx DBTX) (*GetListingNotGeocodedRow, error) {
 	return New(dbtx).GetListingNotGeocoded(ctx)
