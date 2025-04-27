@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDebounceCallback } from "usehooks-ts";
 import {
@@ -14,6 +14,9 @@ import {
 import { Listing__Output } from "@web/lib/protobuf/listing/Listing";
 import { ListingCard } from "@web/app/listing-card";
 import { env } from "@web/env";
+import { Toaster } from "@web/components/common/sonner";
+import { toast } from "sonner";
+import { Info } from "lucide-react";
 
 export default function ListingMap({
   listings,
@@ -39,6 +42,13 @@ export default function ListingMap({
     },
     500,
   );
+
+  useEffect(() => {
+    toast("Some listings may be hidden due to overlapping pins.", {
+      position: "top-center",
+      icon: <Info className="w-6 h-6" />,
+    });
+  }, []);
 
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_GCP_MAPS_API}>
@@ -74,6 +84,7 @@ export default function ListingMap({
           </InfoWindow>
         )}
       </Map>
+      <Toaster />
     </APIProvider>
   );
 }
