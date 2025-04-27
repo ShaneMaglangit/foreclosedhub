@@ -6,9 +6,9 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ForeclosedHub | Find Foreclosed Properties Across the Philippines",
+  title: "Foreclosed Properties Philippines | ForeclosedHub",
   description:
-    "Discover the best deals on foreclosed properties from top banks and mortgage providers in the Philippines. Aggregated listings, updated regularly — your smarter way to invest in real estate.",
+    "Browse updated listings of foreclosed properties across the Philippines. Find affordable homes, lots, and buildings from top banks and lenders with ForeclosedHub — your smart way to invest in Philippine real estate.",
 };
 
 export default function RootLayout({
