@@ -59,9 +59,9 @@ export function Filters({ initialFilters }: { initialFilters: ListingParams }) {
         />
       </SidebarGroup>
       <SidebarSeparator className="mx-0" />
-      <SourceFilter
-        currentValues={filters.sources}
-        onCheckChanged={toggleSource}
+      <ListingStatusFilter
+        currentValues={filters.statuses}
+        onCheckChanged={toggleStatus}
       />
       <SidebarSeparator className="mx-0" />
       <OccupancyStatusFilter
@@ -69,9 +69,9 @@ export function Filters({ initialFilters }: { initialFilters: ListingParams }) {
         onCheckChanged={toggleOccupancyStatus}
       />
       <SidebarSeparator className="mx-0" />
-      <ListingStatusFilter
-        currentValues={filters.statuses}
-        onCheckChanged={toggleStatus}
+      <SourceFilter
+        currentValues={filters.sources}
+        onCheckChanged={toggleSource}
       />
       <SidebarSeparator className="mx-0" />
       <PriceRangeFilter
@@ -278,11 +278,14 @@ function PriceRangeFilter({
 function SidebarFilterGroup({
   title,
   children,
+  defaultOpen = true,
   ...props
-}: { title: string } & ComponentProps<typeof SidebarGroup>) {
+}: { title: string; defaultOpen?: boolean } & ComponentProps<
+  typeof SidebarGroup
+>) {
   return (
     <SidebarGroup {...props}>
-      <Collapsible className="group/collapsible">
+      <Collapsible className="group/collapsible" defaultOpen={defaultOpen}>
         <SidebarGroupLabel
           asChild
           className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full "
