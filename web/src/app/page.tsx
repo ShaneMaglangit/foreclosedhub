@@ -1,52 +1,31 @@
-import { getListings } from "@web/lib/grpc/client";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@web/components/common/sidebar";
-import { AppSidebar } from "@web/app/app-sidebar";
-import { listingParams } from "@web/app/schema";
-import { Listing } from "@web/app/listing";
-import { Pagination } from "@web/app/pagination";
-import Link from "next/link";
-import { Button } from "@web/components/common/button";
+"use client";
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: Promise<{
-    after?: number;
-    before?: number;
-    limit?: number;
-    search?: string;
-    sources?: string[] | string;
-    occupancyStatuses?: string[] | string;
-  }>;
-}) {
-  const params = listingParams.parse(await searchParams);
-  const { listings, pageInfo } = await getListings(params);
+import { APIProvider, Map } from "@vis.gl/react-google-maps";
 
+export default function Page() {
   return (
-    <SidebarProvider>
-      <AppSidebar params={params} />
-      <SidebarInset>
-        <header className="bg-background sticky top-0 flex h-16 items-center gap-2 border-b px-4 z-10">
-          <SidebarTrigger className="-ml-1" />
-          <div className="flex flex-1">
-            <Button asChild variant="link">
-              <Link href="/">Grid View</Link>
-            </Button>
-            <Button asChild variant="link">
-              <Link href="/map">Map View</Link>
-            </Button>
-          </div>
-          <Pagination pageInfo={pageInfo} />
-        </header>
-        <Listing
-          className="min-h-[calc(100dvh-(var(--spacing)*16))]"
-          listings={listings}
-        />
-      </SidebarInset>
-    </SidebarProvider>
+    <div className="flex-1 flex items-stretch">
+      <div className="w-[500px] min-w-0 border-r border-border-primary p-4 flex flex-col gap-4">
+        <div>
+          <h2 className="font-bold">
+            Lot 10-A Blk. 4, Bellet St., Greenview Village, Pamplona Tres
+          </h2>
+          <h3 className="text-sm">Las Piñas City</h3>
+        </div>
+        <img src="https://cdn.prod.website-files.com/66f0087ae13342fcc8dfc72f/66f2c8c5b7da5e33d42efb43_Property%20Thumbnail.webp" />
+      </div>
+      <div className="flex-1 min-w-0 ">
+        <APIProvider apiKey="AIzaSyBQ8qZrNZoHLMRzjG6PUvZwJTkxw8T9kCc">
+          <Map
+            defaultZoom={10}
+            defaultCenter={{ lat: 14.60005, lng: 120.98281 }}
+            mapTypeId="hybrid"
+            fullscreenControl={false}
+            mapTypeControl={false}
+            streetViewControl={false}
+          />
+        </APIProvider>
+      </div>
+    </div>
   );
 }

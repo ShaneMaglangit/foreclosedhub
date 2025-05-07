@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import "./global.css";
-import { ReactNode } from "react";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import "./globals.css";
+import { ReactNode } from "react";
+import Link from "next/link";
 
-const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Foreclosed Properties Philippines | ForeclosedHub",
@@ -17,8 +20,27 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en" className={plusJakartaSans.className}>
-      <body>{children}</body>
+    <html lang="en">
+      <body
+        className={`${plusJakartaSans.className} h-dvh flex flex-col antialiased`}
+      >
+        <Header />
+        {children}
+      </body>
     </html>
+  );
+}
+
+function Header() {
+  return (
+    <nav className="flex items-center h-[64px] px-4 py-2 bg-surface-secondary border border-border-primary">
+      <menu>
+        <li>
+          <Link href="/" className="font-bold">
+            Homepage
+          </Link>
+        </li>
+      </menu>
+    </nav>
   );
 }
