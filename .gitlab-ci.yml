@@ -24,13 +24,12 @@ apply:
 deploy_web:
   stage: deploy
   image: node:23.10.0
-  only:
-    - main
   needs:
     - job: apply
   rules:
-    - changes:
-      - web/
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
+        - web/**
   script:
     - npm install --global vercel
     - vercel --cwd web
