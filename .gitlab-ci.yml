@@ -29,7 +29,7 @@ deploy_web:
   script:
     - cd web
     - npm install --global vercel
-    - vercel link --yes -project foreclosedhub --token=$TF_VAR_vercel_token
+    - vercel link --yes --project foreclosedhub --token=$TF_VAR_vercel_token
     - vercel pull --yes --environment=production --token=$TF_VAR_vercel_token
     - vercel build --prod --token=$TF_VAR_vercel_token
     - vercel deploy --prebuilt --prod --token=$TF_VAR_vercel_token
