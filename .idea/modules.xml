@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/backend/backend.iml" filepath="$PROJECT_DIR$/backend/backend.iml" />
-      <module fileurl="file://$PROJECT_DIR$/homagochi.iml" filepath="$PROJECT_DIR$/homagochi.iml" />
-      <module fileurl="file://$PROJECT_DIR$/proto/proto.iml" filepath="$PROJECT_DIR$/proto/proto.iml" />
-      <module fileurl="file://$PROJECT_DIR$/scripts/scripts.iml" filepath="$PROJECT_DIR$/scripts/scripts.iml" />
-      <module fileurl="file://$PROJECT_DIR$/terraform/terraform.iml" filepath="$PROJECT_DIR$/terraform/terraform.iml" />
+      <module fileurl="file://$PROJECT_DIR$/opentofu/opentofu.iml" filepath="$PROJECT_DIR$/opentofu/opentofu.iml" />
       <module fileurl="file://$PROJECT_DIR$/web/web.iml" filepath="$PROJECT_DIR$/web/web.iml" />
     </modules>
   </component>
