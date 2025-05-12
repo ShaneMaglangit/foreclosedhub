@@ -1,1 +1,0 @@
-ALTER TABLE listings ADD COLUMN coordinate_geog GEOGRAPHY;

@@ -1,1 +1,0 @@
-CREATE INDEX CONCURRENTLY index_listings_on_source_where_image_loaded_false ON listings (source) WHERE image_loaded = FALSE;

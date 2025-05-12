@@ -1,1 +1,0 @@
-DROP INDEX CONCURRENTLY index_listings_on_address;

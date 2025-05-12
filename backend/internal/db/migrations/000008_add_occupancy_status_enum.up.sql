@@ -1,1 +1,0 @@
-CREATE TYPE occupancy_status AS ENUM ('occupied', 'unoccupied', 'unspecified');
