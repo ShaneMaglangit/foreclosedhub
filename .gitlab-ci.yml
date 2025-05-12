@@ -28,6 +28,9 @@ deploy_web:
     - main
   needs:
     - job: apply
+  rules:
+    - changes:
+      - web/
   script:
     - cd web
     - npm install --global vercel
