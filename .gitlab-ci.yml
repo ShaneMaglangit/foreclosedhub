@@ -29,6 +29,7 @@ deploy_web:
   needs:
     - job: apply
   script:
+    - cd web
     - npm install --global vercel
     - vercel pull --yes --environment=production --token=$TF_VAR_vercel_token
     - vercel build --prod --token=$TF_VAR_vercel_token
