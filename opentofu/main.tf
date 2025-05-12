@@ -34,3 +34,8 @@ resource "vercel_project" "foreclosedhub" {
     repo = data.gitlab_project.project.path_with_namespace
   }
 }
+
+resource "vercel_project_domain" "foreclosedhub" {
+  domain = "foreclosedhub.com"
+  project_id = vercel_project.foreclosedhub.id
+}
