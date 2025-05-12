@@ -29,6 +29,7 @@ compile_server:
     paths:
       - go/pkg/mod
   script:
+    - cd server
     - go mod tidy
     - go build -o ../app ./cmd/main.go
   artifacts:
