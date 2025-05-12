@@ -25,7 +25,7 @@ provider "vercel" {
 }
 
 resource "vercel_project" "web" {
-  name = "foreclosehub"
+  name = "foreclosedhub"
   framework = "nextjs"
 
   git_repository = {

@@ -1,27 +1,36 @@
-# Ignore tfvars files (commonly contain secrets)
-/**/*.tfvars
-/**/*.tfvars.json
+# Node.js / Yarn
+node_modules/
+.yarn/
+.pnp.*
 
-# Ignore crash logs
-crash.log
+# Next.js specific
+.next/
+out/
 
-# Ignore plan files
-*.tfplan
+next-env.d.ts
 
-# Ignore state files
+# Opentofu specific (assuming you use some files that shouldn't be versioned)
+*.tfvars
 *.tfstate
-*.tfstate.backup
-
-# Ignore directories with state or plan files
+*.tfstate.*
+*.log
+*.plan
 .terraform/
-terraform.tfstate.d/
 
-# Local override files
-override.tf
-override.tf.json
-*_override.tf
-*_override.tf.json
+# OS-specific files
+.DS_Store
+Thumbs.db
 
-# Ignore CLI configuration files
-.terraformrc
-terraform.rc
+# Editor-specific files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Build output
+/dist/
+/build/
