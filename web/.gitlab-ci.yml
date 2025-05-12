@@ -5,3 +5,19 @@ include:
       opentofu_version: 1.9.0
       root_dir: terraform/
       state_name: production
+
+stages:
+  - validate
+  - plan
+  - deploy
+
+deploy_web:
+  stage: deploy
+  image: node:23.10.0
+  only:
+    - main
+  script:
+    - npm install --global vercel
+    - vercel pull --yes --environment=production --token=$TF_VAR_vercel_token
+    - vercel build --prod --token=$TF_VAR_vercel_token
+    - vercel deploy --prebuilt --prod --token=$TF_VAR_vercel_token

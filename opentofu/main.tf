@@ -20,7 +20,7 @@ data "gitlab_project" "project" {
 }
 
 provider "vercel" {
-  api_token = var.vercel_api_token
+  api_token = var.vercel_token
   team      = var.vercel_team_id
 }
 

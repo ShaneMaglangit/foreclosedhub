@@ -3,8 +3,8 @@ variable gitlab_token {
   type        = string
 }
 
-variable vercel_api_token {
-  description = "Vercel API Token"
+variable vercel_token {
+  description = "Vercel Access Token"
   type        = string
 }
 
