@@ -20,7 +20,7 @@ provider "gitlab" {
   token = var.gitlab_token
 }
 
-data "gitlab_project" "project" {
+data "gitlab_project" "repository" {
   path_with_namespace = "shanemaglangit/foreclosedhub"
 }
 
@@ -29,19 +29,19 @@ provider "vercel" {
   team      = var.vercel_team_id
 }
 
-resource "vercel_project" "foreclosedhub" {
+resource "vercel_project" "web" {
   name = "foreclosedhub"
   framework = "nextjs"
 
   git_repository = {
     type = "gitlab"
-    repo = data.gitlab_project.project.path_with_namespace
+    repo = data.gitlab_project.repository.path_with_namespace
   }
 }
 
-resource "vercel_project_domain" "foreclosedhub" {
+resource "vercel_project_domain" "web" {
   domain = "foreclosedhub.com"
-  project_id = vercel_project.foreclosedhub.id
+  project_id = vercel_project.web.id
 }
 
 provider "aws" {
