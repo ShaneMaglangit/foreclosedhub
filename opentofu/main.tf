@@ -24,6 +24,24 @@ data "gitlab_project" "repository" {
   path_with_namespace = "shanemaglangit/foreclosedhub"
 }
 
+resource "gitlab_project_variable" "aws_access_key" {
+  project = data.gitlab_project.repository.path_with_namespace
+  key = "AWS_ACCESS_KEY_ID"
+  value = var.aws_access_key
+}
+
+resource "gitlab_project_variable" "aws_secret_access_key" {
+  project = data.gitlab_project.repository.path_with_namespace
+  key = "AWS_SECRET_ACCESS_KEY"
+  value = var.aws_secret_access_key
+}
+
+resource "gitlab_project_variable" "aws_default_region" {
+  project = data.gitlab_project.repository.path_with_namespace
+  key = "AWS_DEFAULT_REGION"
+  value = var.aws_region
+}
+
 provider "vercel" {
   api_token = var.vercel_token
   team      = var.vercel_team_id
@@ -45,7 +63,7 @@ resource "vercel_project_domain" "web" {
 }
 
 provider "aws" {
-  region = "ap-southeast-1"
+  region = var.aws_region
   access_key = var.aws_access_key
   secret_key = var.aws_secret_access_key
 }
