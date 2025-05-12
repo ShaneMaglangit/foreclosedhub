@@ -37,7 +37,6 @@ resource "gitlab_project_variable" "ssh_private_key" {
   project   = data.gitlab_project.repository.path_with_namespace
   key       = "SSH_PRIVATE_KEY"
   value     = tls_private_key.ssh.private_key_pem
-  masked    = true
   protected = true
 }
 
@@ -45,7 +44,6 @@ resource "gitlab_project_variable" "ssh_public_key" {
   project   = data.gitlab_project.repository.path_with_namespace
   key       = "SSH_PUBLIC_KEY"
   value     = tls_private_key.ssh.public_key_openssh
-  masked    = false
   protected = true
 }
 
@@ -53,7 +51,6 @@ resource "gitlab_project_variable" "aws_access_key" {
   project   = data.gitlab_project.repository.path_with_namespace
   key       = "AWS_ACCESS_KEY_ID"
   value     = var.aws_access_key
-  masked    = true
   protected = true
 }
 
@@ -61,7 +58,6 @@ resource "gitlab_project_variable" "aws_secret_access_key" {
   project   = data.gitlab_project.repository.path_with_namespace
   key       = "AWS_SECRET_ACCESS_KEY"
   value     = var.aws_secret_access_key
-  masked    = true
   protected = true
 }
 
@@ -69,7 +65,6 @@ resource "gitlab_project_variable" "aws_default_region" {
   project   = data.gitlab_project.repository.path_with_namespace
   key       = "AWS_DEFAULT_REGION"
   value     = var.aws_region
-  masked    = false
   protected = false
 }
 
