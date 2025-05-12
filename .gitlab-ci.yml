@@ -18,6 +18,8 @@ deploy_web:
   image: node:23.10.0
   only:
     - main
+  needs:
+    - job: apply
   script:
     - npm install --global vercel
     - vercel pull --yes --environment=production --token=$TF_VAR_vercel_token
