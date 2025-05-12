@@ -54,6 +54,8 @@ deploy_server:
     - job: apply
       artifacts: true
     - job: compile_server
+  only:
+    - main
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
   script:
     - apt-get update && apt-get install -y openssh-client systemd
