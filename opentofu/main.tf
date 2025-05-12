@@ -25,7 +25,7 @@ provider "vercel" {
   team      = var.vercel_team_id
 }
 
-resource "vercel_project" "web" {
+resource "vercel_project" "foreclosedhub" {
   name = "foreclosedhub"
   framework = "nextjs"
 
