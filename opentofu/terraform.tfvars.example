@@ -1,3 +1,5 @@
 vercel_token =
 vercel_team_id =
 gitlab_token =
+aws_access_key =
+aws_secret_access_key =

@@ -12,3 +12,13 @@ variable vercel_team_id {
   description = "Vercel Team ID"
   type        = string
 }
+
+variable aws_access_key {
+  description = "AWS Access Key"
+  type        = string
+}
+
+variable aws_secret_access_key {
+  description = "AWS Secret Access Key"
+  type        = string
+}

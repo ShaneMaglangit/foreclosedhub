@@ -9,6 +9,10 @@ terraform {
       source  = "gitlabhq/gitlab"
       version = "~> 17.11.0"
     }
+    aws = {
+      source  = "hashicorp/aws"
+      version = "6.0.0-beta1"
+    }
   }
 }
 
@@ -38,4 +42,15 @@ resource "vercel_project" "foreclosedhub" {
 resource "vercel_project_domain" "foreclosedhub" {
   domain = "foreclosedhub.com"
   project_id = vercel_project.foreclosedhub.id
+}
+
+provider "aws" {
+  region = "ap-southeast-1"
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_access_key
+}
+
+resource "aws_instance" "server" {
+  ami = "ami-0e8ebb0ab254bb563"
+  instance_type = "t2.micro"
 }
