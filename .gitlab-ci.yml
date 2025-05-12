@@ -17,15 +17,83 @@ stages:
   - apply
   - deploy
 
+compile_server:
+  stage: build
+  image: golang:1.24
+  variables:
+    CGO_ENABLED: 0
+    GOOS: linux
+    GOARCH: amd64
+  cache:
+    key: go-mod-cache
+    paths:
+      - go/pkg/mod
+  script:
+    - go mod tidy
+    - go build -o ../app ./cmd/main.go
+  artifacts:
+    name: "go-server-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - app
+    expire_in: 1 hour
+
 apply:
   extends: [ .opentofu:apply ]
+  after_script:
+    - echo "EC2_INSTANCE_ID=$(gitlab-tofu output -raw ec2_instance_id)" >> apply.env
+    - echo "EC2_PUBLIC_IP=$(gitlab-tofu output -raw ec2_public_ip)" >> apply.env
+  artifacts:
+    reports:
+      dotenv: apply.env
   rules: [ { when: on_success } ]
+
+deploy_server:
+  stage: deploy
+  needs:
+    - job: apply
+      artifacts: true
+    - job: compile_server
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
+        - server/**
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  script:
+    - apt-get update && apt-get install -y openssh-client systemd
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H $EC2_PUBLIC_IP >> ~/.ssh/known_hosts
+    - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no app ec2-user@$EC2_PUBLIC_IP:/home/ec2-user/
+    - |
+      ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@$EC2_PUBLIC_IP <<EOF
+        sudo bash -c 'cat > /etc/systemd/system/foreclosedhub.service' <<'SERVICE'
+          [Unit]
+          Description=Go Server for ForeclosedHub
+          After=network.target
+          
+          [Service]
+          ExecStart=/home/ec2-user/app
+          Restart=always
+          User=ec2-user
+          Group=ec2-user
+          Environment=PATH=/usr/bin:/usr/local/bin
+          Environment=GO_ENV=production
+          WorkingDirectory=/home/ec2-user
+          
+          [Install]
+          WantedBy=multi-user.target
+        SERVICE
+        
+        sudo systemctl daemon-reload
+        sudo systemctl enable foreclosedhub.service
+        sudo systemctl start foreclosedhub.service
+      EOF
 
 deploy_web:
   stage: deploy
   image: node:23.10.0
-  needs:
-    - job: apply
+  needs: [ apply ]
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
