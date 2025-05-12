@@ -8,7 +8,9 @@ include:
 
 stages:
   - validate
+  - build
   - plan
+  - apply
   - deploy
 
 deploy_web:
