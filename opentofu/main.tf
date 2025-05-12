@@ -78,6 +78,7 @@ resource "aws_key_pair" "server" {
   key_name   = "ci-deploy-key"
   public_key = tls_private_key.ssh.public_key_openssh
 }
+
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 }
@@ -101,7 +102,7 @@ resource "aws_route_table" "public" {
   }
 }
 
-resource "aws_route_table_association" "a" {
+resource "aws_route_table_association" "public" {
   subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }
