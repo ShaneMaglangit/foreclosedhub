@@ -1,1 +1,0 @@
-ALTER TABLE listings DROP COLUMN occupancy_status occupancy_status;

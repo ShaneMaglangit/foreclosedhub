@@ -1,1 +1,0 @@
-ALTER TABLE listings ADD COLUMN payload JSONB NOT NULL DEFAULT '{}';

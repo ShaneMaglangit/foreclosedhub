@@ -1,1 +1,0 @@
-ALTER TABLE listings ADD COLUMN status listing_status DEFAULT 'active'::listing_status NOT NULL;
