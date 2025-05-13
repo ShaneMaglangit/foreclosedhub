@@ -90,9 +90,6 @@ deploy_web:
   stage: deploy
   image: node:23.10.0
   needs: [ apply ]
-  rules:
-    - changes:
-        - web/**
   script:
     - cd web
     - npm install --global vercel
