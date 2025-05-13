@@ -54,6 +54,9 @@ deploy_server:
     - job: apply
       artifacts: true
     - job: compile_server
+  rules:
+    - changes:
+      - server/**/*
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
   script:
     - apt-get update && apt-get install -y openssh-client systemd
@@ -90,6 +93,9 @@ deploy_web:
   stage: deploy
   image: node:23.10.0
   needs: [ apply ]
+  rules:
+    - changes:
+      - web/**/*
   script:
     - cd web
     - npm install --global vercel
