@@ -63,25 +63,25 @@ deploy_server:
     - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no app ec2-user@$EC2_PUBLIC_IP:/home/ec2-user/
     - |
       ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@$EC2_PUBLIC_IP <<-'EOF'
-        echo '[Unit]
-        Description=Go Server for ForeclosedHub
-        After=network.target
-      
-        [Service]
-        ExecStart=/home/ec2-user/app
-        Restart=always
-        User=ec2-user
-        Group=ec2-user
-        Environment=PATH=/usr/bin:/usr/local/bin
-        Environment=GO_ENV=production
-        WorkingDirectory=/home/ec2-user
-      
-        [Install]
-        WantedBy=multi-user.target' | sudo tee /etc/systemd/system/foreclosedhub.service > /dev/null
-      
-        sudo systemctl daemon-reload
-        sudo systemctl enable foreclosedhub.service
-        sudo systemctl restart foreclosedhub.service
+      echo '[Unit]
+      Description=Go Server for ForeclosedHub
+      After=network.target
+    
+      [Service]
+      ExecStart=/home/ec2-user/app
+      Restart=always
+      User=ec2-user
+      Group=ec2-user
+      Environment=PATH=/usr/bin:/usr/local/bin
+      Environment=GO_ENV=production
+      WorkingDirectory=/home/ec2-user
+    
+      [Install]
+      WantedBy=multi-user.target' | sudo tee /etc/systemd/system/foreclosedhub.service > /dev/null
+    
+      sudo systemctl daemon-reload
+      sudo systemctl enable foreclosedhub.service
+      sudo systemctl restart foreclosedhub.service
       EOF
 
 deploy_web:
