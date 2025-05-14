@@ -107,10 +107,18 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_security_group" "ssh" {
-  name        = "allow_ssh"
-  description = "Allow SSH inbound traffic"
+resource "aws_security_group" "allow_traffic" {
+  name        = "allow_traffice"
+  description = "Allow traffic"
   vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description = "GRPC"
+    from_port   = 50051
+    to_port     = 50051
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   ingress {
     description = "SSH"
@@ -121,9 +129,9 @@ resource "aws_security_group" "ssh" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -133,7 +141,7 @@ resource "aws_instance" "server" {
   instance_type               = "t2.micro"
   key_name                    = aws_key_pair.server.key_name
   subnet_id                   = aws_subnet.public.id
-  vpc_security_group_ids      = [aws_security_group.ssh.id]
+  vpc_security_group_ids = [aws_security_group.allow_traffic.id]
   associate_public_ip_address = true
 }
 
@@ -150,6 +158,17 @@ resource "vercel_project" "web" {
     type = "gitlab"
     repo = data.gitlab_project.repository.path_with_namespace
   }
+}
+
+resource "vercel_project_environment_variables" "web" {
+  project_id = vercel_project.web.id
+  variables = [
+    {
+      key = "GRPC_ADDRESS"
+      value = "${aws_instance.server.public_ip}:50051"
+      target = ["production"]
+    }
+  ]
 }
 
 resource "vercel_project_domain" "web" {
