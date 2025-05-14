@@ -69,6 +69,7 @@ deploy_server:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@$EC2_PUBLIC_IP "sudo systemctl stop foreclosedhub.service || true"
     - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no app ec2-user@$EC2_PUBLIC_IP:/home/ec2-user/
     - |
       ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@$EC2_PUBLIC_IP <<-'EOF'
