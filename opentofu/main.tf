@@ -33,35 +33,35 @@ resource "tls_private_key" "ci_ssh" {
   rsa_bits  = 4096
 }
 
-resource "gitlab_project_variable" "ci_ssh_private_key" {
+resource "gitlab_project_variable" "ssh_private_key" {
   project   = data.gitlab_project.foreclosedhub.path_with_namespace
   key       = "SSH_PRIVATE_KEY"
   value     = tls_private_key.ci_ssh.private_key_pem
   protected = true
 }
 
-resource "gitlab_project_variable" "ci_ssh_public_key" {
+resource "gitlab_project_variable" "ssh_public_key" {
   project   = data.gitlab_project.foreclosedhub.path_with_namespace
   key       = "SSH_PUBLIC_KEY"
   value     = tls_private_key.ci_ssh.public_key_openssh
   protected = true
 }
 
-resource "gitlab_project_variable" "ci_aws_access_key" {
+resource "gitlab_project_variable" "aws_access_key" {
   project   = data.gitlab_project.foreclosedhub.path_with_namespace
   key       = "AWS_ACCESS_KEY_ID"
   value     = var.aws_access_key
   protected = true
 }
 
-resource "gitlab_project_variable" "ci_aws_secret_access_key" {
+resource "gitlab_project_variable" "aws_secret_access_key" {
   project   = data.gitlab_project.foreclosedhub.path_with_namespace
   key       = "AWS_SECRET_ACCESS_KEY"
   value     = var.aws_secret_access_key
   protected = true
 }
 
-resource "gitlab_project_variable" "ci_aws_region" {
+resource "gitlab_project_variable" "aws_region" {
   project   = data.gitlab_project.foreclosedhub.path_with_namespace
   key       = "AWS_DEFAULT_REGION"
   value     = var.aws_region
