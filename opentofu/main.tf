@@ -24,45 +24,45 @@ provider "gitlab" {
   token = var.gitlab_token
 }
 
-data "gitlab_project" "repository" {
+data "gitlab_project" "foreclosedhub" {
   path_with_namespace = "shanemaglangit/foreclosedhub"
 }
 
-resource "tls_private_key" "ssh" {
+resource "tls_private_key" "ci_ssh" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
-resource "gitlab_project_variable" "ssh_private_key" {
-  project   = data.gitlab_project.repository.path_with_namespace
+resource "gitlab_project_variable" "ci_ssh_private_key" {
+  project   = data.gitlab_project.foreclosedhub.path_with_namespace
   key       = "SSH_PRIVATE_KEY"
-  value     = tls_private_key.ssh.private_key_pem
+  value     = tls_private_key.ci_ssh.private_key_pem
   protected = true
 }
 
-resource "gitlab_project_variable" "ssh_public_key" {
-  project   = data.gitlab_project.repository.path_with_namespace
+resource "gitlab_project_variable" "ci_ssh_public_key" {
+  project   = data.gitlab_project.foreclosedhub.path_with_namespace
   key       = "SSH_PUBLIC_KEY"
-  value     = tls_private_key.ssh.public_key_openssh
+  value     = tls_private_key.ci_ssh.public_key_openssh
   protected = true
 }
 
-resource "gitlab_project_variable" "aws_access_key" {
-  project   = data.gitlab_project.repository.path_with_namespace
+resource "gitlab_project_variable" "ci_aws_access_key" {
+  project   = data.gitlab_project.foreclosedhub.path_with_namespace
   key       = "AWS_ACCESS_KEY_ID"
   value     = var.aws_access_key
   protected = true
 }
 
-resource "gitlab_project_variable" "aws_secret_access_key" {
-  project   = data.gitlab_project.repository.path_with_namespace
+resource "gitlab_project_variable" "ci_aws_secret_access_key" {
+  project   = data.gitlab_project.foreclosedhub.path_with_namespace
   key       = "AWS_SECRET_ACCESS_KEY"
   value     = var.aws_secret_access_key
   protected = true
 }
 
-resource "gitlab_project_variable" "aws_default_region" {
-  project   = data.gitlab_project.repository.path_with_namespace
+resource "gitlab_project_variable" "ci_aws_region" {
+  project   = data.gitlab_project.foreclosedhub.path_with_namespace
   key       = "AWS_DEFAULT_REGION"
   value     = var.aws_region
   protected = false
@@ -74,46 +74,46 @@ provider "aws" {
   secret_key = var.aws_secret_access_key
 }
 
-resource "aws_key_pair" "server" {
+resource "aws_key_pair" "ci_ssh" {
   key_name   = "ci-deploy-key"
-  public_key = tls_private_key.ssh.public_key_openssh
+  public_key = tls_private_key.ci_ssh.public_key_openssh
 }
 
-resource "aws_vpc" "server" {
+resource "aws_vpc" "app" {
   cidr_block = "10.0.0.0/16"
 }
 
-resource "aws_internet_gateway" "server" {
-  vpc_id = aws_vpc.server.id
+resource "aws_internet_gateway" "app" {
+  vpc_id = aws_vpc.app.id
 }
 
-resource "aws_subnet" "server" {
-  vpc_id                  = aws_vpc.server.id
+resource "aws_subnet" "public_1a" {
+  vpc_id                  = aws_vpc.app.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
 }
 
-resource "aws_route_table" "server" {
-  vpc_id = aws_vpc.server.id
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.app.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.server.id
+    gateway_id = aws_internet_gateway.app.id
   }
 }
 
-resource "aws_route_table_association" "server" {
-  subnet_id      = aws_subnet.server.id
-  route_table_id = aws_route_table.server.id
+resource "aws_route_table_association" "public_1a" {
+  subnet_id      = aws_subnet.public_1a.id
+  route_table_id = aws_route_table.public.id
 }
 
-resource "aws_security_group" "server" {
-  name        = "allow_traffice"
-  description = "Allow traffic"
-  vpc_id      = aws_vpc.server.id
+resource "aws_security_group" "app_allow_inbound" {
+  name        = "app-allow-inbound"
+  description = "Allow inbound traffic for gRPC and SSH"
+  vpc_id      = aws_vpc.app.id
 
   ingress {
-    description = "GRPC"
+    description = "gRPC"
     from_port   = 50051
     to_port     = 50051
     protocol    = "tcp"
@@ -129,9 +129,9 @@ resource "aws_security_group" "server" {
   }
 
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -139,10 +139,18 @@ resource "aws_security_group" "server" {
 resource "aws_instance" "server" {
   ami                         = "ami-0e8ebb0ab254bb563"
   instance_type               = "t2.micro"
-  key_name                    = aws_key_pair.server.key_name
-  subnet_id                   = aws_subnet.server.id
-  vpc_security_group_ids = [aws_security_group.server.id]
+  key_name                    = aws_key_pair.ci_ssh.key_name
+  subnet_id                   = aws_subnet.public_1a.id
+  vpc_security_group_ids      = [aws_security_group.app_allow_inbound.id]
   associate_public_ip_address = true
+}
+
+output "server_id" {
+  value = aws_instance.server.id
+}
+
+output "server_public_ip" {
+  value = aws_instance.server.public_ip
 }
 
 provider "vercel" {
@@ -156,7 +164,7 @@ resource "vercel_project" "web" {
 
   git_repository = {
     type = "gitlab"
-    repo = data.gitlab_project.repository.path_with_namespace
+    repo = data.gitlab_project.foreclosedhub.path_with_namespace
   }
 }
 
@@ -164,8 +172,8 @@ resource "vercel_project_environment_variables" "web" {
   project_id = vercel_project.web.id
   variables = [
     {
-      key   = "GRPC_ADDRESS"
-      value = "${aws_instance.server.public_ip}:50051"
+      key    = "GRPC_ADDRESS"
+      value  = "${aws_instance.server.public_ip}:50051"
       target = ["production"]
     }
   ]
@@ -174,12 +182,4 @@ resource "vercel_project_environment_variables" "web" {
 resource "vercel_project_domain" "web" {
   domain     = "foreclosedhub.com"
   project_id = vercel_project.web.id
-}
-
-output "ec2_instance_id" {
-  value = aws_instance.server.id
-}
-
-output "ec2_public_ip" {
-  value = aws_instance.server.public_ip
 }
