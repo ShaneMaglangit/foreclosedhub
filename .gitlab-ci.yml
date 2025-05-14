@@ -1,3 +1,7 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
 include:
   - component: gitlab.com/components/opentofu/validate-plan@2.0.0-rc1
     inputs:
@@ -50,11 +54,16 @@ apply:
 
 deploy_server:
   stage: deploy
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
   needs:
     - job: apply
       artifacts: true
     - job: compile_server
-  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  rules:
+    - changes:
+       - server/**/*
+      when: on_success
+    - when: manual
   script:
     - apt-get update && apt-get install -y openssh-client
     - mkdir -p ~/.ssh
@@ -88,6 +97,11 @@ deploy_web:
   stage: deploy
   image: node:23.10.0
   needs: [ apply ]
+  rules:
+    - changes:
+       - web/**/*
+      when: on_success
+    - when: manual
   script:
     - cd web
     - npm install --global vercel
