@@ -28,3 +28,13 @@ variable "aws_region" {
   default     = "ap-southeast-1"
   type        = string
 }
+
+variable "cloudflare_api_token" {
+  description = "Cloudflare API Token"
+  type        = string
+}
+
+variable "cloudflare_account_id" {
+  description = "Cloudflare Account ID"
+  type        = string
+}

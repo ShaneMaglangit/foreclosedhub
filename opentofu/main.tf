@@ -17,6 +17,10 @@ terraform {
       source  = "hashicorp/tls"
       version = "~> 4.0"
     }
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 5"
+    }
   }
 }
 
@@ -182,4 +186,18 @@ resource "vercel_project_environment_variables" "web" {
 resource "vercel_project_domain" "web" {
   domain     = "foreclosedhub.com"
   project_id = vercel_project.web.id
+}
+
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
+}
+
+resource "cloudflare_r2_bucket" "storage" {
+  account_id = var.cloudflare_account_id
+  name = "foreclosedhub"
+  location = "apac"
+}
+
+output "cloudflare_r2_connection" {
+  value = cloudflare_r2_bucket.storage.connection
 }
