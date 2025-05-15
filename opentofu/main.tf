@@ -194,10 +194,6 @@ provider "cloudflare" {
 
 resource "cloudflare_r2_bucket" "storage" {
   account_id = var.cloudflare_account_id
-  name = "foreclosedhub"
-  location = "apac"
-}
-
-output "cloudflare_r2_connection" {
-  value = cloudflare_r2_bucket.storage.connection
+  name       = "foreclosedhub"
+  location   = "apac"
 }
