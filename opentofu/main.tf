@@ -19,7 +19,7 @@ terraform {
     }
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "~> 5"
+      version = "~> 5.4.0"
     }
   }
 }
@@ -196,4 +196,11 @@ resource "cloudflare_r2_bucket" "storage" {
   account_id = var.cloudflare_account_id
   name       = "foreclosedhub"
   location   = "apac"
+}
+
+resource "cloudflare_r2_custom_domain" "storage" {
+  account_id = var.cloudflare_account_id
+  name       = "foreclosedhub"
+  domain     = "storage.foreclosedhub.com"
+  enabled    = true
 }
