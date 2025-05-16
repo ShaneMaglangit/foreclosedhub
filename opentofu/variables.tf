@@ -43,3 +43,18 @@ variable "cloudflare_zone_id" {
   description = "Cloudflare Zone ID"
   type        = string
 }
+
+variable "supabase_organization_id" {
+  description = "Supabase Organization ID"
+  type        = string
+}
+
+variable "supabase_access_token" {
+  description = "Supabase Access Token"
+  type        = string
+}
+
+variable "supabase_db_password" {
+  description = "Supabase Database Password"
+  type        = string
+}
