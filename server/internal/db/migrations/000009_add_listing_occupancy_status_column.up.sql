@@ -1,0 +1,1 @@
+ALTER TABLE listings ADD COLUMN occupancy_status occupancy_status;

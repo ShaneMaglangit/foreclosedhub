@@ -1,0 +1,1 @@
+CREATE TYPE listing_status AS ENUM('active', 'unlisted');
