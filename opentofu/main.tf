@@ -22,7 +22,7 @@ terraform {
       version = "5.4.0"
     }
     supabase = {
-      source = "supabase/supabase"
+      source  = "supabase/supabase"
       version = "1.5.1"
     }
   }
@@ -196,13 +196,30 @@ provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
 
+resource "cloudflare_r2_bucket" "storage" {
+  account_id    = var.cloudflare_account_id
+  name          = "foreclosedhub"
+  location      = "apac"
+  jurisdiction  = "default"
+  storage_class = "Standard"
+}
+
+resource "cloudflare_r2_custom_domain" "storage" {
+  account_id   = var.cloudflare_account_id
+  zone_id      = var.cloudflare_zone_id
+  bucket_name  = cloudflare_r2_bucket.storage.name
+  domain       = "storage.foreclosedhub.com"
+  enabled      = true
+  jurisdiction = "default"
+}
+
 provider "supabase" {
   access_token = var.supabase_access_token
 }
 
 resource "supabase_project" "foreclosedhub" {
-  organization_id = var.supabase_organization_id
-  name = "foreclosedhub"
+  organization_id   = var.supabase_organization_id
+  name              = "foreclosedhub"
   database_password = var.supabase_db_password
-  region = var.aws_region
+  region            = var.aws_region
 }
