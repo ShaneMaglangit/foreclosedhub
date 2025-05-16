@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"server/internal/cron"
 	"server/internal/proto"
 )
 import "google.golang.org/grpc"
@@ -21,6 +22,9 @@ func (s *HelloServiceServer) SayHello(ctx context.Context, req *proto.SayHelloRe
 }
 
 func main() {
+	c := cron.Start()
+	defer c.Stop()
+
 	port := os.Getenv("GRPC_PORT")
 	if port == "" {
 		port = defaultPort
