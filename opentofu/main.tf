@@ -192,6 +192,10 @@ resource "vercel_project_domain" "web" {
   project_id = vercel_project.web.id
 }
 
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
+}
+
 provider "supabase" {
   access_token = var.supabase_access_token
 }
