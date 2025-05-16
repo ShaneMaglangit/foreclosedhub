@@ -4,6 +4,8 @@ go 1.24.1
 
 require (
 	github.com/jackc/pgx/v5 v5.7.4
+	github.com/joho/godotenv v1.5.1
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/twpayne/go-geos v0.20.1
 	google.golang.org/grpc v1.72.0
 	google.golang.org/protobuf v1.36.5
@@ -12,7 +14,6 @@ require (
 require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
-	github.com/robfig/cron/v3 v3.0.1 // indirect
 	golang.org/x/crypto v0.33.0 // indirect
 	golang.org/x/net v0.35.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
