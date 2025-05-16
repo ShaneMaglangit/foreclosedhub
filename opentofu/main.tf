@@ -222,5 +222,4 @@ resource "supabase_project" "foreclosedhub" {
   name = "foreclosedhub"
   database_password = var.supabase_db_password
   region = var.aws_region
-  instance_size = "micro"
 }
