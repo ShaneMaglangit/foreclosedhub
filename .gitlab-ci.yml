@@ -55,8 +55,8 @@ apply:
     - echo "CLOUDFLARE_ACCOUNT_ID=$(gitlab-tofu output -raw cloudflare_account_id)" >> apply.env
     - echo "CLOUDFLARE_BUCKET=$(gitlab-tofu output -raw cloudflare_bucket)" >> apply.env
   artifacts:
-    reports:
-      dotenv: apply.env
+    paths:
+      - apply.env
   rules:
     - when: on_success
 
