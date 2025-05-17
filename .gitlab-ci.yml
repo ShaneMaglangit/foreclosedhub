@@ -74,6 +74,7 @@ deploy_server:
     - when: manual
       allow_failure: true
   script:
+    - source apply.env
     - apt-get update && apt-get install -y openssh-client
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
