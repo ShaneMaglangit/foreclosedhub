@@ -210,7 +210,6 @@ resource "cloudflare_r2_custom_domain" "storage" {
   bucket_name  = cloudflare_r2_bucket.storage.name
   domain       = "storage.foreclosedhub.com"
   enabled      = true
-  jurisdiction = "default"
 }
 
 output "cloudflare_account_id" {
