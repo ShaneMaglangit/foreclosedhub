@@ -72,7 +72,7 @@ deploy_server:
     - when: manual
       allow_failure: true
   script:
-    - apt-get update && apt-get install -y openssh-client
+    - apt-get update && apt-get install -y openssh-client libgeos-dev
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
