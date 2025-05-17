@@ -84,6 +84,7 @@ deploy_server:
       artifacts: true
     - job: compile_server
     - job: migrate
+      optional: true
   rules:
     - changes:
         - server/**/*
@@ -126,7 +127,10 @@ deploy_server:
 deploy_web:
   stage: deploy
   image: node:23.10.0
-  needs: [ apply ]
+  needs:
+    - job: apply
+    - job: deploy_server
+      optional: true
   rules:
     - changes:
        - web/**/*
