@@ -60,6 +60,19 @@ apply:
   rules:
     - when: on_success
 
+migrate:
+  stage: deploy
+  needs:
+    - job: apply
+      artifacts: true
+  image: golang:latest
+  before_script:
+    - apt-get update && apt-get install -y curl unzip
+    - if [ ! -f /usr/local/bin/migrate ]; then curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz && mv migrate /usr/local/bin/migrate; fi
+  script:
+    - source apply.env
+    - migrate -path ./server/internal/db/migrations -database "$DATABASE_URL" up
+
 deploy_server:
   stage: deploy
   image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
@@ -67,6 +80,7 @@ deploy_server:
     - job: apply
       artifacts: true
     - job: compile_server
+    - job: migrate
   rules:
     - changes:
         - server/**/*
