@@ -62,10 +62,13 @@ apply:
 
 migrate:
   stage: deploy
+  image: golang:latest
   needs:
     - job: apply
       artifacts: true
-  image: golang:latest
+  rules:
+    - changes:
+        - server/internal/db/migrations/*
   before_script:
     - apt-get update && apt-get install -y curl unzip
     - if [ ! -f /usr/local/bin/migrate ]; then curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz && mv migrate /usr/local/bin/migrate; fi
