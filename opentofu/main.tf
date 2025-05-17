@@ -231,11 +231,6 @@ resource "supabase_project" "foreclosedhub" {
   region            = var.aws_region
 }
 
-resource "supabase_branch" "main" {
-  parent_project_ref = supabase_project.foreclosedhub.id
-  git_branch         = "main"
-}
-
 output "database_url" {
-  value = "postgres://${supabase_branch.main.database.user}:${var.supabase_db_password}@${supabase_branch.main.database.host}:${supabase_branch.main.database.port}"
+  value = "postgresql://postgres.${supabase_project.foreclosedhub.id}:${var.supabase_db_password}@aws-0-${var.aws_region}.pooler.supabase.com:6543/postgres"
 }
