@@ -49,6 +49,7 @@ compile_server:
 plan:
   extends: [ .opentofu:plan ]
   before_script:
+    - gitlab-tofu init -input=false
     - gitlab-tofu state rm cloudflare_r2_custom_domain.storage
 
 apply:
