@@ -33,8 +33,8 @@ compile_server:
     paths:
       - go/pkg/mod
   script:
-    - apt update -y
-    - apt install -y libgeos-dev
+    - apt-get update
+    - apt-get install -y pkg-config libgeos-dev
     - cd server
     - go mod tidy
     - go build -o ../app ./cmd/main.go
