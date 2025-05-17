@@ -8,7 +8,8 @@ import (
 	"server/internal/service"
 )
 
-const skipCountAfterNoop = 24 * 60
+// TODO: Extract hardcoded "5", which refers to the number of instances for this job declared in cron/cron.job
+const skipCountAfterNoop = 24 * 60 * 5
 
 type ScrapeListingJob struct{}
 
