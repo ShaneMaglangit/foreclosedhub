@@ -47,10 +47,16 @@ apply:
   after_script:
     - echo "EC2_INSTANCE_ID=$(gitlab-tofu output -raw server_id)" >> apply.env
     - echo "EC2_PUBLIC_IP=$(gitlab-tofu output -raw server_public_ip)" >> apply.env
+    - echo "DATABASE_URL=$(gitlab-tofu output -raw database_url)" >> apply.env
+    - echo "CLOUDFLARE_ACCOUNT_ID=$(gitlab-tofu output -raw cloudflare_account_id)" >> apply.env
+    - echo "CLOUDFLARE_ACCESS_KEY_ID=$(gitlab-tofu output -raw cloudflare_r2_access_key_id)" >> apply.env
+    - echo "CLOUDFLARE_ACCESS_SECRET_KEY=$(gitlab-tofu output -raw cloudflare_r2_access_secret_key)" >> apply.env
+    - echo "CLOUDFLARE_BUCKET=$(gitlab-tofu output -raw cloudflare_bucket)" >> apply.env
   artifacts:
     reports:
       dotenv: apply.env
-  rules: [ { when: on_success } ]
+  rules:
+    - when: on_success
 
 deploy_server:
   stage: deploy
@@ -61,7 +67,7 @@ deploy_server:
     - job: compile_server
   rules:
     - changes:
-       - server/**/*
+        - server/**/*
       when: on_success
     - when: manual
       allow_failure: true
@@ -72,12 +78,13 @@ deploy_server:
     - chmod 600 ~/.ssh/id_rsa
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@$EC2_PUBLIC_IP "sudo systemctl stop foreclosedhub.service || true"
     - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no app ec2-user@$EC2_PUBLIC_IP:/home/ec2-user/
+    - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no apply.env ec2-user@$EC2_PUBLIC_IP:/home/ec2-user/
     - |
       ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@$EC2_PUBLIC_IP <<-'EOF'
       echo '[Unit]
       Description=Go Server for ForeclosedHub
       After=network.target
-    
+
       [Service]
       ExecStart=/home/ec2-user/app
       Restart=always
@@ -85,11 +92,12 @@ deploy_server:
       Group=ec2-user
       Environment=PATH=/usr/bin:/usr/local/bin
       Environment=GO_ENV=production
+      EnvironmentFile=/home/ec2-user/apply.env
       WorkingDirectory=/home/ec2-user
-    
+
       [Install]
       WantedBy=multi-user.target' | sudo tee /etc/systemd/system/foreclosedhub.service > /dev/null
-    
+
       sudo systemctl daemon-reload
       sudo systemctl enable foreclosedhub.service
       sudo systemctl restart foreclosedhub.service

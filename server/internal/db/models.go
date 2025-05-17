@@ -145,6 +145,7 @@ type Listing struct {
 	ExternalID      string
 	Address         string
 	FloorArea       pgtype.Numeric
+	LotArea         pgtype.Numeric
 	Price           int64
 	ImageLoaded     bool
 	OccupancyStatus OccupancyStatus

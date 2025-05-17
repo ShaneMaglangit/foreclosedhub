@@ -213,6 +213,41 @@ resource "cloudflare_r2_custom_domain" "storage" {
   jurisdiction = "default"
 }
 
+resource "cloudflare_account_token" "r2_object" {
+  account_id = var.cloudflare_account_id
+  name       = "foreclosedhub server"
+
+  policies = [
+    {
+      effect = "allow"
+      permission_groups = [
+        "com.cloudflare.api.account.r2.object.read",
+        "com.cloudflare.api.account.r2.object.write"
+      ]
+      resources = {
+        "com.cloudflare.api.account.r2.bucket.foreclosedhub" = "*"
+      }
+    }
+  ]
+}
+
+output "cloudflare_account_id" {
+  value = var.cloudflare_account_id
+}
+
+output "cloudflare_r2_access_key_id" {
+  value = cloudflare_account_token.r2_object.id
+}
+
+output "cloudflare_r2_access_secret_key" {
+  value     = cloudflare_account_token.r2_object.value
+  sensitive = true
+}
+
+output "cloudflare_bucket" {
+  value = cloudflare_r2_bucket.storage.name
+}
+
 provider "supabase" {
   access_token = var.supabase_access_token
 }
@@ -222,4 +257,8 @@ resource "supabase_project" "foreclosedhub" {
   name              = "foreclosedhub"
   database_password = var.supabase_db_password
   region            = var.aws_region
+}
+
+output "database_url" {
+  value = supabase_project.foreclosedhub.connection
 }
