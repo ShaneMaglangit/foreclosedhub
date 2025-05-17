@@ -21,8 +21,8 @@ type R2Storage struct {
 
 func NewR2Storage(ctx context.Context) (*R2Storage, error) {
 	accountId := os.Getenv("CLOUDFLARE_ACCOUNT_ID")
-	accessKeyId := os.Getenv("CLOUDFLARE_ACCESS_KEY_ID")
-	accessSecretKey := os.Getenv("CLOUDFLARE_ACCESS_SECRET_KEY")
+	accessKeyId := os.Getenv("CLOUDFLARE_R2_ACCESS_KEY_ID")
+	accessSecretKey := os.Getenv("CLOUDFLARE_R2_ACCESS_SECRET_KEY")
 	bucket := os.Getenv("CLOUDFLARE_BUCKET")
 
 	cfg, err := config.LoadDefaultConfig(ctx,
