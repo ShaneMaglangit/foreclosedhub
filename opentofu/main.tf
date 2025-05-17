@@ -137,9 +137,9 @@ resource "aws_security_group" "app_allow_inbound" {
   }
 
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -149,7 +149,7 @@ resource "aws_instance" "server" {
   instance_type               = "t2.micro"
   key_name                    = aws_key_pair.ci_ssh.key_name
   subnet_id                   = aws_subnet.public_1a.id
-  vpc_security_group_ids = [aws_security_group.app_allow_inbound.id]
+  vpc_security_group_ids      = [aws_security_group.app_allow_inbound.id]
   associate_public_ip_address = true
 }
 
@@ -180,8 +180,8 @@ resource "vercel_project_environment_variables" "web" {
   project_id = vercel_project.web.id
   variables = [
     {
-      key   = "GRPC_ADDRESS"
-      value = "${aws_instance.server.public_ip}:50051"
+      key    = "GRPC_ADDRESS"
+      value  = "${aws_instance.server.public_ip}:50051"
       target = ["production"]
     }
   ]
@@ -205,11 +205,11 @@ resource "cloudflare_r2_bucket" "storage" {
 }
 
 resource "cloudflare_r2_custom_domain" "storage" {
-  account_id   = var.cloudflare_account_id
-  zone_id      = var.cloudflare_zone_id
-  bucket_name  = cloudflare_r2_bucket.storage.name
-  domain       = "storage.foreclosedhub.com"
-  enabled      = true
+  account_id  = var.cloudflare_account_id
+  zone_id     = var.cloudflare_zone_id
+  bucket_name = cloudflare_r2_bucket.storage.name
+  domain      = "storage.foreclosedhub.com"
+  enabled     = true
 }
 
 output "cloudflare_account_id" {
