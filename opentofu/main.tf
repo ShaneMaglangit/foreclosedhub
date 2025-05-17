@@ -232,6 +232,10 @@ resource "supabase_project" "foreclosedhub" {
   region            = var.aws_region
 }
 
+data "supabase_pooler" "foreclosedhub" {
+  project_ref = supabase_project.foreclosedhub.id
+}
+
 output "database_url" {
-  value = supabase_project.foreclosedhub.connection
+  value = data.supabase_pooler.foreclosedhub.url
 }
