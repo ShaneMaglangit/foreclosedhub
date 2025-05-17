@@ -196,31 +196,6 @@ provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
 
-resource "cloudflare_r2_bucket" "storage" {
-  account_id    = var.cloudflare_account_id
-  name          = "foreclosedhub"
-  location      = "apac"
-  jurisdiction  = "default"
-  storage_class = "Standard"
-}
-
-resource "cloudflare_r2_custom_domain" "storage" {
-  account_id   = var.cloudflare_account_id
-  zone_id      = var.cloudflare_zone_id
-  bucket_name  = cloudflare_r2_bucket.storage.name
-  domain       = "storage.foreclosedhub.com"
-  enabled      = true
-  jurisdiction = "default"
-}
-
-output "cloudflare_account_id" {
-  value = var.cloudflare_account_id
-}
-
-output "cloudflare_bucket" {
-  value = cloudflare_r2_bucket.storage.name
-}
-
 provider "supabase" {
   access_token = var.supabase_access_token
 }
