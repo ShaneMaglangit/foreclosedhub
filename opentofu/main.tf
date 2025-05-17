@@ -225,13 +225,13 @@ provider "supabase" {
   access_token = var.supabase_access_token
 }
 
-resource "supabase_project" "foreclosedhub" {
-  organization_id   = var.supabase_organization_id
-  name              = "foreclosedhub"
-  database_password = var.supabase_db_password
-  region            = var.aws_region
-}
-
-output "database_url" {
-  value = "postgresql://postgres.${supabase_project.foreclosedhub.id}:${var.supabase_db_password}@aws-0-${var.aws_region}.pooler.supabase.com:6543/postgres"
-}
+# resource "supabase_project" "foreclosedhub" {
+#   organization_id   = var.supabase_organization_id
+#   name              = "foreclosedhub"
+#   database_password = var.supabase_db_password
+#   region            = var.aws_region
+# }
+#
+# output "database_url" {
+#   value = "postgresql://postgres.${supabase_project.foreclosedhub.id}:${var.supabase_db_password}@aws-0-${var.aws_region}.pooler.supabase.com:6543/postgres"
+# }
