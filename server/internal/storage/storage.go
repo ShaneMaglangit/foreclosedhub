@@ -5,5 +5,5 @@ import (
 )
 
 type Storage interface {
-	UploadImage(ctx context.Context, base64Image string) (string, error)
+	UploadImageBlobString(ctx context.Context, base64Image string) (string, error)
 }

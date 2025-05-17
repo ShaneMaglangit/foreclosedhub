@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/google/uuid"
+	"io"
 	"os"
 	"strings"
 )
@@ -43,7 +44,7 @@ func NewR2Storage(ctx context.Context) (*R2Storage, error) {
 	}, nil
 }
 
-func (s *R2Storage) UploadImage(ctx context.Context, base64Image string) (string, error) {
+func (s *R2Storage) UploadImageBlobString(ctx context.Context, base64Image string) (string, error) {
 	imageData, err := base64.StdEncoding.DecodeString(base64Image)
 	if err != nil {
 		return "", fmt.Errorf("failed to decode base64 image: %w", err)
@@ -55,6 +56,24 @@ func (s *R2Storage) UploadImage(ctx context.Context, base64Image string) (string
 		Bucket:      aws.String(s.bucket),
 		Key:         aws.String(objectKey),
 		Body:        strings.NewReader(string(imageData)),
+		ContentType: aws.String("image/jpeg"),
+		ACL:         types.ObjectCannedACLPublicRead,
+	})
+	if err != nil {
+		return "", fmt.Errorf("failed to upload image: %w", err)
+	}
+
+	url := fmt.Sprintf("https://storage.foreclosedhub.com/%s", objectKey)
+	return url, nil
+}
+
+func (s *R2Storage) UploadImageBlob(ctx context.Context, reader io.Reader) (string, error) {
+	objectKey := fmt.Sprintf("%s.jpg", uuid.New().String())
+
+	_, err := s.client.PutObject(ctx, &s3.PutObjectInput{
+		Bucket:      aws.String(s.bucket),
+		Key:         aws.String(objectKey),
+		Body:        reader,
 		ContentType: aws.String("image/jpeg"),
 		ACL:         types.ObjectCannedACLPublicRead,
 	})

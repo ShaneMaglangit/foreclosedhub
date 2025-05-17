@@ -4,6 +4,7 @@ import (
 	"github.com/robfig/cron/v3"
 	"log"
 	"server/internal/source/pagibig"
+	"server/internal/source/secbank"
 	"server/internal/utils"
 )
 
@@ -32,6 +33,19 @@ var scheduledJobs = []ScheduledJob{
 		schedule:   "* * * * *",
 		isDisabled: func() bool { return utils.IsDevelopment() },
 		factory:    func() Job { return &pagibig.ScrapeListingImageJob{} },
+	},
+	{
+		name:     "SecbankScrapeListing",
+		instance: 1,
+		schedule: "0 0 * * *",
+		factory:  func() Job { return &secbank.ScrapeListingJob{} },
+	},
+	{
+		name:       "SecbankScrapeListingImages",
+		instance:   1,
+		schedule:   "* * * * *",
+		isDisabled: func() bool { return utils.IsDevelopment() },
+		factory:    func() Job { return &secbank.ScrapeListingImageJob{} },
 	},
 }
 

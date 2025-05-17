@@ -29,7 +29,7 @@ func (s *ImageBlobUploadService) ExecuteBatch() ([]string, error) {
 
 	var urls []string
 	for _, blob := range s.blobs {
-		url, err := r2.UploadImage(ctx, blob)
+		url, err := r2.UploadImageBlobString(ctx, blob)
 		if err != nil {
 			return nil, err
 		}
