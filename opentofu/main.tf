@@ -204,14 +204,14 @@ resource "cloudflare_r2_bucket" "storage" {
   storage_class = "Standard"
 }
 
-# resource "cloudflare_r2_custom_domain" "storage" {
-#   account_id  = var.cloudflare_account_id
-#   zone_id     = var.cloudflare_zone_id
-#   bucket_name = cloudflare_r2_bucket.storage.name
-#   domain      = "storage.foreclosedhub.com"
-#   domain_name = "storage.foreclosedhub.com"
-#   enabled     = true
-# }
+resource "cloudflare_r2_custom_domain" "storage" {
+  account_id  = var.cloudflare_account_id
+  zone_id     = var.cloudflare_zone_id
+  bucket_name = cloudflare_r2_bucket.storage.name
+  domain      = "storage.foreclosedhub.com"
+  domain_name = "storage.foreclosedhub.com"
+  enabled     = true
+}
 
 output "cloudflare_account_id" {
   value = var.cloudflare_account_id
