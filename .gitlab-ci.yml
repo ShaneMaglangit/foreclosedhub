@@ -32,9 +32,11 @@ compile_server:
     key: go-mod-cache
     paths:
       - go/pkg/mod
-  script:
+  before_script:
     - apt-get update
     - apt-get install -y pkg-config libgeos-dev
+    - go clean -modcache
+  script:
     - cd server
     - go mod tidy
     - go build -o ../app ./cmd/main.go
