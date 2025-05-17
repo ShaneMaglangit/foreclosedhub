@@ -3,8 +3,6 @@ package cron
 import (
 	"github.com/robfig/cron/v3"
 	"log"
-	"server/internal/source/pagibig"
-	"server/internal/utils"
 )
 
 type Job interface {
@@ -19,21 +17,7 @@ type ScheduledJob struct {
 	factory    func() Job
 }
 
-var scheduledJobs = []ScheduledJob{
-	{
-		name:     "PagibigScrapeListing",
-		instance: 1,
-		schedule: "0 0 * * *",
-		factory:  func() Job { return &pagibig.ScrapeListingJob{} },
-	},
-	{
-		name:       "PagibigScrapeListingImages",
-		instance:   5,
-		schedule:   "* * * * *",
-		isDisabled: func() bool { return utils.IsDevelopment() },
-		factory:    func() Job { return &pagibig.ScrapeListingImageJob{} },
-	},
-}
+var scheduledJobs []ScheduledJob
 
 func Start() *cron.Cron {
 	c := cron.New()
