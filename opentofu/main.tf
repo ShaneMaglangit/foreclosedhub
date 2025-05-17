@@ -209,6 +209,7 @@ resource "cloudflare_r2_custom_domain" "storage" {
   zone_id     = var.cloudflare_zone_id
   bucket_name = cloudflare_r2_bucket.storage.name
   domain      = "storage.foreclosedhub.com"
+  domain_name = "storage.foreclosedhub.com"
   enabled     = true
 }
 
