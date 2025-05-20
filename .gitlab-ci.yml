@@ -93,7 +93,7 @@ deploy_server:
       allow_failure: true
   script:
     - source apply.env
-    - apt-get update && apt-get install -y openssh-client libgeos-dev
+    - apt-get update && apt-get install -y openssh-client
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
@@ -102,6 +102,11 @@ deploy_server:
     - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no apply.env ec2-user@$EC2_PUBLIC_IP:/home/ec2-user/
     - |
       ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@$EC2_PUBLIC_IP <<-'EOF'
+      sudo yum install -y amazon-linux-extras
+      sudo amazon-linux-extras enable epel
+      sudo yum search geos
+      sudo yum install geos geos-devel
+      
       echo '[Unit]
       Description=Go Server for ForeclosedHub
       After=network.target
