@@ -3,6 +3,7 @@ package cron
 import (
 	"github.com/robfig/cron/v3"
 	"log"
+	"server/internal/geocode"
 	"server/internal/source/pagibig"
 	"server/internal/source/secbank"
 	"server/internal/utils"
@@ -46,6 +47,13 @@ var scheduledJobs = []ScheduledJob{
 		schedule:   "* * * * *",
 		isDisabled: func() bool { return utils.IsDevelopment() },
 		factory:    func() Job { return &secbank.ScrapeListingImageJob{} },
+	},
+	{
+		name:       "GeocodeListing",
+		instance:   1,
+		schedule:   "* * * * *",
+		factory:    func() Job { return &geocode.Job{} },
+		isDisabled: func() bool { return utils.IsDevelopment() },
 	},
 }
 

@@ -16,6 +16,7 @@ require (
 	github.com/twpayne/pgx-geos v0.0.4
 	google.golang.org/grpc v1.72.0
 	google.golang.org/protobuf v1.36.6
+	googlemaps.github.io/maps v1.7.0
 )
 
 require (
@@ -39,6 +40,7 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
+	go.opencensus.io v0.22.3 // indirect
 	go.opentelemetry.io/otel v1.35.0 // indirect
 	go.opentelemetry.io/otel/sdk/metric v1.35.0 // indirect
 	golang.org/x/crypto v0.37.0 // indirect
@@ -46,5 +48,6 @@ require (
 	golang.org/x/sync v0.14.0 // indirect
 	golang.org/x/sys v0.32.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
+	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250505200425-f936aa4a68b2 // indirect
 )
