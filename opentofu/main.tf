@@ -176,8 +176,8 @@ resource "vercel_project" "web" {
   }
 }
 
-# resource "vercel_project_environment_variables" "web" {
-#   project_id = vercel_project.web.id
+resource "vercel_project_environment_variables" "web" {
+  project_id = vercel_project.web.id
   # variables = [
   #   {
   #     key    = "GRPC_ADDRESS"
@@ -185,7 +185,7 @@ resource "vercel_project" "web" {
   #     target = ["production"]
   #   }
   # ]
-# }
+}
 
 resource "vercel_project_domain" "web" {
   domain     = "foreclosedhub.com"
