@@ -1,3 +1,5 @@
+import Map from '@web/app/map'
+
 export default async function Page() {
-    return (<h1>Hello world</h1>)
+    return <Map/>
 }
