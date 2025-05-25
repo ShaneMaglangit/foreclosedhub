@@ -6,6 +6,7 @@ import (
 )
 
 type ListingsRepository interface {
+	GetListing(ctx context.Context, dbtx DBTX, id int64) (*Listing, error)
 	GetListingsNextPage(ctx context.Context, dbtx DBTX, params GetListingsNextPageParams) ([]*Listing, error)
 	GetListingsPrevPage(ctx context.Context, dbtx DBTX, params GetListingsPrevPageParams) ([]*Listing, error)
 	GetListingsCoordinates(ctx context.Context, dbtx DBTX, params GetListingCoordinatesParams) ([]*GetListingCoordinatesRow, error)
@@ -18,6 +19,10 @@ type ListingsRepository interface {
 }
 
 type ListingsRepositoryImpl struct{}
+
+func (l ListingsRepositoryImpl) GetListing(ctx context.Context, dbtx DBTX, id int64) (*Listing, error) {
+	return New(dbtx).GetListing(ctx, id)
+}
 
 func (l ListingsRepositoryImpl) GetListingsNextPage(ctx context.Context, dbtx DBTX, params GetListingsNextPageParams) ([]*Listing, error) {
 	return New(dbtx).GetListingsNextPage(ctx, params)

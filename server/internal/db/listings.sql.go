@@ -12,6 +12,36 @@ import (
 	geos "github.com/twpayne/go-geos"
 )
 
+const getListing = `-- name: GetListing :one
+SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate
+FROM listings
+WHERE id = $1::bigint
+LIMIT 1
+`
+
+func (q *Queries) GetListing(ctx context.Context, id int64) (*Listing, error) {
+	row := q.db.QueryRow(ctx, getListing, id)
+	var i Listing
+	err := row.Scan(
+		&i.ID,
+		&i.Source,
+		&i.ExternalID,
+		&i.Address,
+		&i.FloorArea,
+		&i.LotArea,
+		&i.Price,
+		&i.ImageLoaded,
+		&i.OccupancyStatus,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Payload,
+		&i.Status,
+		&i.GeocodedAt,
+		&i.Coordinate,
+	)
+	return &i, err
+}
+
 const getListingByImageNotLoaded = `-- name: GetListingByImageNotLoaded :one
 SELECT id, external_id, payload
 FROM listings

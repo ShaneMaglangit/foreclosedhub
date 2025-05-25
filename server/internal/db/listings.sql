@@ -1,3 +1,9 @@
+-- name: GetListing :one
+SELECT *
+FROM listings
+WHERE id = @id::bigint
+LIMIT 1;
+
 -- name: GetListingsNextPage :many
 SELECT *
 FROM listings
