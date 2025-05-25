@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.13.3",
+    "@t3-oss/env-nextjs": "^0.13.4",
+    "@vis.gl/react-google-maps": "^1.5.2",
     "google-protobuf": "^3.21.4",
     "next": "15.3.2",
     "react": "^19.0.0",
