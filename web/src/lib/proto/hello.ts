@@ -298,11 +298,11 @@ export namespace hello {
             if (this.address.length)
                 writer.writeString(2, this.address);
             if (this.price != 0)
-                writer.writeFloat(3, this.price);
+                writer.writeInt64(3, this.price);
             if (this.floorArea != 0)
-                writer.writeFloat(4, this.floorArea);
+                writer.writeDouble(4, this.floorArea);
             if (this.lotArea != 0)
-                writer.writeFloat(5, this.lotArea);
+                writer.writeDouble(5, this.lotArea);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -319,13 +319,13 @@ export namespace hello {
                         message.address = reader.readString();
                         break;
                     case 3:
-                        message.price = reader.readFloat();
+                        message.price = reader.readInt64();
                         break;
                     case 4:
-                        message.floorArea = reader.readFloat();
+                        message.floorArea = reader.readDouble();
                         break;
                     case 5:
-                        message.lotArea = reader.readFloat();
+                        message.lotArea = reader.readDouble();
                         break;
                     default: reader.skipField();
                 }

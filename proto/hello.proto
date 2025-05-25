@@ -21,9 +21,9 @@ message GetListingRequest {
 message GetListingResponse {
   int64 id = 1;
   string address = 2;
-  float price = 3;
-  float floorArea = 4;
-  float lotArea = 5;
+  int64 price = 3;
+  double floorArea = 4;
+  double lotArea = 5;
 }
 
 service ListingService {

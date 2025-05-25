@@ -149,9 +149,9 @@ type GetListingResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Address       string                 `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	Price         float32                `protobuf:"fixed32,3,opt,name=price,proto3" json:"price,omitempty"`
-	FloorArea     float32                `protobuf:"fixed32,4,opt,name=floorArea,proto3" json:"floorArea,omitempty"`
-	LotArea       float32                `protobuf:"fixed32,5,opt,name=lotArea,proto3" json:"lotArea,omitempty"`
+	Price         int64                  `protobuf:"varint,3,opt,name=price,proto3" json:"price,omitempty"`
+	FloorArea     float64                `protobuf:"fixed64,4,opt,name=floorArea,proto3" json:"floorArea,omitempty"`
+	LotArea       float64                `protobuf:"fixed64,5,opt,name=lotArea,proto3" json:"lotArea,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -200,21 +200,21 @@ func (x *GetListingResponse) GetAddress() string {
 	return ""
 }
 
-func (x *GetListingResponse) GetPrice() float32 {
+func (x *GetListingResponse) GetPrice() int64 {
 	if x != nil {
 		return x.Price
 	}
 	return 0
 }
 
-func (x *GetListingResponse) GetFloorArea() float32 {
+func (x *GetListingResponse) GetFloorArea() float64 {
 	if x != nil {
 		return x.FloorArea
 	}
 	return 0
 }
 
-func (x *GetListingResponse) GetLotArea() float32 {
+func (x *GetListingResponse) GetLotArea() float64 {
 	if x != nil {
 		return x.LotArea
 	}
@@ -234,9 +234,9 @@ const file_proto_hello_proto_rawDesc = "" +
 	"\x12GetListingResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x18\n" +
 	"\aaddress\x18\x02 \x01(\tR\aaddress\x12\x14\n" +
-	"\x05price\x18\x03 \x01(\x02R\x05price\x12\x1c\n" +
-	"\tfloorArea\x18\x04 \x01(\x02R\tfloorArea\x12\x18\n" +
-	"\alotArea\x18\x05 \x01(\x02R\alotArea2K\n" +
+	"\x05price\x18\x03 \x01(\x03R\x05price\x12\x1c\n" +
+	"\tfloorArea\x18\x04 \x01(\x01R\tfloorArea\x12\x18\n" +
+	"\alotArea\x18\x05 \x01(\x01R\alotArea2K\n" +
 	"\fHelloService\x12;\n" +
 	"\bSayHello\x12\x16.hello.SayHelloRequest\x1a\x17.hello.SayHelloResponse2S\n" +
 	"\x0eListingService\x12A\n" +

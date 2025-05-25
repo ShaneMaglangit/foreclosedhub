@@ -23,6 +23,7 @@ func Serve() error {
 	log.Println("Starting gRPC server in development mode (no TLS)")
 
 	proto.RegisterHelloServiceServer(server, &HelloServiceServer{})
+	proto.RegisterListingServiceServer(server, &ListingServiceServer{})
 
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
