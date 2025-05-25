@@ -233,5 +233,5 @@ resource "supabase_project" "foreclosedhub" {
 }
 
 output "database_url" {
-  value = "postgresql://postgres.${supabase_project.foreclosedhub.id}:${var.supabase_db_password}aws-0-${var.aws_region}.pooler.supabase.com:5432/postgres"
+  value = "postgresql://postgres.${supabase_project.foreclosedhub.id}:${var.supabase_db_password}@aws-0-${var.aws_region}.pooler.supabase.com:5432/postgres"
 }
