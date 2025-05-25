@@ -34,7 +34,7 @@ WHERE ST_Intersects(
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
   AND status = 'active'
-LIMIT @row_limit::int;
+LIMIT 1000;
 
 -- name: GetListingByImageNotLoaded :one
 SELECT id, external_id, payload

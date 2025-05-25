@@ -45,7 +45,7 @@ WHERE ST_Intersects(
   AND occupancy_status = ANY ($7::occupancy_status[])
   AND price BETWEEN $8::bigint AND COALESCE($9, 9223372036854775807)
   AND status = 'active'
-LIMIT $10::int
+LIMIT 1000
 `
 
 type GetListingCoordinatesParams struct {
@@ -58,7 +58,6 @@ type GetListingCoordinatesParams struct {
 	OccupancyStatuses []OccupancyStatus
 	MinPrice          int64
 	MaxPrice          pgtype.Int8
-	RowLimit          int32
 }
 
 type GetListingCoordinatesRow struct {
@@ -77,7 +76,6 @@ func (q *Queries) GetListingCoordinates(ctx context.Context, arg GetListingCoord
 		arg.OccupancyStatuses,
 		arg.MinPrice,
 		arg.MaxPrice,
-		arg.RowLimit,
 	)
 	if err != nil {
 		return nil, err
