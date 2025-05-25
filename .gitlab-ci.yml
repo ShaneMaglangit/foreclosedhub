@@ -54,7 +54,9 @@ apply:
     - echo "DATABASE_URL=\"$(gitlab-tofu output -raw database_url)\"" >> apply.env
     - echo "CLOUDFLARE_ACCOUNT_ID=\"$(gitlab-tofu output -raw cloudflare_account_id)\"" >> apply.env
     - echo "CLOUDFLARE_BUCKET=\"$(gitlab-tofu output -raw cloudflare_bucket)\"" >> apply.env
-    - echo "MAPS_API_KEY=\"${MAPS_API_KEY}\"" >> apply.env  # added line to include variable from GitLab CI
+    - echo "CLOUDFLARE_R2_ACCESS_KEY_ID=\"${CLOUDFLARE_R2_ACCESS_KEY_ID}\"" >> apply.env
+    - echo "CLOUDFLARE_R2_ACCESS_SECRET_KEY=\"${CLOUDFLARE_R2_ACCESS_SECRET_KEY}\"" >> apply.env
+    - echo "MAPS_API_KEY=\"${MAPS_API_KEY}\"" >> apply.env
   artifacts:
     paths:
       - apply.env
