@@ -13,3 +13,19 @@ message SayHelloResponse {
 service HelloService {
   rpc SayHello (SayHelloRequest) returns (SayHelloResponse);
 }
+
+message GetListingRequest {
+  int64 id = 1;
+}
+
+message GetListingResponse {
+  int64 id = 1;
+  string address = 2;
+  float price = 3;
+  float floorArea = 4;
+  float lotArea = 5;
+}
+
+service ListingService {
+  rpc GetListing (GetListingRequest) returns (GetListingResponse);
+}

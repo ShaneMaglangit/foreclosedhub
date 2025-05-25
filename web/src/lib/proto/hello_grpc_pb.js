@@ -4,6 +4,28 @@
 var grpc = require('@grpc/grpc-js');
 var hello_pb = require('./hello_pb.js');
 
+function serialize_hello_GetListingRequest(arg) {
+  if (!(arg instanceof hello_pb.GetListingRequest)) {
+    throw new Error('Expected argument of type hello.GetListingRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_hello_GetListingRequest(buffer_arg) {
+  return hello_pb.GetListingRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_hello_GetListingResponse(arg) {
+  if (!(arg instanceof hello_pb.GetListingResponse)) {
+    throw new Error('Expected argument of type hello.GetListingResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_hello_GetListingResponse(buffer_arg) {
+  return hello_pb.GetListingResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_hello_SayHelloRequest(arg) {
   if (!(arg instanceof hello_pb.SayHelloRequest)) {
     throw new Error('Expected argument of type hello.SayHelloRequest');
@@ -42,3 +64,18 @@ var HelloServiceService = exports.HelloServiceService = {
 };
 
 exports.HelloServiceClient = grpc.makeGenericClientConstructor(HelloServiceService, 'HelloService');
+var ListingServiceService = exports.ListingServiceService = {
+  getListing: {
+    path: '/hello.ListingService/GetListing',
+    requestStream: false,
+    responseStream: false,
+    requestType: hello_pb.GetListingRequest,
+    responseType: hello_pb.GetListingResponse,
+    requestSerialize: serialize_hello_GetListingRequest,
+    requestDeserialize: deserialize_hello_GetListingRequest,
+    responseSerialize: serialize_hello_GetListingResponse,
+    responseDeserialize: deserialize_hello_GetListingResponse,
+  },
+};
+
+exports.ListingServiceClient = grpc.makeGenericClientConstructor(ListingServiceService, 'ListingService');

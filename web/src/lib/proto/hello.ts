@@ -113,6 +113,232 @@ export namespace hello {
             return SayHelloResponse.deserialize(bytes);
         }
     }
+    export class GetListingRequest extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            id?: number;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("id" in data && data.id != undefined) {
+                    this.id = data.id;
+                }
+            }
+        }
+        get id() {
+            return pb_1.Message.getFieldWithDefault(this, 1, 0) as number;
+        }
+        set id(value: number) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        static fromObject(data: {
+            id?: number;
+        }): GetListingRequest {
+            const message = new GetListingRequest({});
+            if (data.id != null) {
+                message.id = data.id;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                id?: number;
+            } = {};
+            if (this.id != null) {
+                data.id = this.id;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.id != 0)
+                writer.writeInt64(1, this.id);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetListingRequest {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetListingRequest();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.id = reader.readInt64();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): GetListingRequest {
+            return GetListingRequest.deserialize(bytes);
+        }
+    }
+    export class GetListingResponse extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            id?: number;
+            address?: string;
+            price?: number;
+            floorArea?: number;
+            lotArea?: number;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("id" in data && data.id != undefined) {
+                    this.id = data.id;
+                }
+                if ("address" in data && data.address != undefined) {
+                    this.address = data.address;
+                }
+                if ("price" in data && data.price != undefined) {
+                    this.price = data.price;
+                }
+                if ("floorArea" in data && data.floorArea != undefined) {
+                    this.floorArea = data.floorArea;
+                }
+                if ("lotArea" in data && data.lotArea != undefined) {
+                    this.lotArea = data.lotArea;
+                }
+            }
+        }
+        get id() {
+            return pb_1.Message.getFieldWithDefault(this, 1, 0) as number;
+        }
+        set id(value: number) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get address() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
+        }
+        set address(value: string) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get price() {
+            return pb_1.Message.getFieldWithDefault(this, 3, 0) as number;
+        }
+        set price(value: number) {
+            pb_1.Message.setField(this, 3, value);
+        }
+        get floorArea() {
+            return pb_1.Message.getFieldWithDefault(this, 4, 0) as number;
+        }
+        set floorArea(value: number) {
+            pb_1.Message.setField(this, 4, value);
+        }
+        get lotArea() {
+            return pb_1.Message.getFieldWithDefault(this, 5, 0) as number;
+        }
+        set lotArea(value: number) {
+            pb_1.Message.setField(this, 5, value);
+        }
+        static fromObject(data: {
+            id?: number;
+            address?: string;
+            price?: number;
+            floorArea?: number;
+            lotArea?: number;
+        }): GetListingResponse {
+            const message = new GetListingResponse({});
+            if (data.id != null) {
+                message.id = data.id;
+            }
+            if (data.address != null) {
+                message.address = data.address;
+            }
+            if (data.price != null) {
+                message.price = data.price;
+            }
+            if (data.floorArea != null) {
+                message.floorArea = data.floorArea;
+            }
+            if (data.lotArea != null) {
+                message.lotArea = data.lotArea;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                id?: number;
+                address?: string;
+                price?: number;
+                floorArea?: number;
+                lotArea?: number;
+            } = {};
+            if (this.id != null) {
+                data.id = this.id;
+            }
+            if (this.address != null) {
+                data.address = this.address;
+            }
+            if (this.price != null) {
+                data.price = this.price;
+            }
+            if (this.floorArea != null) {
+                data.floorArea = this.floorArea;
+            }
+            if (this.lotArea != null) {
+                data.lotArea = this.lotArea;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.id != 0)
+                writer.writeInt64(1, this.id);
+            if (this.address.length)
+                writer.writeString(2, this.address);
+            if (this.price != 0)
+                writer.writeFloat(3, this.price);
+            if (this.floorArea != 0)
+                writer.writeFloat(4, this.floorArea);
+            if (this.lotArea != 0)
+                writer.writeFloat(5, this.lotArea);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetListingResponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetListingResponse();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.id = reader.readInt64();
+                        break;
+                    case 2:
+                        message.address = reader.readString();
+                        break;
+                    case 3:
+                        message.price = reader.readFloat();
+                        break;
+                    case 4:
+                        message.floorArea = reader.readFloat();
+                        break;
+                    case 5:
+                        message.lotArea = reader.readFloat();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): GetListingResponse {
+            return GetListingResponse.deserialize(bytes);
+        }
+    }
     interface GrpcUnaryServiceInterface<P, R> {
         (message: P, metadata: grpc_1.Metadata, options: grpc_1.CallOptions, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
         (message: P, metadata: grpc_1.Metadata, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
@@ -158,6 +384,29 @@ export namespace hello {
         }
         SayHello: GrpcUnaryServiceInterface<SayHelloRequest, SayHelloResponse> = (message: SayHelloRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<SayHelloResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<SayHelloResponse>, callback?: grpc_1.requestCallback<SayHelloResponse>): grpc_1.ClientUnaryCall => {
             return super.SayHello(message, metadata, options, callback);
+        };
+    }
+    export abstract class UnimplementedListingServiceService {
+        static definition = {
+            GetListing: {
+                path: "/hello.ListingService/GetListing",
+                requestStream: false,
+                responseStream: false,
+                requestSerialize: (message: GetListingRequest) => Buffer.from(message.serialize()),
+                requestDeserialize: (bytes: Buffer) => GetListingRequest.deserialize(new Uint8Array(bytes)),
+                responseSerialize: (message: GetListingResponse) => Buffer.from(message.serialize()),
+                responseDeserialize: (bytes: Buffer) => GetListingResponse.deserialize(new Uint8Array(bytes))
+            }
+        };
+        [method: string]: grpc_1.UntypedHandleCall;
+        abstract GetListing(call: grpc_1.ServerUnaryCall<GetListingRequest, GetListingResponse>, callback: grpc_1.sendUnaryData<GetListingResponse>): void;
+    }
+    export class ListingServiceClient extends grpc_1.makeGenericClientConstructor(UnimplementedListingServiceService.definition, "ListingService", {}) {
+        constructor(address: string, credentials: grpc_1.ChannelCredentials, options?: Partial<grpc_1.ChannelOptions>) {
+            super(address, credentials, options);
+        }
+        GetListing: GrpcUnaryServiceInterface<GetListingRequest, GetListingResponse> = (message: GetListingRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<GetListingResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<GetListingResponse>, callback?: grpc_1.requestCallback<GetListingResponse>): grpc_1.ClientUnaryCall => {
+            return super.GetListing(message, metadata, options, callback);
         };
     }
 }

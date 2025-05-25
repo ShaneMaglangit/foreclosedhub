@@ -101,6 +101,126 @@ func (x *SayHelloResponse) GetBody() string {
 	return ""
 }
 
+type GetListingRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetListingRequest) Reset() {
+	*x = GetListingRequest{}
+	mi := &file_proto_hello_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetListingRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetListingRequest) ProtoMessage() {}
+
+func (x *GetListingRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_hello_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetListingRequest.ProtoReflect.Descriptor instead.
+func (*GetListingRequest) Descriptor() ([]byte, []int) {
+	return file_proto_hello_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetListingRequest) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type GetListingResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Address       string                 `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Price         float32                `protobuf:"fixed32,3,opt,name=price,proto3" json:"price,omitempty"`
+	FloorArea     float32                `protobuf:"fixed32,4,opt,name=floorArea,proto3" json:"floorArea,omitempty"`
+	LotArea       float32                `protobuf:"fixed32,5,opt,name=lotArea,proto3" json:"lotArea,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetListingResponse) Reset() {
+	*x = GetListingResponse{}
+	mi := &file_proto_hello_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetListingResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetListingResponse) ProtoMessage() {}
+
+func (x *GetListingResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_hello_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetListingResponse.ProtoReflect.Descriptor instead.
+func (*GetListingResponse) Descriptor() ([]byte, []int) {
+	return file_proto_hello_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetListingResponse) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *GetListingResponse) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *GetListingResponse) GetPrice() float32 {
+	if x != nil {
+		return x.Price
+	}
+	return 0
+}
+
+func (x *GetListingResponse) GetFloorArea() float32 {
+	if x != nil {
+		return x.FloorArea
+	}
+	return 0
+}
+
+func (x *GetListingResponse) GetLotArea() float32 {
+	if x != nil {
+		return x.LotArea
+	}
+	return 0
+}
+
 var File_proto_hello_proto protoreflect.FileDescriptor
 
 const file_proto_hello_proto_rawDesc = "" +
@@ -108,9 +228,20 @@ const file_proto_hello_proto_rawDesc = "" +
 	"\x11proto/hello.proto\x12\x05hello\"\x11\n" +
 	"\x0fSayHelloRequest\"&\n" +
 	"\x10SayHelloResponse\x12\x12\n" +
-	"\x04body\x18\x01 \x01(\tR\x04body2K\n" +
+	"\x04body\x18\x01 \x01(\tR\x04body\"#\n" +
+	"\x11GetListingRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"\x8c\x01\n" +
+	"\x12GetListingResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x18\n" +
+	"\aaddress\x18\x02 \x01(\tR\aaddress\x12\x14\n" +
+	"\x05price\x18\x03 \x01(\x02R\x05price\x12\x1c\n" +
+	"\tfloorArea\x18\x04 \x01(\x02R\tfloorArea\x12\x18\n" +
+	"\alotArea\x18\x05 \x01(\x02R\alotArea2K\n" +
 	"\fHelloService\x12;\n" +
-	"\bSayHello\x12\x16.hello.SayHelloRequest\x1a\x17.hello.SayHelloResponseB\bZ\x06/protob\x06proto3"
+	"\bSayHello\x12\x16.hello.SayHelloRequest\x1a\x17.hello.SayHelloResponse2S\n" +
+	"\x0eListingService\x12A\n" +
+	"\n" +
+	"GetListing\x12\x18.hello.GetListingRequest\x1a\x19.hello.GetListingResponseB\bZ\x06/protob\x06proto3"
 
 var (
 	file_proto_hello_proto_rawDescOnce sync.Once
@@ -124,16 +255,20 @@ func file_proto_hello_proto_rawDescGZIP() []byte {
 	return file_proto_hello_proto_rawDescData
 }
 
-var file_proto_hello_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_hello_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_proto_hello_proto_goTypes = []any{
-	(*SayHelloRequest)(nil),  // 0: hello.SayHelloRequest
-	(*SayHelloResponse)(nil), // 1: hello.SayHelloResponse
+	(*SayHelloRequest)(nil),    // 0: hello.SayHelloRequest
+	(*SayHelloResponse)(nil),   // 1: hello.SayHelloResponse
+	(*GetListingRequest)(nil),  // 2: hello.GetListingRequest
+	(*GetListingResponse)(nil), // 3: hello.GetListingResponse
 }
 var file_proto_hello_proto_depIdxs = []int32{
 	0, // 0: hello.HelloService.SayHello:input_type -> hello.SayHelloRequest
-	1, // 1: hello.HelloService.SayHello:output_type -> hello.SayHelloResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	2, // 1: hello.ListingService.GetListing:input_type -> hello.GetListingRequest
+	1, // 2: hello.HelloService.SayHello:output_type -> hello.SayHelloResponse
+	3, // 3: hello.ListingService.GetListing:output_type -> hello.GetListingResponse
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -150,9 +285,9 @@ func file_proto_hello_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_hello_proto_rawDesc), len(file_proto_hello_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_proto_hello_proto_goTypes,
 		DependencyIndexes: file_proto_hello_proto_depIdxs,

@@ -119,3 +119,105 @@ var HelloService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/hello.proto",
 }
+
+const (
+	ListingService_GetListing_FullMethodName = "/hello.ListingService/GetListing"
+)
+
+// ListingServiceClient is the client API for ListingService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ListingServiceClient interface {
+	GetListing(ctx context.Context, in *GetListingRequest, opts ...grpc.CallOption) (*GetListingResponse, error)
+}
+
+type listingServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewListingServiceClient(cc grpc.ClientConnInterface) ListingServiceClient {
+	return &listingServiceClient{cc}
+}
+
+func (c *listingServiceClient) GetListing(ctx context.Context, in *GetListingRequest, opts ...grpc.CallOption) (*GetListingResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetListingResponse)
+	err := c.cc.Invoke(ctx, ListingService_GetListing_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ListingServiceServer is the server API for ListingService service.
+// All implementations must embed UnimplementedListingServiceServer
+// for forward compatibility.
+type ListingServiceServer interface {
+	GetListing(context.Context, *GetListingRequest) (*GetListingResponse, error)
+	mustEmbedUnimplementedListingServiceServer()
+}
+
+// UnimplementedListingServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedListingServiceServer struct{}
+
+func (UnimplementedListingServiceServer) GetListing(context.Context, *GetListingRequest) (*GetListingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetListing not implemented")
+}
+func (UnimplementedListingServiceServer) mustEmbedUnimplementedListingServiceServer() {}
+func (UnimplementedListingServiceServer) testEmbeddedByValue()                        {}
+
+// UnsafeListingServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ListingServiceServer will
+// result in compilation errors.
+type UnsafeListingServiceServer interface {
+	mustEmbedUnimplementedListingServiceServer()
+}
+
+func RegisterListingServiceServer(s grpc.ServiceRegistrar, srv ListingServiceServer) {
+	// If the following call pancis, it indicates UnimplementedListingServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&ListingService_ServiceDesc, srv)
+}
+
+func _ListingService_GetListing_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetListingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ListingServiceServer).GetListing(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ListingService_GetListing_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ListingServiceServer).GetListing(ctx, req.(*GetListingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ListingService_ServiceDesc is the grpc.ServiceDesc for ListingService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ListingService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "hello.ListingService",
+	HandlerType: (*ListingServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetListing",
+			Handler:    _ListingService_GetListing_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/hello.proto",
+}
