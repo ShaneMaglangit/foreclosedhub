@@ -13,6 +13,11 @@ variable "vercel_team_id" {
   type        = string
 }
 
+variable "maps_api_key" {
+  description = "Google Maps API Key"
+  type        = string
+}
+
 variable "aws_access_key" {
   description = "AWS Access Key"
   type        = string

@@ -28,6 +28,10 @@ terraform {
   }
 }
 
+output "maps_api_key" {
+  value = var.maps_api_key
+}
+
 provider "gitlab" {
   token = var.gitlab_token
 }
@@ -182,6 +186,11 @@ resource "vercel_project_environment_variables" "web" {
     {
       key    = "GRPC_ADDRESS"
       value  = "${aws_instance.server.public_ip}:50051"
+      target = ["production"]
+    },
+    {
+      key    = "MAPS_APY_KEY"
+      value  = var.maps_api_key
       target = ["production"]
     }
   ]
