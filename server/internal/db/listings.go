@@ -2,14 +2,13 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type ListingsRepository interface {
 	GetListingsNextPage(ctx context.Context, dbtx DBTX, params GetListingsNextPageParams) ([]*Listing, error)
 	GetListingsPrevPage(ctx context.Context, dbtx DBTX, params GetListingsPrevPageParams) ([]*Listing, error)
-	GetNearbyListings(ctx context.Context, dbtx DBTX, params GetNearbyListingsParams) ([]*Listing, error)
+	GetListingsCoordinates(ctx context.Context, dbtx DBTX, params GetListingCoordinatesParams) ([]*GetListingCoordinatesRow, error)
 	GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error)
 	InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error
 	UpdateListingsImageLoaded(ctx context.Context, dbtx DBTX, id int64, imageLoaded bool) error
@@ -21,18 +20,15 @@ type ListingsRepository interface {
 type ListingsRepositoryImpl struct{}
 
 func (l ListingsRepositoryImpl) GetListingsNextPage(ctx context.Context, dbtx DBTX, params GetListingsNextPageParams) ([]*Listing, error) {
-	params.Search = fmt.Sprintf("%%%s%%", params.Search)
 	return New(dbtx).GetListingsNextPage(ctx, params)
 }
 
 func (l ListingsRepositoryImpl) GetListingsPrevPage(ctx context.Context, dbtx DBTX, params GetListingsPrevPageParams) ([]*Listing, error) {
-	params.Search = fmt.Sprintf("%%%s%%", params.Search)
 	return New(dbtx).GetListingsPrevPage(ctx, params)
 }
 
-func (l ListingsRepositoryImpl) GetNearbyListings(ctx context.Context, dbtx DBTX, params GetNearbyListingsParams) ([]*Listing, error) {
-	params.Search = fmt.Sprintf("%%%s%%", params.Search)
-	return New(dbtx).GetNearbyListings(ctx, params)
+func (l ListingsRepositoryImpl) GetListingsCoordinates(ctx context.Context, dbtx DBTX, params GetListingCoordinatesParams) ([]*GetListingCoordinatesRow, error) {
+	return New(dbtx).GetListingCoordinates(ctx, params)
 }
 
 func (l ListingsRepositoryImpl) GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error) {

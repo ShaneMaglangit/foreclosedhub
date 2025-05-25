@@ -2,11 +2,11 @@
 SELECT *
 FROM listings
 WHERE id > @after::bigint
-  AND address ILIKE @search::text
+  AND address ILIKE '%' || @address::text || '%'
   AND source = ANY (@sources::source[])
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
-  AND status = ANY (@statuses::listing_status[])
+  AND status = 'active'
 ORDER BY id
 LIMIT @row_limit::int;
 
@@ -14,29 +14,26 @@ LIMIT @row_limit::int;
 SELECT *
 FROM listings
 WHERE id < @before::bigint
-  AND address ILIKE @search::text
+  AND address ILIKE '%' || @address::text || '%'
   AND source = ANY (@sources::source[])
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
-  AND status = ANY (@statuses::listing_status[])
+  AND status = 'active'
 ORDER BY id DESC
 LIMIT @row_limit::int;
 
--- name: GetNearbyListings :many
-SELECT *
+-- name: GetListingCoordinates :many
+SELECT id, coordinate
 FROM listings
-WHERE ST_DWithin(
+WHERE ST_Intersects(
         coordinate,
-        ST_SetSRID(ST_MakePoint(@lng::double precision, @lat::double precision), 4326)::geography,
-        200000
+        ST_SetSRID(ST_MakeEnvelope(@min_lng, @min_lat, @max_lng, @max_lat), 4326)::geography
       )
-  AND address ILIKE @search::text
+  AND address ILIKE '%' || @address::text || '%'
   AND source = ANY (@sources::source[])
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
-  AND status = ANY (@statuses::listing_status[])
-ORDER BY ST_Distance(coordinate,
-                     ST_SetSRID(ST_MakePoint(@lng::double precision, @lat::double precision), 4326)::geography)
+  AND status = 'active'
 LIMIT @row_limit::int;
 
 -- name: GetListingByImageNotLoaded :one
