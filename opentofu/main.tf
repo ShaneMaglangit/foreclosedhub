@@ -178,13 +178,13 @@ resource "vercel_project" "web" {
 
 resource "vercel_project_environment_variables" "web" {
   project_id = vercel_project.web.id
-  # variables = [
-  #   {
-  #     key    = "GRPC_ADDRESS"
-  #     value  = "${aws_instance.server.public_ip}:50051"
-  #     target = ["production"]
-  #   }
-  # ]
+  variables = [
+    {
+      key    = "GRPC_ADDRESS"
+      value  = "${aws_instance.server.public_ip}:50051"
+      target = ["production"]
+    }
+  ]
 }
 
 resource "vercel_project_domain" "web" {
