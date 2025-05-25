@@ -54,6 +54,7 @@ apply:
     - echo "DATABASE_URL=\"$(gitlab-tofu output -raw database_url)\"" >> apply.env
     - echo "CLOUDFLARE_ACCOUNT_ID=\"$(gitlab-tofu output -raw cloudflare_account_id)\"" >> apply.env
     - echo "CLOUDFLARE_BUCKET=\"$(gitlab-tofu output -raw cloudflare_bucket)\"" >> apply.env
+    - echo "MAPS_API_KEY=\"${MAPS_API_KEY}\"" >> apply.env  # added line to include variable from GitLab CI
   artifacts:
     paths:
       - apply.env
@@ -88,6 +89,8 @@ deploy_server:
   rules:
     - changes:
         - server/**/*
+        - opentofu/**/*
+        - .gitlab-ci.yml
       when: on_success
     - when: manual
       allow_failure: true
@@ -137,6 +140,8 @@ deploy_web:
   rules:
     - changes:
        - web/**/*
+       - opentofu/**/*
+       - .gitlab-ci.yml
       when: on_success
     - when: manual
       allow_failure: true
