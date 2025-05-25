@@ -189,7 +189,7 @@ resource "vercel_project_environment_variables" "web" {
       target = ["production"]
     },
     {
-      key    = "MAPS_APY_KEY"
+      key    = "MAPS_API_KEY"
       value  = var.maps_api_key
       target = ["production"]
     }
