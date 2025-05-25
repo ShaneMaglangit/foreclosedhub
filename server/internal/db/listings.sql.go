@@ -75,6 +75,7 @@ WHERE ST_Intersects(
   AND occupancy_status = ANY ($7::occupancy_status[])
   AND price BETWEEN $8::bigint AND COALESCE($9, 9223372036854775807)
   AND status = 'active'
+  AND geocoded_at IS NOT NULL
 LIMIT 1000
 `
 
@@ -154,6 +155,7 @@ WHERE id > $1::bigint
   AND occupancy_status = ANY ($4::occupancy_status[])
   AND price BETWEEN $5::bigint AND COALESCE($6, 9223372036854775807)
   AND status = 'active'
+  AND geocoded_at IS NOT NULL
 ORDER BY id
 LIMIT $7::int
 `
@@ -221,6 +223,7 @@ WHERE id < $1::bigint
   AND occupancy_status = ANY ($4::occupancy_status[])
   AND price BETWEEN $5::bigint AND COALESCE($6, 9223372036854775807)
   AND status = 'active'
+  AND geocoded_at IS NOT NULL
 ORDER BY id DESC
 LIMIT $7::int
 `

@@ -13,6 +13,7 @@ WHERE id > @after::bigint
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
   AND status = 'active'
+  AND geocoded_at IS NOT NULL
 ORDER BY id
 LIMIT @row_limit::int;
 
@@ -25,6 +26,7 @@ WHERE id < @before::bigint
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
   AND status = 'active'
+  AND geocoded_at IS NOT NULL
 ORDER BY id DESC
 LIMIT @row_limit::int;
 
@@ -40,6 +42,7 @@ WHERE ST_Intersects(
   AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
   AND status = 'active'
+  AND geocoded_at IS NOT NULL
 LIMIT 1000;
 
 -- name: GetListingByImageNotLoaded :one
