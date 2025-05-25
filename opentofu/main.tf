@@ -145,7 +145,7 @@ resource "aws_security_group" "app_allow_inbound" {
 }
 
 resource "aws_instance" "server" {
-  ami                         = "ami-0e8ebb0ab254bb563"
+  ami                         = "ami-01938df366ac2d954"
   instance_type               = "t2.micro"
   key_name                    = aws_key_pair.ci_ssh.key_name
   subnet_id                   = aws_subnet.public_1a.id

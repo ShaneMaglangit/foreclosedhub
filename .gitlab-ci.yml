@@ -102,10 +102,8 @@ deploy_server:
     - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no apply.env ec2-user@$EC2_PUBLIC_IP:/home/ec2-user/
     - |
       ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@$EC2_PUBLIC_IP <<-'EOF'
-      sudo yum install -y amazon-linux-extras
-      sudo amazon-linux-extras enable epel
-      sudo yum search geos
-      sudo yum install geos geos-devel
+      apt-get update
+      apt-get install -y pkg-config libgeos-dev
       
       echo '[Unit]
       Description=Go Server for ForeclosedHub
