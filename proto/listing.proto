@@ -16,6 +16,24 @@ message GetListingResponse {
   double lotArea = 5;
 }
 
+message GetListingMarkersRequest {
+  double minLng = 1;
+  double maxLng = 2;
+  double minLat = 3;
+  double maxLat = 4;
+}
+
+message ListingMarker {
+  int64 id = 1;
+  double lng = 2;
+  double lat = 3;
+}
+
+message GetListingMarkersResponse {
+  repeated ListingMarker listingMarkers = 1;
+}
+
 service ListingService {
   rpc GetListing (GetListingRequest) returns (GetListingResponse);
+  rpc GetListingMarkers (GetListingMarkersRequest) returns (GetListingMarkersResponse);
 }

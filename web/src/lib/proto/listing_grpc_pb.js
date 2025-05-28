@@ -4,6 +4,28 @@
 var grpc = require('@grpc/grpc-js');
 var listing_pb = require('./listing_pb.js');
 
+function serialize_listing_GetListingMarkersRequest(arg) {
+  if (!(arg instanceof listing_pb.GetListingMarkersRequest)) {
+    throw new Error('Expected argument of type listing.GetListingMarkersRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_listing_GetListingMarkersRequest(buffer_arg) {
+  return listing_pb.GetListingMarkersRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_listing_GetListingMarkersResponse(arg) {
+  if (!(arg instanceof listing_pb.GetListingMarkersResponse)) {
+    throw new Error('Expected argument of type listing.GetListingMarkersResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_listing_GetListingMarkersResponse(buffer_arg) {
+  return listing_pb.GetListingMarkersResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_listing_GetListingRequest(arg) {
   if (!(arg instanceof listing_pb.GetListingRequest)) {
     throw new Error('Expected argument of type listing.GetListingRequest');
@@ -38,6 +60,17 @@ var ListingServiceService = exports.ListingServiceService = {
     requestDeserialize: deserialize_listing_GetListingRequest,
     responseSerialize: serialize_listing_GetListingResponse,
     responseDeserialize: deserialize_listing_GetListingResponse,
+  },
+  getListingMarkers: {
+    path: '/listing.ListingService/GetListingMarkers',
+    requestStream: false,
+    responseStream: false,
+    requestType: listing_pb.GetListingMarkersRequest,
+    responseType: listing_pb.GetListingMarkersResponse,
+    requestSerialize: serialize_listing_GetListingMarkersRequest,
+    requestDeserialize: deserialize_listing_GetListingMarkersRequest,
+    responseSerialize: serialize_listing_GetListingMarkersResponse,
+    responseDeserialize: deserialize_listing_GetListingMarkersResponse,
   },
 };
 

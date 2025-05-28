@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ListingService_GetListing_FullMethodName = "/listing.ListingService/GetListing"
+	ListingService_GetListing_FullMethodName        = "/listing.ListingService/GetListing"
+	ListingService_GetListingMarkers_FullMethodName = "/listing.ListingService/GetListingMarkers"
 )
 
 // ListingServiceClient is the client API for ListingService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ListingServiceClient interface {
 	GetListing(ctx context.Context, in *GetListingRequest, opts ...grpc.CallOption) (*GetListingResponse, error)
+	GetListingMarkers(ctx context.Context, in *GetListingMarkersRequest, opts ...grpc.CallOption) (*GetListingMarkersResponse, error)
 }
 
 type listingServiceClient struct {
@@ -47,11 +49,22 @@ func (c *listingServiceClient) GetListing(ctx context.Context, in *GetListingReq
 	return out, nil
 }
 
+func (c *listingServiceClient) GetListingMarkers(ctx context.Context, in *GetListingMarkersRequest, opts ...grpc.CallOption) (*GetListingMarkersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetListingMarkersResponse)
+	err := c.cc.Invoke(ctx, ListingService_GetListingMarkers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ListingServiceServer is the server API for ListingService service.
 // All implementations must embed UnimplementedListingServiceServer
 // for forward compatibility.
 type ListingServiceServer interface {
 	GetListing(context.Context, *GetListingRequest) (*GetListingResponse, error)
+	GetListingMarkers(context.Context, *GetListingMarkersRequest) (*GetListingMarkersResponse, error)
 	mustEmbedUnimplementedListingServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedListingServiceServer struct{}
 
 func (UnimplementedListingServiceServer) GetListing(context.Context, *GetListingRequest) (*GetListingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetListing not implemented")
+}
+func (UnimplementedListingServiceServer) GetListingMarkers(context.Context, *GetListingMarkersRequest) (*GetListingMarkersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetListingMarkers not implemented")
 }
 func (UnimplementedListingServiceServer) mustEmbedUnimplementedListingServiceServer() {}
 func (UnimplementedListingServiceServer) testEmbeddedByValue()                        {}
@@ -104,6 +120,24 @@ func _ListingService_GetListing_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ListingService_GetListingMarkers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetListingMarkersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ListingServiceServer).GetListingMarkers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ListingService_GetListingMarkers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ListingServiceServer).GetListingMarkers(ctx, req.(*GetListingMarkersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ListingService_ServiceDesc is the grpc.ServiceDesc for ListingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var ListingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetListing",
 			Handler:    _ListingService_GetListing_Handler,
+		},
+		{
+			MethodName: "GetListingMarkers",
+			Handler:    _ListingService_GetListingMarkers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

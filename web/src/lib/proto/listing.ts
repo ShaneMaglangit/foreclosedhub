@@ -232,6 +232,322 @@ export namespace listing {
             return GetListingResponse.deserialize(bytes);
         }
     }
+    export class GetListingMarkersRequest extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            minLng?: number;
+            maxLng?: number;
+            minLat?: number;
+            maxLat?: number;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("minLng" in data && data.minLng != undefined) {
+                    this.minLng = data.minLng;
+                }
+                if ("maxLng" in data && data.maxLng != undefined) {
+                    this.maxLng = data.maxLng;
+                }
+                if ("minLat" in data && data.minLat != undefined) {
+                    this.minLat = data.minLat;
+                }
+                if ("maxLat" in data && data.maxLat != undefined) {
+                    this.maxLat = data.maxLat;
+                }
+            }
+        }
+        get minLng() {
+            return pb_1.Message.getFieldWithDefault(this, 1, 0) as number;
+        }
+        set minLng(value: number) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get maxLng() {
+            return pb_1.Message.getFieldWithDefault(this, 2, 0) as number;
+        }
+        set maxLng(value: number) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get minLat() {
+            return pb_1.Message.getFieldWithDefault(this, 3, 0) as number;
+        }
+        set minLat(value: number) {
+            pb_1.Message.setField(this, 3, value);
+        }
+        get maxLat() {
+            return pb_1.Message.getFieldWithDefault(this, 4, 0) as number;
+        }
+        set maxLat(value: number) {
+            pb_1.Message.setField(this, 4, value);
+        }
+        static fromObject(data: {
+            minLng?: number;
+            maxLng?: number;
+            minLat?: number;
+            maxLat?: number;
+        }): GetListingMarkersRequest {
+            const message = new GetListingMarkersRequest({});
+            if (data.minLng != null) {
+                message.minLng = data.minLng;
+            }
+            if (data.maxLng != null) {
+                message.maxLng = data.maxLng;
+            }
+            if (data.minLat != null) {
+                message.minLat = data.minLat;
+            }
+            if (data.maxLat != null) {
+                message.maxLat = data.maxLat;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                minLng?: number;
+                maxLng?: number;
+                minLat?: number;
+                maxLat?: number;
+            } = {};
+            if (this.minLng != null) {
+                data.minLng = this.minLng;
+            }
+            if (this.maxLng != null) {
+                data.maxLng = this.maxLng;
+            }
+            if (this.minLat != null) {
+                data.minLat = this.minLat;
+            }
+            if (this.maxLat != null) {
+                data.maxLat = this.maxLat;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.minLng != 0)
+                writer.writeDouble(1, this.minLng);
+            if (this.maxLng != 0)
+                writer.writeDouble(2, this.maxLng);
+            if (this.minLat != 0)
+                writer.writeDouble(3, this.minLat);
+            if (this.maxLat != 0)
+                writer.writeDouble(4, this.maxLat);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetListingMarkersRequest {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetListingMarkersRequest();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.minLng = reader.readDouble();
+                        break;
+                    case 2:
+                        message.maxLng = reader.readDouble();
+                        break;
+                    case 3:
+                        message.minLat = reader.readDouble();
+                        break;
+                    case 4:
+                        message.maxLat = reader.readDouble();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): GetListingMarkersRequest {
+            return GetListingMarkersRequest.deserialize(bytes);
+        }
+    }
+    export class ListingMarker extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            id?: number;
+            lng?: number;
+            lat?: number;
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("id" in data && data.id != undefined) {
+                    this.id = data.id;
+                }
+                if ("lng" in data && data.lng != undefined) {
+                    this.lng = data.lng;
+                }
+                if ("lat" in data && data.lat != undefined) {
+                    this.lat = data.lat;
+                }
+            }
+        }
+        get id() {
+            return pb_1.Message.getFieldWithDefault(this, 1, 0) as number;
+        }
+        set id(value: number) {
+            pb_1.Message.setField(this, 1, value);
+        }
+        get lng() {
+            return pb_1.Message.getFieldWithDefault(this, 2, 0) as number;
+        }
+        set lng(value: number) {
+            pb_1.Message.setField(this, 2, value);
+        }
+        get lat() {
+            return pb_1.Message.getFieldWithDefault(this, 3, 0) as number;
+        }
+        set lat(value: number) {
+            pb_1.Message.setField(this, 3, value);
+        }
+        static fromObject(data: {
+            id?: number;
+            lng?: number;
+            lat?: number;
+        }): ListingMarker {
+            const message = new ListingMarker({});
+            if (data.id != null) {
+                message.id = data.id;
+            }
+            if (data.lng != null) {
+                message.lng = data.lng;
+            }
+            if (data.lat != null) {
+                message.lat = data.lat;
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                id?: number;
+                lng?: number;
+                lat?: number;
+            } = {};
+            if (this.id != null) {
+                data.id = this.id;
+            }
+            if (this.lng != null) {
+                data.lng = this.lng;
+            }
+            if (this.lat != null) {
+                data.lat = this.lat;
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.id != 0)
+                writer.writeInt64(1, this.id);
+            if (this.lng != 0)
+                writer.writeDouble(2, this.lng);
+            if (this.lat != 0)
+                writer.writeDouble(3, this.lat);
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): ListingMarker {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new ListingMarker();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        message.id = reader.readInt64();
+                        break;
+                    case 2:
+                        message.lng = reader.readDouble();
+                        break;
+                    case 3:
+                        message.lat = reader.readDouble();
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): ListingMarker {
+            return ListingMarker.deserialize(bytes);
+        }
+    }
+    export class GetListingMarkersResponse extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            listingMarkers?: ListingMarker[];
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [1], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("listingMarkers" in data && data.listingMarkers != undefined) {
+                    this.listingMarkers = data.listingMarkers;
+                }
+            }
+        }
+        get listingMarkers() {
+            return pb_1.Message.getRepeatedWrapperField(this, ListingMarker, 1) as ListingMarker[];
+        }
+        set listingMarkers(value: ListingMarker[]) {
+            pb_1.Message.setRepeatedWrapperField(this, 1, value);
+        }
+        static fromObject(data: {
+            listingMarkers?: ReturnType<typeof ListingMarker.prototype.toObject>[];
+        }): GetListingMarkersResponse {
+            const message = new GetListingMarkersResponse({});
+            if (data.listingMarkers != null) {
+                message.listingMarkers = data.listingMarkers.map(item => ListingMarker.fromObject(item));
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                listingMarkers?: ReturnType<typeof ListingMarker.prototype.toObject>[];
+            } = {};
+            if (this.listingMarkers != null) {
+                data.listingMarkers = this.listingMarkers.map((item: ListingMarker) => item.toObject());
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.listingMarkers.length)
+                writer.writeRepeatedMessage(1, this.listingMarkers, (item: ListingMarker) => item.serialize(writer));
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetListingMarkersResponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetListingMarkersResponse();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        reader.readMessage(message.listingMarkers, () => pb_1.Message.addToRepeatedWrapperField(message, 1, ListingMarker.deserialize(reader), ListingMarker));
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): GetListingMarkersResponse {
+            return GetListingMarkersResponse.deserialize(bytes);
+        }
+    }
     interface GrpcUnaryServiceInterface<P, R> {
         (message: P, metadata: grpc_1.Metadata, options: grpc_1.CallOptions, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
         (message: P, metadata: grpc_1.Metadata, callback: grpc_1.requestCallback<R>): grpc_1.ClientUnaryCall;
@@ -266,10 +582,20 @@ export namespace listing {
                 requestDeserialize: (bytes: Buffer) => GetListingRequest.deserialize(new Uint8Array(bytes)),
                 responseSerialize: (message: GetListingResponse) => Buffer.from(message.serialize()),
                 responseDeserialize: (bytes: Buffer) => GetListingResponse.deserialize(new Uint8Array(bytes))
+            },
+            GetListingMarkers: {
+                path: "/listing.ListingService/GetListingMarkers",
+                requestStream: false,
+                responseStream: false,
+                requestSerialize: (message: GetListingMarkersRequest) => Buffer.from(message.serialize()),
+                requestDeserialize: (bytes: Buffer) => GetListingMarkersRequest.deserialize(new Uint8Array(bytes)),
+                responseSerialize: (message: GetListingMarkersResponse) => Buffer.from(message.serialize()),
+                responseDeserialize: (bytes: Buffer) => GetListingMarkersResponse.deserialize(new Uint8Array(bytes))
             }
         };
         [method: string]: grpc_1.UntypedHandleCall;
         abstract GetListing(call: grpc_1.ServerUnaryCall<GetListingRequest, GetListingResponse>, callback: grpc_1.sendUnaryData<GetListingResponse>): void;
+        abstract GetListingMarkers(call: grpc_1.ServerUnaryCall<GetListingMarkersRequest, GetListingMarkersResponse>, callback: grpc_1.sendUnaryData<GetListingMarkersResponse>): void;
     }
     export class ListingServiceClient extends grpc_1.makeGenericClientConstructor(UnimplementedListingServiceService.definition, "ListingService", {}) {
         constructor(address: string, credentials: grpc_1.ChannelCredentials, options?: Partial<grpc_1.ChannelOptions>) {
@@ -277,6 +603,9 @@ export namespace listing {
         }
         GetListing: GrpcUnaryServiceInterface<GetListingRequest, GetListingResponse> = (message: GetListingRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<GetListingResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<GetListingResponse>, callback?: grpc_1.requestCallback<GetListingResponse>): grpc_1.ClientUnaryCall => {
             return super.GetListing(message, metadata, options, callback);
+        };
+        GetListingMarkers: GrpcUnaryServiceInterface<GetListingMarkersRequest, GetListingMarkersResponse> = (message: GetListingMarkersRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<GetListingMarkersResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<GetListingMarkersResponse>, callback?: grpc_1.requestCallback<GetListingMarkersResponse>): grpc_1.ClientUnaryCall => {
+            return super.GetListingMarkers(message, metadata, options, callback);
         };
     }
 }

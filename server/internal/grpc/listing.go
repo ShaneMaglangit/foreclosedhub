@@ -40,3 +40,33 @@ func (s *ListingServiceServer) GetListing(ctx context.Context, req *proto.GetLis
 		LotArea:   lotArea.Float64,
 	}, nil
 }
+
+func (s *ListingServiceServer) GetListingMakers(ctx context.Context, req *proto.GetListingMarkersRequest) (*proto.GetListingMarkersResponse, error) {
+	conn, err := db.Connect(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	listingRepository := db.NewListingsRepository()
+	listings, err := listingRepository.GetListingsCoordinates(ctx, conn, db.GetListingCoordinatesParams{
+		MinLng: req.GetMinLng(),
+		MinLat: req.GetMinLat(),
+		MaxLng: req.GetMaxLng(),
+		MaxLat: req.GetMaxLat(),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var listingMarkers []*proto.ListingMarker
+	for _, listing := range listings {
+		listingMarkers = append(listingMarkers, &proto.ListingMarker{
+			Id:  listing.ID,
+			Lng: listing.Coordinate.X(),
+			Lat: listing.Coordinate.Y(),
+		})
+	}
+
+	return &proto.GetListingMarkersResponse{ListingMarkers: listingMarkers}, nil
+}
