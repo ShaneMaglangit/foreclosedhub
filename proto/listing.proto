@@ -1,18 +1,8 @@
 syntax = "proto3";
 
-package hello;
+package listing;
 
 option go_package = "/proto";
-
-message SayHelloRequest {}
-
-message SayHelloResponse {
-  string body = 1;
-}
-
-service HelloService {
-  rpc SayHello (SayHelloRequest) returns (SayHelloResponse);
-}
 
 message GetListingRequest {
   int64 id = 1;

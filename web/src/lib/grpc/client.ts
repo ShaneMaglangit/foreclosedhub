@@ -1,8 +1,8 @@
 import * as grpc from '@grpc/grpc-js';
-import {hello} from "@web/lib/proto/hello";
-import ListingServiceClient = hello.ListingServiceClient;
-import GetListingResponse = hello.GetListingResponse;
-import GetListingRequest = hello.GetListingRequest;
+import {listing} from "@web/lib/proto/listing";
+import ListingServiceClient = listing.ListingServiceClient;
+import GetListingResponse = listing.GetListingResponse;
+import GetListingRequest = listing.GetListingRequest;
 
 const address = process.env.GRPC_ADDRESS || 'localhost:50051';
 const client = new ListingServiceClient(address, grpc.credentials.createInsecure());
