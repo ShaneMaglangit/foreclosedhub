@@ -7,7 +7,7 @@ const listingSchema = z.object({
     id: z.number(),
     address: z.string(),
     price: z.number(),
-    flooorArea: z.number(),
+    floorArea: z.number(),
     lotArea: z.number()
 })
 
