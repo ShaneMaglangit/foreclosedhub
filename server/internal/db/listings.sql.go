@@ -68,7 +68,7 @@ SELECT id, coordinate
 FROM listings
 WHERE ST_Intersects(
         coordinate,
-        ST_SetSRID(ST_MakeEnvelope($1, $2, $3, $4), 4326)::geography
+        ST_SetSRID(ST_MakeEnvelope($1::double precision, $2::double precision, $3::double precision, $4::double precision), 4326)::geography
       )
   AND address ILIKE '%' || $5::text || '%'
   AND source = ANY ($6::source[])
@@ -80,10 +80,10 @@ LIMIT 1000
 `
 
 type GetListingCoordinatesParams struct {
-	MinLng            interface{}
-	MinLat            interface{}
-	MaxLng            interface{}
-	MaxLat            interface{}
+	MinLng            float64
+	MinLat            float64
+	MaxLng            float64
+	MaxLat            float64
 	Address           string
 	Sources           []Source
 	OccupancyStatuses []OccupancyStatus

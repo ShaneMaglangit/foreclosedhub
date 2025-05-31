@@ -35,7 +35,7 @@ SELECT id, coordinate
 FROM listings
 WHERE ST_Intersects(
         coordinate,
-        ST_SetSRID(ST_MakeEnvelope(@min_lng, @min_lat, @max_lng, @max_lat), 4326)::geography
+        ST_SetSRID(ST_MakeEnvelope(@min_lng::double precision, @min_lat::double precision, @max_lng::double precision, @max_lat::double precision), 4326)::geography
       )
   AND address ILIKE '%' || @address::text || '%'
   AND source = ANY (@sources::source[])
@@ -43,7 +43,7 @@ WHERE ST_Intersects(
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
   AND status = 'active'
   AND geocoded_at IS NOT NULL
-LIMIT 1000;
+LIMIT 10;
 
 -- name: GetListingByImageNotLoaded :one
 SELECT id, external_id, payload

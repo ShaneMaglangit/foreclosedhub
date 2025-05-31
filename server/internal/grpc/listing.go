@@ -2,6 +2,9 @@ package grpc
 
 import (
 	"context"
+	"fmt"
+	"github.com/twpayne/go-geos"
+	"math/rand"
 	"server/internal/db"
 	"server/internal/proto"
 )
@@ -11,13 +14,14 @@ type ListingServiceServer struct {
 }
 
 func (s *ListingServiceServer) GetListing(ctx context.Context, req *proto.GetListingRequest) (*proto.GetListingResponse, error) {
-	conn, err := db.Connect(ctx)
+	pool, err := db.Connect(ctx)
 	if err != nil {
 		return nil, err
 	}
+	defer pool.Close()
 
 	listingRepository := db.NewListingsRepository()
-	listing, err := listingRepository.GetListing(ctx, conn, req.GetId())
+	listing, err := listingRepository.GetListing(ctx, pool, req.GetId())
 	if err != nil {
 		return nil, err
 	}
@@ -41,20 +45,27 @@ func (s *ListingServiceServer) GetListing(ctx context.Context, req *proto.GetLis
 	}, nil
 }
 
-func (s *ListingServiceServer) GetListingMakers(ctx context.Context, req *proto.GetListingMarkersRequest) (*proto.GetListingMarkersResponse, error) {
-	conn, err := db.Connect(ctx)
+func (s *ListingServiceServer) GetListingMarkers(ctx context.Context, req *proto.GetListingMarkersRequest) (*proto.GetListingMarkersResponse, error) {
+	pool, err := db.Connect(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer pool.Close()
+
+	listingRepository := db.NewListingsRepository()
+	listings, err := listingRepository.GetListingsCoordinates(ctx, pool, db.GetListingCoordinatesParams{
+		MinLng:            req.GetMinLng(),
+		MinLat:            req.GetMinLat(),
+		MaxLng:            req.GetMaxLng(),
+		MaxLat:            req.GetMaxLat(),
+		Sources:           []db.Source{db.SourcePagibig, db.SourceSecbank},
+		OccupancyStatuses: []db.OccupancyStatus{db.OccupancyStatusOccupied, db.OccupancyStatusOccupied, db.OccupancyStatusOccupied},
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	listingRepository := db.NewListingsRepository()
-	listings, err := listingRepository.GetListingsCoordinates(ctx, conn, db.GetListingCoordinatesParams{
-		MinLng: req.GetMinLng(),
-		MinLat: req.GetMinLat(),
-		MaxLng: req.GetMaxLng(),
-		MaxLat: req.GetMaxLat(),
-	})
-
+	listings, err = jitterCoordinates(listings)
 	if err != nil {
 		return nil, err
 	}
@@ -69,4 +80,28 @@ func (s *ListingServiceServer) GetListingMakers(ctx context.Context, req *proto.
 	}
 
 	return &proto.GetListingMarkersResponse{ListingMarkers: listingMarkers}, nil
+}
+
+const jitterDistance = 0.00001
+
+func jitterCoordinates(listings []*db.GetListingCoordinatesRow) ([]*db.GetListingCoordinatesRow, error) {
+	coordMap := make(map[string]int)
+
+	for i, listing := range listings {
+		key := fmt.Sprintf("%.8f,%.8f", listing.Coordinate.X(), listing.Coordinate.Y())
+
+		count := coordMap[key]
+		if count > 0 {
+			newLng := listing.Coordinate.X() + (rand.Float64()*2-1)*jitterDistance
+			newLat := listing.Coordinate.Y() + (rand.Float64()*2-1)*jitterDistance
+
+			listings[i].Coordinate = geos.NewPointFromXY(newLng, newLat)
+
+			key = fmt.Sprintf("%.8f,%.8f", newLng, newLat)
+		}
+
+		coordMap[key] = count + 1
+	}
+
+	return listings, nil
 }
