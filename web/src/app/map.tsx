@@ -4,7 +4,7 @@ import {APIProvider, Map as GMap, MapCameraChangedEvent, Marker} from '@vis.gl/r
 import {env} from "@web/env";
 import {useRouter} from 'next/navigation';
 import {useCallback} from 'react';
-import {ListingMarker} from "@web/lib/grpc/client";
+import {ListingMarker} from "@web/lib/grpc/getListingMarkers";
 import {useDebounceCallback} from "usehooks-ts";
 
 const defaultZoomLevel = 7;
@@ -46,7 +46,7 @@ export default function Map({markers}: { markers: ListingMarker[] }) {
                 onCameraChanged={debouncedHandleCameraChange}
             >
                 {markers.map((marker) => (
-                    <Marker key={marker.id} position={{lat: marker.lat ?? 0, lng: marker.lng ?? 0}}/>
+                    <Marker key={marker.id} position={{lat: marker.lat, lng: marker.lng}}/>
                 ))}
             </GMap>
         </APIProvider>

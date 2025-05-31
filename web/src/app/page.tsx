@@ -1,6 +1,6 @@
 import Map from '@web/app/map'
 import {z} from "zod"
-import {getListingMarkers} from "@web/lib/grpc/client";
+import {getListingMarkers} from "@web/lib/grpc/getListingMarkers";
 
 const getListingMarkersParams = z.object({
     minLat: z.coerce.number().min(-90).max(90).default(0),
