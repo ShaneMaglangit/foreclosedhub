@@ -30,8 +30,8 @@ WHERE id < @before::bigint
 ORDER BY id DESC
 LIMIT @row_limit::int;
 
--- name: GetListingCoordinates :many
-SELECT id, coordinate
+-- name: GetListingsInBoundary :many
+SELECT *
 FROM listings
 WHERE ST_Intersects(
         coordinate,
@@ -43,7 +43,7 @@ WHERE ST_Intersects(
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
   AND status = 'active'
   AND geocoded_at IS NOT NULL
-LIMIT 10;
+LIMIT 1000;
 
 -- name: GetListingByImageNotLoaded :one
 SELECT id, external_id, payload

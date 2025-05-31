@@ -73,166 +73,7 @@ export namespace listing {
             return GetListingRequest.deserialize(bytes);
         }
     }
-    export class GetListingResponse extends pb_1.Message {
-        #one_of_decls: number[][] = [];
-        constructor(data?: any[] | {
-            id?: number;
-            address?: string;
-            price?: number;
-            floorArea?: number;
-            lotArea?: number;
-        }) {
-            super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
-            if (!Array.isArray(data) && typeof data == "object") {
-                if ("id" in data && data.id != undefined) {
-                    this.id = data.id;
-                }
-                if ("address" in data && data.address != undefined) {
-                    this.address = data.address;
-                }
-                if ("price" in data && data.price != undefined) {
-                    this.price = data.price;
-                }
-                if ("floorArea" in data && data.floorArea != undefined) {
-                    this.floorArea = data.floorArea;
-                }
-                if ("lotArea" in data && data.lotArea != undefined) {
-                    this.lotArea = data.lotArea;
-                }
-            }
-        }
-        get id() {
-            return pb_1.Message.getFieldWithDefault(this, 1, 0) as number;
-        }
-        set id(value: number) {
-            pb_1.Message.setField(this, 1, value);
-        }
-        get address() {
-            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
-        }
-        set address(value: string) {
-            pb_1.Message.setField(this, 2, value);
-        }
-        get price() {
-            return pb_1.Message.getFieldWithDefault(this, 3, 0) as number;
-        }
-        set price(value: number) {
-            pb_1.Message.setField(this, 3, value);
-        }
-        get floorArea() {
-            return pb_1.Message.getFieldWithDefault(this, 4, 0) as number;
-        }
-        set floorArea(value: number) {
-            pb_1.Message.setField(this, 4, value);
-        }
-        get lotArea() {
-            return pb_1.Message.getFieldWithDefault(this, 5, 0) as number;
-        }
-        set lotArea(value: number) {
-            pb_1.Message.setField(this, 5, value);
-        }
-        static fromObject(data: {
-            id?: number;
-            address?: string;
-            price?: number;
-            floorArea?: number;
-            lotArea?: number;
-        }): GetListingResponse {
-            const message = new GetListingResponse({});
-            if (data.id != null) {
-                message.id = data.id;
-            }
-            if (data.address != null) {
-                message.address = data.address;
-            }
-            if (data.price != null) {
-                message.price = data.price;
-            }
-            if (data.floorArea != null) {
-                message.floorArea = data.floorArea;
-            }
-            if (data.lotArea != null) {
-                message.lotArea = data.lotArea;
-            }
-            return message;
-        }
-        toObject() {
-            const data: {
-                id?: number;
-                address?: string;
-                price?: number;
-                floorArea?: number;
-                lotArea?: number;
-            } = {};
-            if (this.id != null) {
-                data.id = this.id;
-            }
-            if (this.address != null) {
-                data.address = this.address;
-            }
-            if (this.price != null) {
-                data.price = this.price;
-            }
-            if (this.floorArea != null) {
-                data.floorArea = this.floorArea;
-            }
-            if (this.lotArea != null) {
-                data.lotArea = this.lotArea;
-            }
-            return data;
-        }
-        serialize(): Uint8Array;
-        serialize(w: pb_1.BinaryWriter): void;
-        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
-            const writer = w || new pb_1.BinaryWriter();
-            if (this.id != 0)
-                writer.writeInt64(1, this.id);
-            if (this.address.length)
-                writer.writeString(2, this.address);
-            if (this.price != 0)
-                writer.writeInt64(3, this.price);
-            if (this.floorArea != 0)
-                writer.writeDouble(4, this.floorArea);
-            if (this.lotArea != 0)
-                writer.writeDouble(5, this.lotArea);
-            if (!w)
-                return writer.getResultBuffer();
-        }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetListingResponse {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetListingResponse();
-            while (reader.nextField()) {
-                if (reader.isEndGroup())
-                    break;
-                switch (reader.getFieldNumber()) {
-                    case 1:
-                        message.id = reader.readInt64();
-                        break;
-                    case 2:
-                        message.address = reader.readString();
-                        break;
-                    case 3:
-                        message.price = reader.readInt64();
-                        break;
-                    case 4:
-                        message.floorArea = reader.readDouble();
-                        break;
-                    case 5:
-                        message.lotArea = reader.readDouble();
-                        break;
-                    default: reader.skipField();
-                }
-            }
-            return message;
-        }
-        serializeBinary(): Uint8Array {
-            return this.serialize();
-        }
-        static deserializeBinary(bytes: Uint8Array): GetListingResponse {
-            return GetListingResponse.deserialize(bytes);
-        }
-    }
-    export class GetListingMarkersRequest extends pb_1.Message {
+    export class GetListingsInBoundaryRequest extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
             minLng?: number;
@@ -286,8 +127,8 @@ export namespace listing {
             maxLng?: number;
             minLat?: number;
             maxLat?: number;
-        }): GetListingMarkersRequest {
-            const message = new GetListingMarkersRequest({});
+        }): GetListingsInBoundaryRequest {
+            const message = new GetListingsInBoundaryRequest({});
             if (data.minLng != null) {
                 message.minLng = data.minLng;
             }
@@ -338,8 +179,8 @@ export namespace listing {
             if (!w)
                 return writer.getResultBuffer();
         }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetListingMarkersRequest {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetListingMarkersRequest();
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetListingsInBoundaryRequest {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetListingsInBoundaryRequest();
             while (reader.nextField()) {
                 if (reader.isEndGroup())
                     break;
@@ -364,14 +205,18 @@ export namespace listing {
         serializeBinary(): Uint8Array {
             return this.serialize();
         }
-        static deserializeBinary(bytes: Uint8Array): GetListingMarkersRequest {
-            return GetListingMarkersRequest.deserialize(bytes);
+        static deserializeBinary(bytes: Uint8Array): GetListingsInBoundaryRequest {
+            return GetListingsInBoundaryRequest.deserialize(bytes);
         }
     }
-    export class ListingMarker extends pb_1.Message {
+    export class Listing extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
             id?: number;
+            address?: string;
+            price?: number;
+            floorArea?: number;
+            lotArea?: number;
             lng?: number;
             lat?: number;
         }) {
@@ -380,6 +225,18 @@ export namespace listing {
             if (!Array.isArray(data) && typeof data == "object") {
                 if ("id" in data && data.id != undefined) {
                     this.id = data.id;
+                }
+                if ("address" in data && data.address != undefined) {
+                    this.address = data.address;
+                }
+                if ("price" in data && data.price != undefined) {
+                    this.price = data.price;
+                }
+                if ("floorArea" in data && data.floorArea != undefined) {
+                    this.floorArea = data.floorArea;
+                }
+                if ("lotArea" in data && data.lotArea != undefined) {
+                    this.lotArea = data.lotArea;
                 }
                 if ("lng" in data && data.lng != undefined) {
                     this.lng = data.lng;
@@ -395,26 +252,66 @@ export namespace listing {
         set id(value: number) {
             pb_1.Message.setField(this, 1, value);
         }
-        get lng() {
-            return pb_1.Message.getFieldWithDefault(this, 2, 0) as number;
+        get address() {
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
         }
-        set lng(value: number) {
+        set address(value: string) {
             pb_1.Message.setField(this, 2, value);
         }
-        get lat() {
+        get price() {
             return pb_1.Message.getFieldWithDefault(this, 3, 0) as number;
         }
-        set lat(value: number) {
+        set price(value: number) {
             pb_1.Message.setField(this, 3, value);
+        }
+        get floorArea() {
+            return pb_1.Message.getFieldWithDefault(this, 4, 0) as number;
+        }
+        set floorArea(value: number) {
+            pb_1.Message.setField(this, 4, value);
+        }
+        get lotArea() {
+            return pb_1.Message.getFieldWithDefault(this, 5, 0) as number;
+        }
+        set lotArea(value: number) {
+            pb_1.Message.setField(this, 5, value);
+        }
+        get lng() {
+            return pb_1.Message.getFieldWithDefault(this, 6, 0) as number;
+        }
+        set lng(value: number) {
+            pb_1.Message.setField(this, 6, value);
+        }
+        get lat() {
+            return pb_1.Message.getFieldWithDefault(this, 7, 0) as number;
+        }
+        set lat(value: number) {
+            pb_1.Message.setField(this, 7, value);
         }
         static fromObject(data: {
             id?: number;
+            address?: string;
+            price?: number;
+            floorArea?: number;
+            lotArea?: number;
             lng?: number;
             lat?: number;
-        }): ListingMarker {
-            const message = new ListingMarker({});
+        }): Listing {
+            const message = new Listing({});
             if (data.id != null) {
                 message.id = data.id;
+            }
+            if (data.address != null) {
+                message.address = data.address;
+            }
+            if (data.price != null) {
+                message.price = data.price;
+            }
+            if (data.floorArea != null) {
+                message.floorArea = data.floorArea;
+            }
+            if (data.lotArea != null) {
+                message.lotArea = data.lotArea;
             }
             if (data.lng != null) {
                 message.lng = data.lng;
@@ -427,11 +324,27 @@ export namespace listing {
         toObject() {
             const data: {
                 id?: number;
+                address?: string;
+                price?: number;
+                floorArea?: number;
+                lotArea?: number;
                 lng?: number;
                 lat?: number;
             } = {};
             if (this.id != null) {
                 data.id = this.id;
+            }
+            if (this.address != null) {
+                data.address = this.address;
+            }
+            if (this.price != null) {
+                data.price = this.price;
+            }
+            if (this.floorArea != null) {
+                data.floorArea = this.floorArea;
+            }
+            if (this.lotArea != null) {
+                data.lotArea = this.lotArea;
             }
             if (this.lng != null) {
                 data.lng = this.lng;
@@ -447,15 +360,23 @@ export namespace listing {
             const writer = w || new pb_1.BinaryWriter();
             if (this.id != 0)
                 writer.writeInt64(1, this.id);
+            if (this.address.length)
+                writer.writeString(2, this.address);
+            if (this.price != 0)
+                writer.writeInt64(3, this.price);
+            if (this.floorArea != 0)
+                writer.writeDouble(4, this.floorArea);
+            if (this.lotArea != 0)
+                writer.writeDouble(5, this.lotArea);
             if (this.lng != 0)
-                writer.writeDouble(2, this.lng);
+                writer.writeDouble(6, this.lng);
             if (this.lat != 0)
-                writer.writeDouble(3, this.lat);
+                writer.writeDouble(7, this.lat);
             if (!w)
                 return writer.getResultBuffer();
         }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): ListingMarker {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new ListingMarker();
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): Listing {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new Listing();
             while (reader.nextField()) {
                 if (reader.isEndGroup())
                     break;
@@ -464,9 +385,21 @@ export namespace listing {
                         message.id = reader.readInt64();
                         break;
                     case 2:
-                        message.lng = reader.readDouble();
+                        message.address = reader.readString();
                         break;
                     case 3:
+                        message.price = reader.readInt64();
+                        break;
+                    case 4:
+                        message.floorArea = reader.readDouble();
+                        break;
+                    case 5:
+                        message.lotArea = reader.readDouble();
+                        break;
+                    case 6:
+                        message.lng = reader.readDouble();
+                        break;
+                    case 7:
                         message.lat = reader.readDouble();
                         break;
                     default: reader.skipField();
@@ -477,44 +410,47 @@ export namespace listing {
         serializeBinary(): Uint8Array {
             return this.serialize();
         }
-        static deserializeBinary(bytes: Uint8Array): ListingMarker {
-            return ListingMarker.deserialize(bytes);
+        static deserializeBinary(bytes: Uint8Array): Listing {
+            return Listing.deserialize(bytes);
         }
     }
-    export class GetListingMarkersResponse extends pb_1.Message {
+    export class GetListingResponse extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
-            listingMarkers?: ListingMarker[];
+            listing?: Listing;
         }) {
             super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [1], this.#one_of_decls);
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
-                if ("listingMarkers" in data && data.listingMarkers != undefined) {
-                    this.listingMarkers = data.listingMarkers;
+                if ("listing" in data && data.listing != undefined) {
+                    this.listing = data.listing;
                 }
             }
         }
-        get listingMarkers() {
-            return pb_1.Message.getRepeatedWrapperField(this, ListingMarker, 1) as ListingMarker[];
+        get listing() {
+            return pb_1.Message.getWrapperField(this, Listing, 1) as Listing;
         }
-        set listingMarkers(value: ListingMarker[]) {
-            pb_1.Message.setRepeatedWrapperField(this, 1, value);
+        set listing(value: Listing) {
+            pb_1.Message.setWrapperField(this, 1, value);
+        }
+        get has_listing() {
+            return pb_1.Message.getField(this, 1) != null;
         }
         static fromObject(data: {
-            listingMarkers?: ReturnType<typeof ListingMarker.prototype.toObject>[];
-        }): GetListingMarkersResponse {
-            const message = new GetListingMarkersResponse({});
-            if (data.listingMarkers != null) {
-                message.listingMarkers = data.listingMarkers.map(item => ListingMarker.fromObject(item));
+            listing?: ReturnType<typeof Listing.prototype.toObject>;
+        }): GetListingResponse {
+            const message = new GetListingResponse({});
+            if (data.listing != null) {
+                message.listing = Listing.fromObject(data.listing);
             }
             return message;
         }
         toObject() {
             const data: {
-                listingMarkers?: ReturnType<typeof ListingMarker.prototype.toObject>[];
+                listing?: ReturnType<typeof Listing.prototype.toObject>;
             } = {};
-            if (this.listingMarkers != null) {
-                data.listingMarkers = this.listingMarkers.map((item: ListingMarker) => item.toObject());
+            if (this.listing != null) {
+                data.listing = this.listing.toObject();
             }
             return data;
         }
@@ -522,19 +458,19 @@ export namespace listing {
         serialize(w: pb_1.BinaryWriter): void;
         serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
             const writer = w || new pb_1.BinaryWriter();
-            if (this.listingMarkers.length)
-                writer.writeRepeatedMessage(1, this.listingMarkers, (item: ListingMarker) => item.serialize(writer));
+            if (this.has_listing)
+                writer.writeMessage(1, this.listing, () => this.listing.serialize(writer));
             if (!w)
                 return writer.getResultBuffer();
         }
-        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetListingMarkersResponse {
-            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetListingMarkersResponse();
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetListingResponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetListingResponse();
             while (reader.nextField()) {
                 if (reader.isEndGroup())
                     break;
                 switch (reader.getFieldNumber()) {
                     case 1:
-                        reader.readMessage(message.listingMarkers, () => pb_1.Message.addToRepeatedWrapperField(message, 1, ListingMarker.deserialize(reader), ListingMarker));
+                        reader.readMessage(message.listing, () => message.listing = Listing.deserialize(reader));
                         break;
                     default: reader.skipField();
                 }
@@ -544,8 +480,75 @@ export namespace listing {
         serializeBinary(): Uint8Array {
             return this.serialize();
         }
-        static deserializeBinary(bytes: Uint8Array): GetListingMarkersResponse {
-            return GetListingMarkersResponse.deserialize(bytes);
+        static deserializeBinary(bytes: Uint8Array): GetListingResponse {
+            return GetListingResponse.deserialize(bytes);
+        }
+    }
+    export class GetListingsInBoundaryResponse extends pb_1.Message {
+        #one_of_decls: number[][] = [];
+        constructor(data?: any[] | {
+            listings?: Listing[];
+        }) {
+            super();
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [1], this.#one_of_decls);
+            if (!Array.isArray(data) && typeof data == "object") {
+                if ("listings" in data && data.listings != undefined) {
+                    this.listings = data.listings;
+                }
+            }
+        }
+        get listings() {
+            return pb_1.Message.getRepeatedWrapperField(this, Listing, 1) as Listing[];
+        }
+        set listings(value: Listing[]) {
+            pb_1.Message.setRepeatedWrapperField(this, 1, value);
+        }
+        static fromObject(data: {
+            listings?: ReturnType<typeof Listing.prototype.toObject>[];
+        }): GetListingsInBoundaryResponse {
+            const message = new GetListingsInBoundaryResponse({});
+            if (data.listings != null) {
+                message.listings = data.listings.map(item => Listing.fromObject(item));
+            }
+            return message;
+        }
+        toObject() {
+            const data: {
+                listings?: ReturnType<typeof Listing.prototype.toObject>[];
+            } = {};
+            if (this.listings != null) {
+                data.listings = this.listings.map((item: Listing) => item.toObject());
+            }
+            return data;
+        }
+        serialize(): Uint8Array;
+        serialize(w: pb_1.BinaryWriter): void;
+        serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
+            const writer = w || new pb_1.BinaryWriter();
+            if (this.listings.length)
+                writer.writeRepeatedMessage(1, this.listings, (item: Listing) => item.serialize(writer));
+            if (!w)
+                return writer.getResultBuffer();
+        }
+        static deserialize(bytes: Uint8Array | pb_1.BinaryReader): GetListingsInBoundaryResponse {
+            const reader = bytes instanceof pb_1.BinaryReader ? bytes : new pb_1.BinaryReader(bytes), message = new GetListingsInBoundaryResponse();
+            while (reader.nextField()) {
+                if (reader.isEndGroup())
+                    break;
+                switch (reader.getFieldNumber()) {
+                    case 1:
+                        reader.readMessage(message.listings, () => pb_1.Message.addToRepeatedWrapperField(message, 1, Listing.deserialize(reader), Listing));
+                        break;
+                    default: reader.skipField();
+                }
+            }
+            return message;
+        }
+        serializeBinary(): Uint8Array {
+            return this.serialize();
+        }
+        static deserializeBinary(bytes: Uint8Array): GetListingsInBoundaryResponse {
+            return GetListingsInBoundaryResponse.deserialize(bytes);
         }
     }
     interface GrpcUnaryServiceInterface<P, R> {
@@ -583,19 +586,19 @@ export namespace listing {
                 responseSerialize: (message: GetListingResponse) => Buffer.from(message.serialize()),
                 responseDeserialize: (bytes: Buffer) => GetListingResponse.deserialize(new Uint8Array(bytes))
             },
-            GetListingMarkers: {
-                path: "/listing.ListingService/GetListingMarkers",
+            GetListingsInBoundary: {
+                path: "/listing.ListingService/GetListingsInBoundary",
                 requestStream: false,
                 responseStream: false,
-                requestSerialize: (message: GetListingMarkersRequest) => Buffer.from(message.serialize()),
-                requestDeserialize: (bytes: Buffer) => GetListingMarkersRequest.deserialize(new Uint8Array(bytes)),
-                responseSerialize: (message: GetListingMarkersResponse) => Buffer.from(message.serialize()),
-                responseDeserialize: (bytes: Buffer) => GetListingMarkersResponse.deserialize(new Uint8Array(bytes))
+                requestSerialize: (message: GetListingsInBoundaryRequest) => Buffer.from(message.serialize()),
+                requestDeserialize: (bytes: Buffer) => GetListingsInBoundaryRequest.deserialize(new Uint8Array(bytes)),
+                responseSerialize: (message: GetListingsInBoundaryResponse) => Buffer.from(message.serialize()),
+                responseDeserialize: (bytes: Buffer) => GetListingsInBoundaryResponse.deserialize(new Uint8Array(bytes))
             }
         };
         [method: string]: grpc_1.UntypedHandleCall;
         abstract GetListing(call: grpc_1.ServerUnaryCall<GetListingRequest, GetListingResponse>, callback: grpc_1.sendUnaryData<GetListingResponse>): void;
-        abstract GetListingMarkers(call: grpc_1.ServerUnaryCall<GetListingMarkersRequest, GetListingMarkersResponse>, callback: grpc_1.sendUnaryData<GetListingMarkersResponse>): void;
+        abstract GetListingsInBoundary(call: grpc_1.ServerUnaryCall<GetListingsInBoundaryRequest, GetListingsInBoundaryResponse>, callback: grpc_1.sendUnaryData<GetListingsInBoundaryResponse>): void;
     }
     export class ListingServiceClient extends grpc_1.makeGenericClientConstructor(UnimplementedListingServiceService.definition, "ListingService", {}) {
         constructor(address: string, credentials: grpc_1.ChannelCredentials, options?: Partial<grpc_1.ChannelOptions>) {
@@ -604,8 +607,8 @@ export namespace listing {
         GetListing: GrpcUnaryServiceInterface<GetListingRequest, GetListingResponse> = (message: GetListingRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<GetListingResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<GetListingResponse>, callback?: grpc_1.requestCallback<GetListingResponse>): grpc_1.ClientUnaryCall => {
             return super.GetListing(message, metadata, options, callback);
         };
-        GetListingMarkers: GrpcUnaryServiceInterface<GetListingMarkersRequest, GetListingMarkersResponse> = (message: GetListingMarkersRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<GetListingMarkersResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<GetListingMarkersResponse>, callback?: grpc_1.requestCallback<GetListingMarkersResponse>): grpc_1.ClientUnaryCall => {
-            return super.GetListingMarkers(message, metadata, options, callback);
+        GetListingsInBoundary: GrpcUnaryServiceInterface<GetListingsInBoundaryRequest, GetListingsInBoundaryResponse> = (message: GetListingsInBoundaryRequest, metadata: grpc_1.Metadata | grpc_1.CallOptions | grpc_1.requestCallback<GetListingsInBoundaryResponse>, options?: grpc_1.CallOptions | grpc_1.requestCallback<GetListingsInBoundaryResponse>, callback?: grpc_1.requestCallback<GetListingsInBoundaryResponse>): grpc_1.ClientUnaryCall => {
+            return super.GetListingsInBoundary(message, metadata, options, callback);
         };
     }
 }

@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ListingService_GetListing_FullMethodName        = "/listing.ListingService/GetListing"
-	ListingService_GetListingMarkers_FullMethodName = "/listing.ListingService/GetListingMarkers"
+	ListingService_GetListing_FullMethodName            = "/listing.ListingService/GetListing"
+	ListingService_GetListingsInBoundary_FullMethodName = "/listing.ListingService/GetListingsInBoundary"
 )
 
 // ListingServiceClient is the client API for ListingService service.
@@ -28,7 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ListingServiceClient interface {
 	GetListing(ctx context.Context, in *GetListingRequest, opts ...grpc.CallOption) (*GetListingResponse, error)
-	GetListingMarkers(ctx context.Context, in *GetListingMarkersRequest, opts ...grpc.CallOption) (*GetListingMarkersResponse, error)
+	GetListingsInBoundary(ctx context.Context, in *GetListingsInBoundaryRequest, opts ...grpc.CallOption) (*GetListingsInBoundaryResponse, error)
 }
 
 type listingServiceClient struct {
@@ -49,10 +49,10 @@ func (c *listingServiceClient) GetListing(ctx context.Context, in *GetListingReq
 	return out, nil
 }
 
-func (c *listingServiceClient) GetListingMarkers(ctx context.Context, in *GetListingMarkersRequest, opts ...grpc.CallOption) (*GetListingMarkersResponse, error) {
+func (c *listingServiceClient) GetListingsInBoundary(ctx context.Context, in *GetListingsInBoundaryRequest, opts ...grpc.CallOption) (*GetListingsInBoundaryResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetListingMarkersResponse)
-	err := c.cc.Invoke(ctx, ListingService_GetListingMarkers_FullMethodName, in, out, cOpts...)
+	out := new(GetListingsInBoundaryResponse)
+	err := c.cc.Invoke(ctx, ListingService_GetListingsInBoundary_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (c *listingServiceClient) GetListingMarkers(ctx context.Context, in *GetLis
 // for forward compatibility.
 type ListingServiceServer interface {
 	GetListing(context.Context, *GetListingRequest) (*GetListingResponse, error)
-	GetListingMarkers(context.Context, *GetListingMarkersRequest) (*GetListingMarkersResponse, error)
+	GetListingsInBoundary(context.Context, *GetListingsInBoundaryRequest) (*GetListingsInBoundaryResponse, error)
 	mustEmbedUnimplementedListingServiceServer()
 }
 
@@ -78,8 +78,8 @@ type UnimplementedListingServiceServer struct{}
 func (UnimplementedListingServiceServer) GetListing(context.Context, *GetListingRequest) (*GetListingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetListing not implemented")
 }
-func (UnimplementedListingServiceServer) GetListingMarkers(context.Context, *GetListingMarkersRequest) (*GetListingMarkersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetListingMarkers not implemented")
+func (UnimplementedListingServiceServer) GetListingsInBoundary(context.Context, *GetListingsInBoundaryRequest) (*GetListingsInBoundaryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetListingsInBoundary not implemented")
 }
 func (UnimplementedListingServiceServer) mustEmbedUnimplementedListingServiceServer() {}
 func (UnimplementedListingServiceServer) testEmbeddedByValue()                        {}
@@ -120,20 +120,20 @@ func _ListingService_GetListing_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ListingService_GetListingMarkers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetListingMarkersRequest)
+func _ListingService_GetListingsInBoundary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetListingsInBoundaryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ListingServiceServer).GetListingMarkers(ctx, in)
+		return srv.(ListingServiceServer).GetListingsInBoundary(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ListingService_GetListingMarkers_FullMethodName,
+		FullMethod: ListingService_GetListingsInBoundary_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ListingServiceServer).GetListingMarkers(ctx, req.(*GetListingMarkersRequest))
+		return srv.(ListingServiceServer).GetListingsInBoundary(ctx, req.(*GetListingsInBoundaryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -150,8 +150,8 @@ var ListingService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ListingService_GetListing_Handler,
 		},
 		{
-			MethodName: "GetListingMarkers",
-			Handler:    _ListingService_GetListingMarkers_Handler,
+			MethodName: "GetListingsInBoundary",
+			Handler:    _ListingService_GetListingsInBoundary_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

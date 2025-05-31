@@ -1,28 +1,29 @@
 "use client";
 
-import {APIProvider, Map as GMap, MapCameraChangedEvent, Marker} from '@vis.gl/react-google-maps';
+import {APIProvider, InfoWindow, Map as GMap, MapCameraChangedEvent, Marker} from '@vis.gl/react-google-maps';
 import {env} from "@web/env";
 import {useRouter, useSearchParams} from 'next/navigation';
-import {ComponentProps, useCallback} from 'react';
-import {ListingMarker} from "@web/lib/grpc/getListingMarkers";
+import {ComponentProps, useCallback, useState} from 'react';
 import {useDebounceCallback} from "usehooks-ts";
-import {cn} from "@web/lib/utils/cn";
+import {cn, formatNumeric} from "@web/lib/utils";
+import {Listing} from "@web/lib/grpc/shared";
 
 const defaultZoomLevel = 7;
 const philippinesCentralCoordinates = {lat: 12.8797, lng: 121.7740};
 
-export default function Map({markers, className, ...props}: {
-    markers: ListingMarker[]
+export default function Map({listings, className, ...props}: {
+    listings: Listing[]
 } & ComponentProps<typeof GMap>) {
     const router = useRouter();
     const searchParams = useSearchParams()
 
-    const updateUrlParams = useCallback(({minLat, maxLat, minLng, maxLng, selected}: {
+    const [selected, setSelected] = useState<undefined | Listing>()
+
+    const updateUrlParams = useCallback(({minLat, maxLat, minLng, maxLng}: {
         minLat?: number,
         maxLat?: number,
         minLng?: number,
         maxLng?: number,
-        selected?: number
     }) => {
         const params = new URLSearchParams(searchParams)
 
@@ -30,7 +31,6 @@ export default function Map({markers, className, ...props}: {
         if (maxLat) params.set("maxLat", maxLat.toFixed(6));
         if (minLng) params.set("minLng", minLng.toFixed(6));
         if (maxLng) params.set("maxLng", maxLng.toFixed(6));
-        if (selected) params.set("selected", selected.toString());
 
         router.replace(`?${params.toString()}`);
     }, [router, searchParams]);
@@ -48,10 +48,6 @@ export default function Map({markers, className, ...props}: {
         })
     }, 500)
 
-    const handleMarkerSelect = (id: number) => {
-        updateUrlParams({selected: id})
-    }
-
     return (
         <APIProvider apiKey={env.NEXT_PUBLIC_MAPS_API_KEY}>
             <GMap
@@ -63,12 +59,24 @@ export default function Map({markers, className, ...props}: {
                 onCameraChanged={handleCameraChange}
                 {...props}
             >
-                {markers.map((marker) => (
+                {listings.map((listing) => (
                     <Marker
-                        key={marker.id} position={{lat: marker.lat, lng: marker.lng}}
-                        onClick={() => handleMarkerSelect(marker.id)}
+                        key={listing.id} position={{lat: listing.lat, lng: listing.lng}}
+                        onClick={() => setSelected(listing)}
                     />
                 ))}
+                {selected && (
+                    <InfoWindow
+                        position={{lat: selected.lat, lng: selected.lng}}
+                        headerContent={<h4 className="font-bold text-lg">{formatNumeric(selected.price)}</h4>}
+                    >
+                        <ul>
+                            <li>Address: {selected.address}</li>
+                            <li>FloorArea: {selected.floorArea}</li>
+                            <li>LotArea: {selected.lotArea}</li>
+                        </ul>
+                    </InfoWindow>
+                )}
             </GMap>
         </APIProvider>
     );

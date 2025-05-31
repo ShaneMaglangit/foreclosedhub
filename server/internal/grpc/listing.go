@@ -37,15 +37,19 @@ func (s *ListingServiceServer) GetListing(ctx context.Context, req *proto.GetLis
 	}
 
 	return &proto.GetListingResponse{
-		Id:        listing.ID,
-		Address:   listing.Address,
-		Price:     listing.Price,
-		FloorArea: floorArea.Float64,
-		LotArea:   lotArea.Float64,
+		Listing: &proto.Listing{
+			Id:        listing.ID,
+			Address:   listing.Address,
+			Price:     listing.Price,
+			FloorArea: floorArea.Float64,
+			LotArea:   lotArea.Float64,
+			Lng:       listing.Coordinate.X(),
+			Lat:       listing.Coordinate.Y(),
+		},
 	}, nil
 }
 
-func (s *ListingServiceServer) GetListingMarkers(ctx context.Context, req *proto.GetListingMarkersRequest) (*proto.GetListingMarkersResponse, error) {
+func (s *ListingServiceServer) GetListingsInBoundary(ctx context.Context, req *proto.GetListingsInBoundaryRequest) (*proto.GetListingsInBoundaryResponse, error) {
 	pool, err := db.Connect(ctx)
 	if err != nil {
 		return nil, err
@@ -53,7 +57,7 @@ func (s *ListingServiceServer) GetListingMarkers(ctx context.Context, req *proto
 	defer pool.Close()
 
 	listingRepository := db.NewListingsRepository()
-	listings, err := listingRepository.GetListingsCoordinates(ctx, pool, db.GetListingCoordinatesParams{
+	listings, err := listingRepository.GetListingsInBoundary(ctx, pool, db.GetListingsInBoundaryParams{
 		MinLng:            req.GetMinLng(),
 		MinLat:            req.GetMinLat(),
 		MaxLng:            req.GetMaxLng(),
@@ -70,21 +74,35 @@ func (s *ListingServiceServer) GetListingMarkers(ctx context.Context, req *proto
 		return nil, err
 	}
 
-	var listingMarkers []*proto.ListingMarker
+	var listingMarkers []*proto.Listing
 	for _, listing := range listings {
-		listingMarkers = append(listingMarkers, &proto.ListingMarker{
-			Id:  listing.ID,
-			Lng: listing.Coordinate.X(),
-			Lat: listing.Coordinate.Y(),
+		floorArea, err := listing.FloorArea.Float64Value()
+		if err != nil {
+			return nil, err
+		}
+
+		lotArea, err := listing.LotArea.Float64Value()
+		if err != nil {
+			return nil, err
+		}
+
+		listingMarkers = append(listingMarkers, &proto.Listing{
+			Id:        listing.ID,
+			Address:   listing.Address,
+			Price:     listing.Price,
+			FloorArea: floorArea.Float64,
+			LotArea:   lotArea.Float64,
+			Lng:       listing.Coordinate.X(),
+			Lat:       listing.Coordinate.Y(),
 		})
 	}
 
-	return &proto.GetListingMarkersResponse{ListingMarkers: listingMarkers}, nil
+	return &proto.GetListingsInBoundaryResponse{Listings: listingMarkers}, nil
 }
 
 const jitterDistance = 0.00001
 
-func jitterCoordinates(listings []*db.GetListingCoordinatesRow) ([]*db.GetListingCoordinatesRow, error) {
+func jitterCoordinates(listings []*db.Listing) ([]*db.Listing, error) {
 	coordMap := make(map[string]int)
 
 	for i, listing := range listings {

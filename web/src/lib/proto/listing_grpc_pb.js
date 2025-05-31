@@ -4,28 +4,6 @@
 var grpc = require('@grpc/grpc-js');
 var listing_pb = require('./listing_pb.js');
 
-function serialize_listing_GetListingMarkersRequest(arg) {
-  if (!(arg instanceof listing_pb.GetListingMarkersRequest)) {
-    throw new Error('Expected argument of type listing.GetListingMarkersRequest');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_listing_GetListingMarkersRequest(buffer_arg) {
-  return listing_pb.GetListingMarkersRequest.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_listing_GetListingMarkersResponse(arg) {
-  if (!(arg instanceof listing_pb.GetListingMarkersResponse)) {
-    throw new Error('Expected argument of type listing.GetListingMarkersResponse');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_listing_GetListingMarkersResponse(buffer_arg) {
-  return listing_pb.GetListingMarkersResponse.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
 function serialize_listing_GetListingRequest(arg) {
   if (!(arg instanceof listing_pb.GetListingRequest)) {
     throw new Error('Expected argument of type listing.GetListingRequest');
@@ -48,6 +26,28 @@ function deserialize_listing_GetListingResponse(buffer_arg) {
   return listing_pb.GetListingResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_listing_GetListingsInBoundaryRequest(arg) {
+  if (!(arg instanceof listing_pb.GetListingsInBoundaryRequest)) {
+    throw new Error('Expected argument of type listing.GetListingsInBoundaryRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_listing_GetListingsInBoundaryRequest(buffer_arg) {
+  return listing_pb.GetListingsInBoundaryRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_listing_GetListingsInBoundaryResponse(arg) {
+  if (!(arg instanceof listing_pb.GetListingsInBoundaryResponse)) {
+    throw new Error('Expected argument of type listing.GetListingsInBoundaryResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_listing_GetListingsInBoundaryResponse(buffer_arg) {
+  return listing_pb.GetListingsInBoundaryResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 
 var ListingServiceService = exports.ListingServiceService = {
   getListing: {
@@ -61,16 +61,16 @@ var ListingServiceService = exports.ListingServiceService = {
     responseSerialize: serialize_listing_GetListingResponse,
     responseDeserialize: deserialize_listing_GetListingResponse,
   },
-  getListingMarkers: {
-    path: '/listing.ListingService/GetListingMarkers',
+  getListingsInBoundary: {
+    path: '/listing.ListingService/GetListingsInBoundary',
     requestStream: false,
     responseStream: false,
-    requestType: listing_pb.GetListingMarkersRequest,
-    responseType: listing_pb.GetListingMarkersResponse,
-    requestSerialize: serialize_listing_GetListingMarkersRequest,
-    requestDeserialize: deserialize_listing_GetListingMarkersRequest,
-    responseSerialize: serialize_listing_GetListingMarkersResponse,
-    responseDeserialize: deserialize_listing_GetListingMarkersResponse,
+    requestType: listing_pb.GetListingsInBoundaryRequest,
+    responseType: listing_pb.GetListingsInBoundaryResponse,
+    requestSerialize: serialize_listing_GetListingsInBoundaryRequest,
+    requestDeserialize: deserialize_listing_GetListingsInBoundaryRequest,
+    responseSerialize: serialize_listing_GetListingsInBoundaryResponse,
+    responseDeserialize: deserialize_listing_GetListingsInBoundaryResponse,
   },
 };
 

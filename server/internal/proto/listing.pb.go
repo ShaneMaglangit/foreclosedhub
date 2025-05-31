@@ -65,20 +65,176 @@ func (x *GetListingRequest) GetId() int64 {
 	return 0
 }
 
-type GetListingResponse struct {
+type GetListingsInBoundaryRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MinLng        float64                `protobuf:"fixed64,1,opt,name=minLng,proto3" json:"minLng,omitempty"`
+	MaxLng        float64                `protobuf:"fixed64,2,opt,name=maxLng,proto3" json:"maxLng,omitempty"`
+	MinLat        float64                `protobuf:"fixed64,3,opt,name=minLat,proto3" json:"minLat,omitempty"`
+	MaxLat        float64                `protobuf:"fixed64,4,opt,name=maxLat,proto3" json:"maxLat,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetListingsInBoundaryRequest) Reset() {
+	*x = GetListingsInBoundaryRequest{}
+	mi := &file_proto_listing_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetListingsInBoundaryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetListingsInBoundaryRequest) ProtoMessage() {}
+
+func (x *GetListingsInBoundaryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_listing_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetListingsInBoundaryRequest.ProtoReflect.Descriptor instead.
+func (*GetListingsInBoundaryRequest) Descriptor() ([]byte, []int) {
+	return file_proto_listing_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GetListingsInBoundaryRequest) GetMinLng() float64 {
+	if x != nil {
+		return x.MinLng
+	}
+	return 0
+}
+
+func (x *GetListingsInBoundaryRequest) GetMaxLng() float64 {
+	if x != nil {
+		return x.MaxLng
+	}
+	return 0
+}
+
+func (x *GetListingsInBoundaryRequest) GetMinLat() float64 {
+	if x != nil {
+		return x.MinLat
+	}
+	return 0
+}
+
+func (x *GetListingsInBoundaryRequest) GetMaxLat() float64 {
+	if x != nil {
+		return x.MaxLat
+	}
+	return 0
+}
+
+type Listing struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Address       string                 `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
 	Price         int64                  `protobuf:"varint,3,opt,name=price,proto3" json:"price,omitempty"`
 	FloorArea     float64                `protobuf:"fixed64,4,opt,name=floorArea,proto3" json:"floorArea,omitempty"`
 	LotArea       float64                `protobuf:"fixed64,5,opt,name=lotArea,proto3" json:"lotArea,omitempty"`
+	Lng           float64                `protobuf:"fixed64,6,opt,name=lng,proto3" json:"lng,omitempty"`
+	Lat           float64                `protobuf:"fixed64,7,opt,name=lat,proto3" json:"lat,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Listing) Reset() {
+	*x = Listing{}
+	mi := &file_proto_listing_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Listing) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Listing) ProtoMessage() {}
+
+func (x *Listing) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_listing_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Listing.ProtoReflect.Descriptor instead.
+func (*Listing) Descriptor() ([]byte, []int) {
+	return file_proto_listing_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Listing) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *Listing) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *Listing) GetPrice() int64 {
+	if x != nil {
+		return x.Price
+	}
+	return 0
+}
+
+func (x *Listing) GetFloorArea() float64 {
+	if x != nil {
+		return x.FloorArea
+	}
+	return 0
+}
+
+func (x *Listing) GetLotArea() float64 {
+	if x != nil {
+		return x.LotArea
+	}
+	return 0
+}
+
+func (x *Listing) GetLng() float64 {
+	if x != nil {
+		return x.Lng
+	}
+	return 0
+}
+
+func (x *Listing) GetLat() float64 {
+	if x != nil {
+		return x.Lat
+	}
+	return 0
+}
+
+type GetListingResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Listing       *Listing               `protobuf:"bytes,1,opt,name=listing,proto3" json:"listing,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GetListingResponse) Reset() {
 	*x = GetListingResponse{}
-	mi := &file_proto_listing_proto_msgTypes[1]
+	mi := &file_proto_listing_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -90,7 +246,7 @@ func (x *GetListingResponse) String() string {
 func (*GetListingResponse) ProtoMessage() {}
 
 func (x *GetListingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_listing_proto_msgTypes[1]
+	mi := &file_proto_listing_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -103,193 +259,37 @@ func (x *GetListingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetListingResponse.ProtoReflect.Descriptor instead.
 func (*GetListingResponse) Descriptor() ([]byte, []int) {
-	return file_proto_listing_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *GetListingResponse) GetId() int64 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-func (x *GetListingResponse) GetAddress() string {
-	if x != nil {
-		return x.Address
-	}
-	return ""
-}
-
-func (x *GetListingResponse) GetPrice() int64 {
-	if x != nil {
-		return x.Price
-	}
-	return 0
-}
-
-func (x *GetListingResponse) GetFloorArea() float64 {
-	if x != nil {
-		return x.FloorArea
-	}
-	return 0
-}
-
-func (x *GetListingResponse) GetLotArea() float64 {
-	if x != nil {
-		return x.LotArea
-	}
-	return 0
-}
-
-type GetListingMarkersRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	MinLng        float64                `protobuf:"fixed64,1,opt,name=minLng,proto3" json:"minLng,omitempty"`
-	MaxLng        float64                `protobuf:"fixed64,2,opt,name=maxLng,proto3" json:"maxLng,omitempty"`
-	MinLat        float64                `protobuf:"fixed64,3,opt,name=minLat,proto3" json:"minLat,omitempty"`
-	MaxLat        float64                `protobuf:"fixed64,4,opt,name=maxLat,proto3" json:"maxLat,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetListingMarkersRequest) Reset() {
-	*x = GetListingMarkersRequest{}
-	mi := &file_proto_listing_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetListingMarkersRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetListingMarkersRequest) ProtoMessage() {}
-
-func (x *GetListingMarkersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_listing_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetListingMarkersRequest.ProtoReflect.Descriptor instead.
-func (*GetListingMarkersRequest) Descriptor() ([]byte, []int) {
-	return file_proto_listing_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *GetListingMarkersRequest) GetMinLng() float64 {
-	if x != nil {
-		return x.MinLng
-	}
-	return 0
-}
-
-func (x *GetListingMarkersRequest) GetMaxLng() float64 {
-	if x != nil {
-		return x.MaxLng
-	}
-	return 0
-}
-
-func (x *GetListingMarkersRequest) GetMinLat() float64 {
-	if x != nil {
-		return x.MinLat
-	}
-	return 0
-}
-
-func (x *GetListingMarkersRequest) GetMaxLat() float64 {
-	if x != nil {
-		return x.MaxLat
-	}
-	return 0
-}
-
-type ListingMarker struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Lng           float64                `protobuf:"fixed64,2,opt,name=lng,proto3" json:"lng,omitempty"`
-	Lat           float64                `protobuf:"fixed64,3,opt,name=lat,proto3" json:"lat,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListingMarker) Reset() {
-	*x = ListingMarker{}
-	mi := &file_proto_listing_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListingMarker) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListingMarker) ProtoMessage() {}
-
-func (x *ListingMarker) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_listing_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListingMarker.ProtoReflect.Descriptor instead.
-func (*ListingMarker) Descriptor() ([]byte, []int) {
 	return file_proto_listing_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *ListingMarker) GetId() int64 {
+func (x *GetListingResponse) GetListing() *Listing {
 	if x != nil {
-		return x.Id
+		return x.Listing
 	}
-	return 0
+	return nil
 }
 
-func (x *ListingMarker) GetLng() float64 {
-	if x != nil {
-		return x.Lng
-	}
-	return 0
+type GetListingsInBoundaryResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Listings      []*Listing             `protobuf:"bytes,1,rep,name=listings,proto3" json:"listings,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ListingMarker) GetLat() float64 {
-	if x != nil {
-		return x.Lat
-	}
-	return 0
-}
-
-type GetListingMarkersResponse struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	ListingMarkers []*ListingMarker       `protobuf:"bytes,1,rep,name=listingMarkers,proto3" json:"listingMarkers,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
-}
-
-func (x *GetListingMarkersResponse) Reset() {
-	*x = GetListingMarkersResponse{}
+func (x *GetListingsInBoundaryResponse) Reset() {
+	*x = GetListingsInBoundaryResponse{}
 	mi := &file_proto_listing_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetListingMarkersResponse) String() string {
+func (x *GetListingsInBoundaryResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetListingMarkersResponse) ProtoMessage() {}
+func (*GetListingsInBoundaryResponse) ProtoMessage() {}
 
-func (x *GetListingMarkersResponse) ProtoReflect() protoreflect.Message {
+func (x *GetListingsInBoundaryResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_listing_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -301,14 +301,14 @@ func (x *GetListingMarkersResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetListingMarkersResponse.ProtoReflect.Descriptor instead.
-func (*GetListingMarkersResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetListingsInBoundaryResponse.ProtoReflect.Descriptor instead.
+func (*GetListingsInBoundaryResponse) Descriptor() ([]byte, []int) {
 	return file_proto_listing_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *GetListingMarkersResponse) GetListingMarkers() []*ListingMarker {
+func (x *GetListingsInBoundaryResponse) GetListings() []*Listing {
 	if x != nil {
-		return x.ListingMarkers
+		return x.Listings
 	}
 	return nil
 }
@@ -319,28 +319,28 @@ const file_proto_listing_proto_rawDesc = "" +
 	"\n" +
 	"\x13proto/listing.proto\x12\alisting\"#\n" +
 	"\x11GetListingRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"\x8c\x01\n" +
-	"\x12GetListingResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"~\n" +
+	"\x1cGetListingsInBoundaryRequest\x12\x16\n" +
+	"\x06minLng\x18\x01 \x01(\x01R\x06minLng\x12\x16\n" +
+	"\x06maxLng\x18\x02 \x01(\x01R\x06maxLng\x12\x16\n" +
+	"\x06minLat\x18\x03 \x01(\x01R\x06minLat\x12\x16\n" +
+	"\x06maxLat\x18\x04 \x01(\x01R\x06maxLat\"\xa5\x01\n" +
+	"\aListing\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x18\n" +
 	"\aaddress\x18\x02 \x01(\tR\aaddress\x12\x14\n" +
 	"\x05price\x18\x03 \x01(\x03R\x05price\x12\x1c\n" +
 	"\tfloorArea\x18\x04 \x01(\x01R\tfloorArea\x12\x18\n" +
-	"\alotArea\x18\x05 \x01(\x01R\alotArea\"z\n" +
-	"\x18GetListingMarkersRequest\x12\x16\n" +
-	"\x06minLng\x18\x01 \x01(\x01R\x06minLng\x12\x16\n" +
-	"\x06maxLng\x18\x02 \x01(\x01R\x06maxLng\x12\x16\n" +
-	"\x06minLat\x18\x03 \x01(\x01R\x06minLat\x12\x16\n" +
-	"\x06maxLat\x18\x04 \x01(\x01R\x06maxLat\"C\n" +
-	"\rListingMarker\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x10\n" +
-	"\x03lng\x18\x02 \x01(\x01R\x03lng\x12\x10\n" +
-	"\x03lat\x18\x03 \x01(\x01R\x03lat\"[\n" +
-	"\x19GetListingMarkersResponse\x12>\n" +
-	"\x0elistingMarkers\x18\x01 \x03(\v2\x16.listing.ListingMarkerR\x0elistingMarkers2\xb3\x01\n" +
+	"\alotArea\x18\x05 \x01(\x01R\alotArea\x12\x10\n" +
+	"\x03lng\x18\x06 \x01(\x01R\x03lng\x12\x10\n" +
+	"\x03lat\x18\a \x01(\x01R\x03lat\"@\n" +
+	"\x12GetListingResponse\x12*\n" +
+	"\alisting\x18\x01 \x01(\v2\x10.listing.ListingR\alisting\"M\n" +
+	"\x1dGetListingsInBoundaryResponse\x12,\n" +
+	"\blistings\x18\x01 \x03(\v2\x10.listing.ListingR\blistings2\xbf\x01\n" +
 	"\x0eListingService\x12E\n" +
 	"\n" +
-	"GetListing\x12\x1a.listing.GetListingRequest\x1a\x1b.listing.GetListingResponse\x12Z\n" +
-	"\x11GetListingMarkers\x12!.listing.GetListingMarkersRequest\x1a\".listing.GetListingMarkersResponseB\bZ\x06/protob\x06proto3"
+	"GetListing\x12\x1a.listing.GetListingRequest\x1a\x1b.listing.GetListingResponse\x12f\n" +
+	"\x15GetListingsInBoundary\x12%.listing.GetListingsInBoundaryRequest\x1a&.listing.GetListingsInBoundaryResponseB\bZ\x06/protob\x06proto3"
 
 var (
 	file_proto_listing_proto_rawDescOnce sync.Once
@@ -356,23 +356,24 @@ func file_proto_listing_proto_rawDescGZIP() []byte {
 
 var file_proto_listing_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_proto_listing_proto_goTypes = []any{
-	(*GetListingRequest)(nil),         // 0: listing.GetListingRequest
-	(*GetListingResponse)(nil),        // 1: listing.GetListingResponse
-	(*GetListingMarkersRequest)(nil),  // 2: listing.GetListingMarkersRequest
-	(*ListingMarker)(nil),             // 3: listing.ListingMarker
-	(*GetListingMarkersResponse)(nil), // 4: listing.GetListingMarkersResponse
+	(*GetListingRequest)(nil),             // 0: listing.GetListingRequest
+	(*GetListingsInBoundaryRequest)(nil),  // 1: listing.GetListingsInBoundaryRequest
+	(*Listing)(nil),                       // 2: listing.Listing
+	(*GetListingResponse)(nil),            // 3: listing.GetListingResponse
+	(*GetListingsInBoundaryResponse)(nil), // 4: listing.GetListingsInBoundaryResponse
 }
 var file_proto_listing_proto_depIdxs = []int32{
-	3, // 0: listing.GetListingMarkersResponse.listingMarkers:type_name -> listing.ListingMarker
-	0, // 1: listing.ListingService.GetListing:input_type -> listing.GetListingRequest
-	2, // 2: listing.ListingService.GetListingMarkers:input_type -> listing.GetListingMarkersRequest
-	1, // 3: listing.ListingService.GetListing:output_type -> listing.GetListingResponse
-	4, // 4: listing.ListingService.GetListingMarkers:output_type -> listing.GetListingMarkersResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: listing.GetListingResponse.listing:type_name -> listing.Listing
+	2, // 1: listing.GetListingsInBoundaryResponse.listings:type_name -> listing.Listing
+	0, // 2: listing.ListingService.GetListing:input_type -> listing.GetListingRequest
+	1, // 3: listing.ListingService.GetListingsInBoundary:input_type -> listing.GetListingsInBoundaryRequest
+	3, // 4: listing.ListingService.GetListing:output_type -> listing.GetListingResponse
+	4, // 5: listing.ListingService.GetListingsInBoundary:output_type -> listing.GetListingsInBoundaryResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_listing_proto_init() }

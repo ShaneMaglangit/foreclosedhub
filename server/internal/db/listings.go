@@ -9,7 +9,7 @@ type ListingsRepository interface {
 	GetListing(ctx context.Context, dbtx DBTX, id int64) (*Listing, error)
 	GetListingsNextPage(ctx context.Context, dbtx DBTX, params GetListingsNextPageParams) ([]*Listing, error)
 	GetListingsPrevPage(ctx context.Context, dbtx DBTX, params GetListingsPrevPageParams) ([]*Listing, error)
-	GetListingsCoordinates(ctx context.Context, dbtx DBTX, params GetListingCoordinatesParams) ([]*GetListingCoordinatesRow, error)
+	GetListingsInBoundary(ctx context.Context, dbtx DBTX, params GetListingsInBoundaryParams) ([]*Listing, error)
 	GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error)
 	InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error
 	UpdateListingsImageLoaded(ctx context.Context, dbtx DBTX, id int64, imageLoaded bool) error
@@ -32,8 +32,8 @@ func (l ListingsRepositoryImpl) GetListingsPrevPage(ctx context.Context, dbtx DB
 	return New(dbtx).GetListingsPrevPage(ctx, params)
 }
 
-func (l ListingsRepositoryImpl) GetListingsCoordinates(ctx context.Context, dbtx DBTX, params GetListingCoordinatesParams) ([]*GetListingCoordinatesRow, error) {
-	return New(dbtx).GetListingCoordinates(ctx, params)
+func (l ListingsRepositoryImpl) GetListingsInBoundary(ctx context.Context, dbtx DBTX, params GetListingsInBoundaryParams) ([]*Listing, error) {
+	return New(dbtx).GetListingsInBoundary(ctx, params)
 }
 
 func (l ListingsRepositoryImpl) GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error) {

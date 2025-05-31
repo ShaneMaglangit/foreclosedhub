@@ -9,7 +9,6 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5/pgtype"
-	geos "github.com/twpayne/go-geos"
 )
 
 const getListing = `-- name: GetListing :one
@@ -63,69 +62,6 @@ func (q *Queries) GetListingByImageNotLoaded(ctx context.Context, source Source)
 	return &i, err
 }
 
-const getListingCoordinates = `-- name: GetListingCoordinates :many
-SELECT id, coordinate
-FROM listings
-WHERE ST_Intersects(
-        coordinate,
-        ST_SetSRID(ST_MakeEnvelope($1::double precision, $2::double precision, $3::double precision, $4::double precision), 4326)::geography
-      )
-  AND address ILIKE '%' || $5::text || '%'
-  AND source = ANY ($6::source[])
-  AND occupancy_status = ANY ($7::occupancy_status[])
-  AND price BETWEEN $8::bigint AND COALESCE($9, 9223372036854775807)
-  AND status = 'active'
-  AND geocoded_at IS NOT NULL
-LIMIT 1000
-`
-
-type GetListingCoordinatesParams struct {
-	MinLng            float64
-	MinLat            float64
-	MaxLng            float64
-	MaxLat            float64
-	Address           string
-	Sources           []Source
-	OccupancyStatuses []OccupancyStatus
-	MinPrice          int64
-	MaxPrice          pgtype.Int8
-}
-
-type GetListingCoordinatesRow struct {
-	ID         int64
-	Coordinate *geos.Geom
-}
-
-func (q *Queries) GetListingCoordinates(ctx context.Context, arg GetListingCoordinatesParams) ([]*GetListingCoordinatesRow, error) {
-	rows, err := q.db.Query(ctx, getListingCoordinates,
-		arg.MinLng,
-		arg.MinLat,
-		arg.MaxLng,
-		arg.MaxLat,
-		arg.Address,
-		arg.Sources,
-		arg.OccupancyStatuses,
-		arg.MinPrice,
-		arg.MaxPrice,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []*GetListingCoordinatesRow
-	for rows.Next() {
-		var i GetListingCoordinatesRow
-		if err := rows.Scan(&i.ID, &i.Coordinate); err != nil {
-			return nil, err
-		}
-		items = append(items, &i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const getListingNotGeocoded = `-- name: GetListingNotGeocoded :one
 SELECT id, address
 FROM listings
@@ -144,6 +80,80 @@ func (q *Queries) GetListingNotGeocoded(ctx context.Context) (*GetListingNotGeoc
 	var i GetListingNotGeocodedRow
 	err := row.Scan(&i.ID, &i.Address)
 	return &i, err
+}
+
+const getListingsInBoundary = `-- name: GetListingsInBoundary :many
+SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate
+FROM listings
+WHERE ST_Intersects(
+        coordinate,
+        ST_SetSRID(ST_MakeEnvelope($1::double precision, $2::double precision, $3::double precision, $4::double precision), 4326)::geography
+      )
+  AND address ILIKE '%' || $5::text || '%'
+  AND source = ANY ($6::source[])
+  AND occupancy_status = ANY ($7::occupancy_status[])
+  AND price BETWEEN $8::bigint AND COALESCE($9, 9223372036854775807)
+  AND status = 'active'
+  AND geocoded_at IS NOT NULL
+LIMIT 1000
+`
+
+type GetListingsInBoundaryParams struct {
+	MinLng            float64
+	MinLat            float64
+	MaxLng            float64
+	MaxLat            float64
+	Address           string
+	Sources           []Source
+	OccupancyStatuses []OccupancyStatus
+	MinPrice          int64
+	MaxPrice          pgtype.Int8
+}
+
+func (q *Queries) GetListingsInBoundary(ctx context.Context, arg GetListingsInBoundaryParams) ([]*Listing, error) {
+	rows, err := q.db.Query(ctx, getListingsInBoundary,
+		arg.MinLng,
+		arg.MinLat,
+		arg.MaxLng,
+		arg.MaxLat,
+		arg.Address,
+		arg.Sources,
+		arg.OccupancyStatuses,
+		arg.MinPrice,
+		arg.MaxPrice,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*Listing
+	for rows.Next() {
+		var i Listing
+		if err := rows.Scan(
+			&i.ID,
+			&i.Source,
+			&i.ExternalID,
+			&i.Address,
+			&i.FloorArea,
+			&i.LotArea,
+			&i.Price,
+			&i.ImageLoaded,
+			&i.OccupancyStatus,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Payload,
+			&i.Status,
+			&i.GeocodedAt,
+			&i.Coordinate,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getListingsNextPage = `-- name: GetListingsNextPage :many

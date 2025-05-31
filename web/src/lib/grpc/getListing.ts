@@ -1,17 +1,7 @@
 import {client} from "@web/lib/grpc/client";
-import {z} from "zod";
 import {listing} from "@web/lib/proto/listing";
+import {Listing, listingSchema} from "@web/lib/grpc/shared";
 import GetListingRequest = listing.GetListingRequest;
-
-const listingSchema = z.object({
-    id: z.number(),
-    address: z.string(),
-    price: z.number(),
-    floorArea: z.number(),
-    lotArea: z.number()
-})
-
-export type Listing = z.infer<typeof listingSchema>
 
 export function getListing(id: number): Promise<Listing | undefined> {
     const req = new GetListingRequest({id});
