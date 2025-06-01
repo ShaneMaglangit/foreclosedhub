@@ -121,8 +121,8 @@ resource "aws_route_table_association" "public_1a" {
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_security_group" "app_allow_inbound" {
-  name        = "app-allow-inbound"
+resource "aws_security_group" "allow_inbound_ssh_grpc" {
+  name        = "alloow-inbound-ssh-grpc"
   description = "Allow inbound traffic for gRPC and SSH (IPv4 and IPv6)"
   vpc_id      = aws_vpc.app.id
 
@@ -182,7 +182,7 @@ resource "aws_instance" "server" {
   instance_type               = "t2.micro"
   key_name                    = aws_key_pair.ci_ssh.key_name
   subnet_id                   = aws_subnet.public_1a.id
-  vpc_security_group_ids      = [aws_security_group.app_allow_inbound.id]
+  vpc_security_group_ids      = [aws_security_group.allow_inbound_ssh_grpc.id]
   associate_public_ip_address = true
 
   ipv6_address_count = 1
