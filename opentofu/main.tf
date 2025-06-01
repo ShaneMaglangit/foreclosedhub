@@ -92,7 +92,7 @@ resource "aws_key_pair" "ci_ssh" {
 }
 
 resource "aws_vpc" "app" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block                       = "10.0.0.0/16"
   assign_generated_ipv6_cidr_block = true
 }
 
@@ -103,7 +103,7 @@ resource "aws_internet_gateway" "app" {
 resource "aws_subnet" "public_1a" {
   vpc_id                  = aws_vpc.app.id
   cidr_block              = "10.0.1.0/24"
-  ipv6_cidr_block = cidrsubnet(aws_vpc.app.ipv6_cidr_block, 8, 0)
+  ipv6_cidr_block         = cidrsubnet(aws_vpc.app.ipv6_cidr_block, 8, 0)
   map_public_ip_on_launch = true
 }
 
@@ -123,11 +123,11 @@ resource "aws_route_table_association" "public_1a" {
 
 resource "aws_security_group" "app_allow_inbound" {
   name        = "app-allow-inbound"
-  description = "Allow inbound traffic for gRPC and SSH"
+  description = "Allow inbound traffic for gRPC and SSH (IPv4 and IPv6)"
   vpc_id      = aws_vpc.app.id
 
   ingress {
-    description = "gRPC"
+    description = "gRPC IPv4"
     from_port   = 50051
     to_port     = 50051
     protocol    = "tcp"
@@ -135,11 +135,27 @@ resource "aws_security_group" "app_allow_inbound" {
   }
 
   ingress {
-    description = "SSH"
+    description = "SSH IPv4"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description      = "gRPC IPv6"
+    from_port        = 50051
+    to_port          = 50051
+    protocol         = "tcp"
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    description      = "SSH IPv6"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   egress {
@@ -147,6 +163,13 @@ resource "aws_security_group" "app_allow_inbound" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    ipv6_cidr_blocks = ["::/0"]
   }
 }
 
@@ -245,6 +268,7 @@ resource "supabase_project" "foreclosedhub" {
   region            = var.aws_region
 }
 
+
 output "database_url" {
-  value = "postgresql://postgres.${supabase_project.foreclosedhub.id}:${var.supabase_db_password}@aws-0-${var.aws_region}.pooler.supabase.com:5432/postgres"
+  value = "postgresql://postgres:${var.supabase_db_password}@db.${supabase_project.foreclosedhub.id}.supabase.co:5432/postgres"
 }
