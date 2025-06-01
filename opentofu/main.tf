@@ -101,10 +101,11 @@ resource "aws_internet_gateway" "app" {
 }
 
 resource "aws_subnet" "public_1a" {
-  vpc_id                  = aws_vpc.app.id
-  cidr_block              = "10.0.1.0/24"
-  ipv6_cidr_block         = cidrsubnet(aws_vpc.app.ipv6_cidr_block, 8, 0)
-  map_public_ip_on_launch = true
+  vpc_id                          = aws_vpc.app.id
+  cidr_block                      = "10.0.1.0/24"
+  ipv6_cidr_block                 = cidrsubnet(aws_vpc.app.ipv6_cidr_block, 8, 0)
+  assign_ipv6_address_on_creation = true
+  map_public_ip_on_launch         = true
 }
 
 resource "aws_route_table" "public" {
@@ -113,6 +114,11 @@ resource "aws_route_table" "public" {
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.app.id
+  }
+
+  route {
+    ipv6_cidr_block = "::/0"
+    gateway_id      = aws_internet_gateway.app.id
   }
 }
 
@@ -271,7 +277,6 @@ resource "supabase_project" "foreclosedhub" {
   database_password = var.supabase_db_password
   region            = var.aws_region
 }
-
 
 output "database_url" {
   value = "postgresql://postgres:${var.supabase_db_password}@db.${supabase_project.foreclosedhub.id}.supabase.co:5432/postgres"
