@@ -126,6 +126,10 @@ resource "aws_security_group" "app_allow_inbound" {
   description = "Allow inbound traffic for gRPC and SSH (IPv4 and IPv6)"
   vpc_id      = aws_vpc.app.id
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   ingress {
     description = "gRPC IPv4"
     from_port   = 50051
