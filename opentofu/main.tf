@@ -93,6 +93,7 @@ resource "aws_key_pair" "ci_ssh" {
 
 resource "aws_vpc" "app" {
   cidr_block = "10.0.0.0/16"
+  assign_generated_ipv6_cidr_block = true
 }
 
 resource "aws_internet_gateway" "app" {
@@ -102,6 +103,7 @@ resource "aws_internet_gateway" "app" {
 resource "aws_subnet" "public_1a" {
   vpc_id                  = aws_vpc.app.id
   cidr_block              = "10.0.1.0/24"
+  ipv6_cidr_block = cidrsubnet(aws_vpc.app.ipv6_cidr_block, 8, 0)
   map_public_ip_on_launch = true
 }
 
@@ -155,6 +157,8 @@ resource "aws_instance" "server" {
   subnet_id                   = aws_subnet.public_1a.id
   vpc_security_group_ids      = [aws_security_group.app_allow_inbound.id]
   associate_public_ip_address = true
+
+  ipv6_address_count = 1
 }
 
 output "server_id" {
