@@ -1,30 +1,22 @@
 package grpc
 
 import (
-	"context"
 	"fmt"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
 	"log"
 	"net"
 	"os"
-	"server/internal/db"
 	"server/internal/proto"
 )
 
 const defaultPort = "50051"
 
-func Serve() error {
+func Serve(pool *pgxpool.Pool) error {
 	port := os.Getenv("GRPC_PORT")
 	if port == "" {
 		port = defaultPort
 	}
-
-	ctx := context.Background()
-	pool, err := db.Connect(ctx)
-	if err != nil {
-		return fmt.Errorf("failed to connect to DB: %w", err)
-	}
-	defer pool.Close()
 
 	server := grpc.NewServer()
 	log.Println("Starting gRPC server in development mode (no TLS)")

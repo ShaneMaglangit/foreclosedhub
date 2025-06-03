@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"server/internal/db"
 	"server/internal/service"
 )
@@ -11,7 +12,9 @@ import (
 // TODO: Extract hardcoded "5", which refers to the number of instances for this job declared in cron/cron.job
 const skipCountAfterNoop = 24 * 60 * 5
 
-type ScrapeListingJob struct{}
+type ScrapeListingJob struct {
+	Pool *pgxpool.Pool
+}
 
 func (j *ScrapeListingJob) Run() error {
 	batches, err := getBatches()
@@ -30,21 +33,18 @@ func (j *ScrapeListingJob) Run() error {
 	}
 
 	ctx := context.Background()
-	pool, err := db.Connect(ctx)
-	if err != nil {
-		return err
-	}
-	defer pool.Close()
 
 	listingsRepository := db.NewListingsRepository()
-	if err = listingsRepository.InsertListings(ctx, pool, dbListings); err != nil {
+	if err = listingsRepository.InsertListings(ctx, j.Pool, dbListings); err != nil {
 		return err
 	}
 
-	return listingsRepository.UnlistOldListings(ctx, pool, db.SourcePagibig)
+	return listingsRepository.UnlistOldListings(ctx, j.Pool, db.SourcePagibig)
 }
 
-type ScrapeListingImageJob struct{}
+type ScrapeListingImageJob struct {
+	Pool *pgxpool.Pool
+}
 
 var listingImageSkipCounter = 0
 
@@ -56,14 +56,8 @@ func (j *ScrapeListingImageJob) Run() error {
 
 	ctx := context.Background()
 
-	pool, err := db.Connect(ctx)
-	if err != nil {
-		return err
-	}
-	defer pool.Close()
-
 	listingsRepository := db.NewListingsRepository()
-	listing, err := listingsRepository.GetListingByImageNotLoaded(ctx, pool, db.SourcePagibig)
+	listing, err := listingsRepository.GetListingByImageNotLoaded(ctx, j.Pool, db.SourcePagibig)
 	if errors.Is(err, pgx.ErrNoRows) {
 		listingImageSkipCounter = skipCountAfterNoop
 		return err

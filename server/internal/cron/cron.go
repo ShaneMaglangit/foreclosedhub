@@ -1,6 +1,7 @@
 package cron
 
 import (
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/robfig/cron/v3"
 	"log"
 	"server/internal/geocode"
@@ -18,7 +19,7 @@ type ScheduledJob struct {
 	instance   int
 	schedule   string
 	isDisabled func() bool
-	factory    func() Job
+	factory    func(pool *pgxpool.Pool) Job
 }
 
 var scheduledJobs = []ScheduledJob{
@@ -33,7 +34,7 @@ var scheduledJobs = []ScheduledJob{
 		instance:   5,
 		schedule:   "* * * * *",
 		isDisabled: func() bool { return utils.IsDevelopment() },
-		factory:    func() Job { return &pagibig.ScrapeListingImageJob{} },
+		factory:    func(pool *pgxpool.Pool) Job { return &pagibig.ScrapeListingImageJob{Pool: pool} },
 	},
 	{
 		name:     "SecbankScrapeListing",
@@ -46,18 +47,18 @@ var scheduledJobs = []ScheduledJob{
 		instance:   1,
 		schedule:   "* * * * *",
 		isDisabled: func() bool { return utils.IsDevelopment() },
-		factory:    func() Job { return &secbank.ScrapeListingImageJob{} },
+		factory:    func(pool *pgxpool.Pool) Job { return &secbank.ScrapeListingImageJob{Pool: pool} },
 	},
 	{
 		name:       "GeocodeListing",
 		instance:   1,
 		schedule:   "* * * * *",
-		factory:    func() Job { return &geocode.Job{} },
 		isDisabled: func() bool { return utils.IsDevelopment() },
+		factory:    func(pool *pgxpool.Pool) Job { return &geocode.Job{Pool: pool} },
 	},
 }
 
-func Start() *cron.Cron {
+func Start(pool *pgxpool.Pool) *cron.Cron {
 	c := cron.New()
 
 	for _, job := range scheduledJobs {
@@ -66,7 +67,7 @@ func Start() *cron.Cron {
 		}
 
 		for range job.instance {
-			instance := job.factory()
+			instance := job.factory(pool)
 
 			_, err := c.AddFunc(job.schedule, func() {
 				if err := instance.Run(); err != nil {

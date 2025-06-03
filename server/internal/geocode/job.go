@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"server/internal/db"
 )
 
@@ -11,9 +12,11 @@ const skipCountAfterNoop = 24 * 60
 
 var skipCounter = 0
 
-type Job struct{}
+type Job struct {
+	Pool *pgxpool.Pool
+}
 
-func (job *Job) Run() error {
+func (j *Job) Run() error {
 	if skipCounter > 0 {
 		skipCounter--
 		return nil
@@ -21,15 +24,9 @@ func (job *Job) Run() error {
 
 	ctx := context.Background()
 
-	pool, err := db.Connect(ctx)
-	if err != nil {
-		return err
-	}
-	defer pool.Close()
-
 	listingsRepo := db.NewListingsRepository()
 
-	listing, err := listingsRepo.GetListingNotGeocoded(ctx, pool)
+	listing, err := listingsRepo.GetListingNotGeocoded(ctx, j.Pool)
 	if errors.Is(err, pgx.ErrNoRows) {
 		skipCounter = skipCountAfterNoop
 		return err
@@ -42,7 +39,7 @@ func (job *Job) Run() error {
 		return err
 	}
 
-	if err := listingsRepo.UpdateListingCoordinate(ctx, pool, listing.ID, lat, long); err != nil {
+	if err := listingsRepo.UpdateListingCoordinate(ctx, j.Pool, listing.ID, lat, long); err != nil {
 		return err
 	}
 
