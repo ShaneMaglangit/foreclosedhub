@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"fmt"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/twpayne/go-geos"
 	"math/rand"
 	"server/internal/db"
@@ -11,17 +12,12 @@ import (
 
 type ListingServiceServer struct {
 	proto.UnimplementedListingServiceServer
+	pool *pgxpool.Pool
 }
 
 func (s *ListingServiceServer) GetListing(ctx context.Context, req *proto.GetListingRequest) (*proto.GetListingResponse, error) {
-	pool, err := db.Connect(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer pool.Close()
-
 	listingRepository := db.NewListingsRepository()
-	listing, err := listingRepository.GetListing(ctx, pool, req.GetId())
+	listing, err := listingRepository.GetListing(ctx, s.pool, req.GetId())
 	if err != nil {
 		return nil, err
 	}
@@ -50,14 +46,8 @@ func (s *ListingServiceServer) GetListing(ctx context.Context, req *proto.GetLis
 }
 
 func (s *ListingServiceServer) GetListingsInBoundary(ctx context.Context, req *proto.GetListingsInBoundaryRequest) (*proto.GetListingsInBoundaryResponse, error) {
-	pool, err := db.Connect(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer pool.Close()
-
 	listingRepository := db.NewListingsRepository()
-	listings, err := listingRepository.GetListingsInBoundary(ctx, pool, db.GetListingsInBoundaryParams{
+	listings, err := listingRepository.GetListingsInBoundary(ctx, s.pool, db.GetListingsInBoundaryParams{
 		MinLng:            req.GetMinLng(),
 		MinLat:            req.GetMinLat(),
 		MaxLng:            req.GetMaxLng(),

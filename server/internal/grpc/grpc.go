@@ -1,11 +1,13 @@
 package grpc
 
 import (
+	"context"
 	"fmt"
 	"google.golang.org/grpc"
 	"log"
 	"net"
 	"os"
+	"server/internal/db"
 	"server/internal/proto"
 )
 
@@ -17,16 +19,24 @@ func Serve() error {
 		port = defaultPort
 	}
 
-	var server *grpc.Server
+	ctx := context.Background()
+	pool, err := db.Connect(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to connect to DB: %w", err)
+	}
+	defer pool.Close()
 
-	server = grpc.NewServer()
+	server := grpc.NewServer()
 	log.Println("Starting gRPC server in development mode (no TLS)")
 
-	proto.RegisterListingServiceServer(server, &ListingServiceServer{})
+	listingService := &ListingServiceServer{
+		pool: pool,
+	}
+	proto.RegisterListingServiceServer(server, listingService)
 
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
-		return nil
+		return fmt.Errorf("failed to listen on port %s: %w", port, err)
 	}
 
 	return server.Serve(listener)
