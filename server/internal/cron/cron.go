@@ -28,6 +28,10 @@ var scheduledJobs = []ScheduledJob{
 		instance: 1,
 		schedule: "0 0 * * *",
 		factory:  func() Job { return &pagibig.ScrapeListingJob{} },
+		name:       "PagibigScrapeListing",
+		instance:   1,
+		schedule:   "0 0 * * *",
+		factory:    func(pool *pgxpool.Pool) Job { return &pagibig.ScrapeListingJob{Pool: pool} },
 	},
 	{
 		name:       "PagibigScrapeListingImages",
@@ -41,6 +45,10 @@ var scheduledJobs = []ScheduledJob{
 		instance: 1,
 		schedule: "0 0 * * *",
 		factory:  func() Job { return &secbank.ScrapeListingJob{} },
+		name:       "SecbankScrapeListing",
+		instance:   1,
+		schedule:   "0 0 * * *",
+		factory:    func(pool *pgxpool.Pool) Job { return &secbank.ScrapeListingJob{Pool: pool} },
 	},
 	{
 		name:       "SecbankScrapeListingImages",
