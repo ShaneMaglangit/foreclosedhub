@@ -59,10 +59,7 @@ func (s *ListingServiceServer) GetListingsInBoundary(ctx context.Context, req *p
 		return nil, err
 	}
 
-	listings, err = jitterCoordinates(listings)
-	if err != nil {
-		return nil, err
-	}
+	jitterCoordinates(listings)
 
 	var listingMarkers []*proto.Listing
 	for _, listing := range listings {
@@ -92,7 +89,7 @@ func (s *ListingServiceServer) GetListingsInBoundary(ctx context.Context, req *p
 
 const jitterDistance = 0.00001
 
-func jitterCoordinates(listings []*db.Listing) ([]*db.Listing, error) {
+func jitterCoordinates(listings []*db.Listing) {
 	coordMap := make(map[string]int)
 
 	for i, listing := range listings {
@@ -110,6 +107,4 @@ func jitterCoordinates(listings []*db.Listing) ([]*db.Listing, error) {
 
 		coordMap[key] = count + 1
 	}
-
-	return listings, nil
 }
