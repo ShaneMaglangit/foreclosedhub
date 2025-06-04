@@ -9,20 +9,21 @@ message GetListingRequest {
 }
 
 message GetListingsInBoundaryRequest {
-  double minLng = 1;
-  double maxLng = 2;
-  double minLat = 3;
-  double maxLat = 4;
+  double min_lng = 1;
+  double max_lng = 2;
+  double min_lat = 3;
+  double max_lat = 4;
 }
 
 message Listing {
   int64 id = 1;
   string address = 2;
   int64 price = 3;
-  double floorArea = 4;
-  double lotArea = 5;
+  double floor_area = 4;
+  double lot_area = 5;
   double lng = 6;
   double lat = 7;
+  repeated string image_urls = 8;
 }
 
 message GetListingResponse {

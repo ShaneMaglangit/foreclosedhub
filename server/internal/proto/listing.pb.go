@@ -67,10 +67,10 @@ func (x *GetListingRequest) GetId() int64 {
 
 type GetListingsInBoundaryRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	MinLng        float64                `protobuf:"fixed64,1,opt,name=minLng,proto3" json:"minLng,omitempty"`
-	MaxLng        float64                `protobuf:"fixed64,2,opt,name=maxLng,proto3" json:"maxLng,omitempty"`
-	MinLat        float64                `protobuf:"fixed64,3,opt,name=minLat,proto3" json:"minLat,omitempty"`
-	MaxLat        float64                `protobuf:"fixed64,4,opt,name=maxLat,proto3" json:"maxLat,omitempty"`
+	MinLng        float64                `protobuf:"fixed64,1,opt,name=min_lng,json=minLng,proto3" json:"min_lng,omitempty"`
+	MaxLng        float64                `protobuf:"fixed64,2,opt,name=max_lng,json=maxLng,proto3" json:"max_lng,omitempty"`
+	MinLat        float64                `protobuf:"fixed64,3,opt,name=min_lat,json=minLat,proto3" json:"min_lat,omitempty"`
+	MaxLat        float64                `protobuf:"fixed64,4,opt,name=max_lat,json=maxLat,proto3" json:"max_lat,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -138,10 +138,11 @@ type Listing struct {
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Address       string                 `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
 	Price         int64                  `protobuf:"varint,3,opt,name=price,proto3" json:"price,omitempty"`
-	FloorArea     float64                `protobuf:"fixed64,4,opt,name=floorArea,proto3" json:"floorArea,omitempty"`
-	LotArea       float64                `protobuf:"fixed64,5,opt,name=lotArea,proto3" json:"lotArea,omitempty"`
+	FloorArea     float64                `protobuf:"fixed64,4,opt,name=floor_area,json=floorArea,proto3" json:"floor_area,omitempty"`
+	LotArea       float64                `protobuf:"fixed64,5,opt,name=lot_area,json=lotArea,proto3" json:"lot_area,omitempty"`
 	Lng           float64                `protobuf:"fixed64,6,opt,name=lng,proto3" json:"lng,omitempty"`
 	Lat           float64                `protobuf:"fixed64,7,opt,name=lat,proto3" json:"lat,omitempty"`
+	ImageUrls     []string               `protobuf:"bytes,8,rep,name=image_urls,json=imageUrls,proto3" json:"image_urls,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -223,6 +224,13 @@ func (x *Listing) GetLat() float64 {
 		return x.Lat
 	}
 	return 0
+}
+
+func (x *Listing) GetImageUrls() []string {
+	if x != nil {
+		return x.ImageUrls
+	}
+	return nil
 }
 
 type GetListingResponse struct {
@@ -319,20 +327,23 @@ const file_proto_listing_proto_rawDesc = "" +
 	"\n" +
 	"\x13proto/listing.proto\x12\alisting\"#\n" +
 	"\x11GetListingRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"~\n" +
-	"\x1cGetListingsInBoundaryRequest\x12\x16\n" +
-	"\x06minLng\x18\x01 \x01(\x01R\x06minLng\x12\x16\n" +
-	"\x06maxLng\x18\x02 \x01(\x01R\x06maxLng\x12\x16\n" +
-	"\x06minLat\x18\x03 \x01(\x01R\x06minLat\x12\x16\n" +
-	"\x06maxLat\x18\x04 \x01(\x01R\x06maxLat\"\xa5\x01\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"\x82\x01\n" +
+	"\x1cGetListingsInBoundaryRequest\x12\x17\n" +
+	"\amin_lng\x18\x01 \x01(\x01R\x06minLng\x12\x17\n" +
+	"\amax_lng\x18\x02 \x01(\x01R\x06maxLng\x12\x17\n" +
+	"\amin_lat\x18\x03 \x01(\x01R\x06minLat\x12\x17\n" +
+	"\amax_lat\x18\x04 \x01(\x01R\x06maxLat\"\xc6\x01\n" +
 	"\aListing\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x18\n" +
 	"\aaddress\x18\x02 \x01(\tR\aaddress\x12\x14\n" +
-	"\x05price\x18\x03 \x01(\x03R\x05price\x12\x1c\n" +
-	"\tfloorArea\x18\x04 \x01(\x01R\tfloorArea\x12\x18\n" +
-	"\alotArea\x18\x05 \x01(\x01R\alotArea\x12\x10\n" +
+	"\x05price\x18\x03 \x01(\x03R\x05price\x12\x1d\n" +
+	"\n" +
+	"floor_area\x18\x04 \x01(\x01R\tfloorArea\x12\x19\n" +
+	"\blot_area\x18\x05 \x01(\x01R\alotArea\x12\x10\n" +
 	"\x03lng\x18\x06 \x01(\x01R\x03lng\x12\x10\n" +
-	"\x03lat\x18\a \x01(\x01R\x03lat\"@\n" +
+	"\x03lat\x18\a \x01(\x01R\x03lat\x12\x1d\n" +
+	"\n" +
+	"image_urls\x18\b \x03(\tR\timageUrls\"@\n" +
 	"\x12GetListingResponse\x12*\n" +
 	"\alisting\x18\x01 \x01(\v2\x10.listing.ListingR\alisting\"M\n" +
 	"\x1dGetListingsInBoundaryResponse\x12,\n" +

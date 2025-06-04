@@ -19,3 +19,7 @@ export function typedEntries<T extends object>(
 ): [keyof T, T[keyof T]][] {
     return Object.entries(obj) as [keyof T, T[keyof T]][];
 }
+
+export function convertToCamelCase (text: string) {
+    return text.replace(/([a-z0-9])_([a-z0-9])/gi, (match, p1, p2) => `${p1}${p2.toUpperCase()}`);
+}

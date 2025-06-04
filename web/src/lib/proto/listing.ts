@@ -219,9 +219,10 @@ export namespace listing {
             lotArea?: number;
             lng?: number;
             lat?: number;
+            imageUrls?: string[];
         }) {
             super();
-            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
+            pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [8], this.#one_of_decls);
             if (!Array.isArray(data) && typeof data == "object") {
                 if ("id" in data && data.id != undefined) {
                     this.id = data.id;
@@ -243,6 +244,9 @@ export namespace listing {
                 }
                 if ("lat" in data && data.lat != undefined) {
                     this.lat = data.lat;
+                }
+                if ("imageUrls" in data && data.imageUrls != undefined) {
+                    this.imageUrls = data.imageUrls;
                 }
             }
         }
@@ -288,6 +292,12 @@ export namespace listing {
         set lat(value: number) {
             pb_1.Message.setField(this, 7, value);
         }
+        get imageUrls() {
+            return pb_1.Message.getFieldWithDefault(this, 8, []) as string[];
+        }
+        set imageUrls(value: string[]) {
+            pb_1.Message.setField(this, 8, value);
+        }
         static fromObject(data: {
             id?: number;
             address?: string;
@@ -296,6 +306,7 @@ export namespace listing {
             lotArea?: number;
             lng?: number;
             lat?: number;
+            imageUrls?: string[];
         }): Listing {
             const message = new Listing({});
             if (data.id != null) {
@@ -319,6 +330,9 @@ export namespace listing {
             if (data.lat != null) {
                 message.lat = data.lat;
             }
+            if (data.imageUrls != null) {
+                message.imageUrls = data.imageUrls;
+            }
             return message;
         }
         toObject() {
@@ -330,6 +344,7 @@ export namespace listing {
                 lotArea?: number;
                 lng?: number;
                 lat?: number;
+                imageUrls?: string[];
             } = {};
             if (this.id != null) {
                 data.id = this.id;
@@ -352,6 +367,9 @@ export namespace listing {
             if (this.lat != null) {
                 data.lat = this.lat;
             }
+            if (this.imageUrls != null) {
+                data.imageUrls = this.imageUrls;
+            }
             return data;
         }
         serialize(): Uint8Array;
@@ -372,6 +390,8 @@ export namespace listing {
                 writer.writeDouble(6, this.lng);
             if (this.lat != 0)
                 writer.writeDouble(7, this.lat);
+            if (this.imageUrls.length)
+                writer.writeRepeatedString(8, this.imageUrls);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -401,6 +421,9 @@ export namespace listing {
                         break;
                     case 7:
                         message.lat = reader.readDouble();
+                        break;
+                    case 8:
+                        pb_1.Message.addToRepeatedField(message, 8, reader.readString());
                         break;
                     default: reader.skipField();
                 }
@@ -433,7 +456,7 @@ export namespace listing {
         set listing(value: Listing) {
             pb_1.Message.setWrapperField(this, 1, value);
         }
-        get has_listing() {
+        get hasListing() {
             return pb_1.Message.getField(this, 1) != null;
         }
         static fromObject(data: {
@@ -458,7 +481,7 @@ export namespace listing {
         serialize(w: pb_1.BinaryWriter): void;
         serialize(w?: pb_1.BinaryWriter): Uint8Array | void {
             const writer = w || new pb_1.BinaryWriter();
-            if (this.has_listing)
+            if (this.hasListing)
                 writer.writeMessage(1, this.listing, () => this.listing.serialize(writer));
             if (!w)
                 return writer.getResultBuffer();

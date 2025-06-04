@@ -5,7 +5,7 @@ import {env} from "@web/env";
 import {useRouter, useSearchParams} from 'next/navigation';
 import {ComponentProps, useCallback, useState} from 'react';
 import {useDebounceCallback} from "usehooks-ts";
-import {cn, formatNumeric} from "@web/lib/utils";
+import {cn, formatNumeric} from "@web/lib/utils/utils";
 import {Listing} from "@web/lib/grpc/shared";
 
 const defaultZoomLevel = 7;
