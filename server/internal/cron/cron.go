@@ -24,10 +24,6 @@ type ScheduledJob struct {
 
 var scheduledJobs = []ScheduledJob{
 	{
-		name:     "PagibigScrapeListing",
-		instance: 1,
-		schedule: "0 0 * * *",
-		factory:  func() Job { return &pagibig.ScrapeListingJob{} },
 		name:       "PagibigScrapeListing",
 		instance:   1,
 		schedule:   "0 0 * * *",
@@ -41,10 +37,6 @@ var scheduledJobs = []ScheduledJob{
 		factory:    func(pool *pgxpool.Pool) Job { return &pagibig.ScrapeListingImageJob{Pool: pool} },
 	},
 	{
-		name:     "SecbankScrapeListing",
-		instance: 1,
-		schedule: "0 0 * * *",
-		factory:  func() Job { return &secbank.ScrapeListingJob{} },
 		name:       "SecbankScrapeListing",
 		instance:   1,
 		schedule:   "0 0 * * *",
