@@ -7,6 +7,7 @@ import {ComponentProps, useCallback, useState} from 'react';
 import {useDebounceCallback} from "usehooks-ts";
 import {cn, formatNumeric} from "@web/lib/utils/utils";
 import {Listing} from "@web/lib/grpc/shared";
+import Image from 'next/image'
 
 const defaultZoomLevel = 7;
 const philippinesCentralCoordinates = {lat: 12.8797, lng: 121.7740};
@@ -69,7 +70,17 @@ export default function Map({listings, className, ...props}: {
                     <InfoWindow
                         position={{lat: selected.lat, lng: selected.lng}}
                         headerContent={<h4 className="font-bold text-lg">{formatNumeric(selected.price)}</h4>}
+                        className="flex flex-col gap-2"
                     >
+                        {selected.imageUrls[0] && (
+                            <Image
+                                src={selected.imageUrls[0]}
+                                width={500}
+                                height={300}
+                                alt="image of the selected property"
+                                className="w-full"
+                            />
+                        )}
                         <ul>
                             <li>Address: {selected.address}</li>
                             <li>FloorArea: {selected.floorArea}</li>
