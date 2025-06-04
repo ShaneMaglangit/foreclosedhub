@@ -10,4 +10,5 @@ export const listingSchema = z.object({
     lotArea: z.number(),
     lat: z.number(),
     lng: z.number(),
+    imageUrls: z.array(z.string())
 })

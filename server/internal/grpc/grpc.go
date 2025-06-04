@@ -21,9 +21,7 @@ func Serve(pool *pgxpool.Pool) error {
 	server := grpc.NewServer()
 	log.Println("Starting gRPC server in development mode (no TLS)")
 
-	listingService := &ListingServiceServer{
-		pool: pool,
-	}
+	listingService := NewListingServiceServer(pool)
 	proto.RegisterListingServiceServer(server, listingService)
 
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", port))

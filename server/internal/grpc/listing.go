@@ -8,11 +8,19 @@ import (
 	"math/rand"
 	"server/internal/db"
 	"server/internal/proto"
+	"server/internal/service"
 )
 
 type ListingServiceServer struct {
 	proto.UnimplementedListingServiceServer
-	pool *pgxpool.Pool
+	pool    *pgxpool.Pool
+	service *service.ListingService
+}
+
+func NewListingServiceServer(pool *pgxpool.Pool) *ListingServiceServer {
+	return &ListingServiceServer{
+		service: service.NewListingService(pool),
+	}
 }
 
 func (s *ListingServiceServer) GetListing(ctx context.Context, req *proto.GetListingRequest) (*proto.GetListingResponse, error) {
@@ -46,8 +54,7 @@ func (s *ListingServiceServer) GetListing(ctx context.Context, req *proto.GetLis
 }
 
 func (s *ListingServiceServer) GetListingsInBoundary(ctx context.Context, req *proto.GetListingsInBoundaryRequest) (*proto.GetListingsInBoundaryResponse, error) {
-	listingRepository := db.NewListingsRepository()
-	listings, err := listingRepository.GetListingsInBoundary(ctx, s.pool, db.GetListingsInBoundaryParams{
+	listings, err := s.service.GetListingsInBoundaryWithImages(ctx, db.GetListingsInBoundaryParams{
 		MinLng:            req.GetMinLng(),
 		MinLat:            req.GetMinLat(),
 		MaxLng:            req.GetMaxLng(),
@@ -73,6 +80,11 @@ func (s *ListingServiceServer) GetListingsInBoundary(ctx context.Context, req *p
 			return nil, err
 		}
 
+		imageUrls := make([]string, len(listing.Images))
+		for i, image := range listing.Images {
+			imageUrls[i] = image.Url
+		}
+
 		listingMarkers = append(listingMarkers, &proto.Listing{
 			Id:        listing.ID,
 			Address:   listing.Address,
@@ -81,6 +93,7 @@ func (s *ListingServiceServer) GetListingsInBoundary(ctx context.Context, req *p
 			LotArea:   lotArea.Float64,
 			Lng:       listing.Coordinate.X(),
 			Lat:       listing.Coordinate.Y(),
+			ImageUrls: imageUrls,
 		})
 	}
 
@@ -89,7 +102,7 @@ func (s *ListingServiceServer) GetListingsInBoundary(ctx context.Context, req *p
 
 const jitterDistance = 0.00001
 
-func jitterCoordinates(listings []*db.Listing) {
+func jitterCoordinates(listings []*db.ListingWithImages) {
 	coordMap := make(map[string]int)
 
 	for i, listing := range listings {
