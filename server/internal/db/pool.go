@@ -3,15 +3,16 @@ package db
 import (
 	"context"
 	"fmt"
+	"os"
+
 	"github.com/jackc/pgx/v5"
 	"github.com/twpayne/go-geos"
 	pgxgeos "github.com/twpayne/pgx-geos"
-	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func Connect(ctx context.Context) (*pgxpool.Pool, error) {
+func NewPool(ctx context.Context) (*pgxpool.Pool, error) {
 	config, err := createConfig()
 	if err != nil {
 		return nil, err

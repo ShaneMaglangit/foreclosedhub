@@ -1,22 +1,24 @@
 package cron
 
 import (
-	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/robfig/cron/v3"
 	"log"
+
 	"server/internal/geocode"
 	"server/internal/source/pagibig"
 	"server/internal/source/secbank"
 	"server/internal/utils"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/robfig/cron/v3"
 )
 
 type Job interface {
 	Run() error
+	InstanceCount() int
 }
 
 type ScheduledJob struct {
 	name       string
-	instance   int
 	schedule   string
 	isDisabled func() bool
 	factory    func(pool *pgxpool.Pool) Job
@@ -25,61 +27,55 @@ type ScheduledJob struct {
 var scheduledJobs = []ScheduledJob{
 	{
 		name:       "PagibigScrapeListing",
-		instance:   1,
 		schedule:   "0 0 * * *",
-		factory:    func(pool *pgxpool.Pool) Job { return &pagibig.ScrapeListingJob{Pool: pool} },
+		factory:    func(pool *pgxpool.Pool) Job { return pagibig.NewScrapeListingJob(pool) },
 	},
 	{
 		name:       "PagibigScrapeListingImages",
-		instance:   5,
 		schedule:   "* * * * *",
 		isDisabled: func() bool { return utils.IsDevelopment() },
-		factory:    func(pool *pgxpool.Pool) Job { return &pagibig.ScrapeListingImageJob{Pool: pool} },
+		factory:    func(pool *pgxpool.Pool) Job { return pagibig.NewScrapeListingImageJob(pool) },
 	},
 	{
 		name:       "SecbankScrapeListing",
-		instance:   1,
 		schedule:   "0 0 * * *",
-		factory:    func(pool *pgxpool.Pool) Job { return &secbank.ScrapeListingJob{Pool: pool} },
+		factory:    func(pool *pgxpool.Pool) Job { return secbank.NewScrapeListingJob(pool) },
 	},
 	{
 		name:       "SecbankScrapeListingImages",
-		instance:   1,
 		schedule:   "* * * * *",
 		isDisabled: func() bool { return utils.IsDevelopment() },
-		factory:    func(pool *pgxpool.Pool) Job { return &secbank.ScrapeListingImageJob{Pool: pool} },
+		factory:    func(pool *pgxpool.Pool) Job { return secbank.NewScrapeListingImageJob(pool) },
 	},
 	{
 		name:       "GeocodeListing",
-		instance:   1,
 		schedule:   "* * * * *",
 		isDisabled: func() bool { return utils.IsDevelopment() },
-		factory:    func(pool *pgxpool.Pool) Job { return &geocode.Job{Pool: pool} },
+		factory:    func(pool *pgxpool.Pool) Job { return geocode.NewJob(pool) },
 	},
 }
 
 func Start(pool *pgxpool.Pool) *cron.Cron {
 	c := cron.New()
 
-	for _, job := range scheduledJobs {
-		if job.isDisabled != nil && job.isDisabled() {
+	for _, scheduledJob := range scheduledJobs {
+		if scheduledJob.isDisabled != nil && scheduledJob.isDisabled() {
 			continue
 		}
 
-		for range job.instance {
-			instance := job.factory(pool)
-
-			_, err := c.AddFunc(job.schedule, func() {
-				if err := instance.Run(); err != nil {
-					log.Printf("%s: %v", job.name, err)
+		job := scheduledJob.factory(pool)
+		for range job.InstanceCount() {
+			_, err := c.AddFunc(scheduledJob.schedule, func() {
+				if err := job.Run(); err != nil {
+					log.Printf("%s: %v", scheduledJob.name, err)
 				}
 			})
 
 			if err != nil {
-				log.Printf("Error scheduling %s job: %v", job.name, err)
+				log.Printf("Error scheduling %s job: %v", scheduledJob.name, err)
 			}
 
-			log.Printf("Added %s job", job.name)
+			log.Printf("Added %s job", scheduledJob.name)
 		}
 	}
 
