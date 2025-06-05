@@ -2,18 +2,19 @@ package main
 
 import (
 	"context"
-	"github.com/joho/godotenv"
 	"log"
 	"server/internal/cron"
 	"server/internal/db"
 	"server/internal/grpc"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	_ = godotenv.Load()
 
 	ctx := context.Background()
-	pool, err := db.Connect(ctx)
+	pool, err := db.NewPool(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
