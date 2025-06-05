@@ -27,7 +27,7 @@ func (s *ImageUrlUploadService) Execute() (string, error) {
 func (s *ImageUrlUploadService) ExecuteBatch() ([]string, error) {
 	ctx := context.Background()
 
-	r2, err := storage.NewR2Storage(ctx)
+	r2, err := storage.NewR2(ctx)
 	if err != nil {
 		return nil, err
 	}

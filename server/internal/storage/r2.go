@@ -4,23 +4,24 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"io"
+	"os"
+	"strings"
+
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/google/uuid"
-	"io"
-	"os"
-	"strings"
 )
 
-type R2Storage struct {
+type R2 struct {
 	client *s3.Client
 	bucket string
 }
 
-func NewR2Storage(ctx context.Context) (*R2Storage, error) {
+func NewR2(ctx context.Context) (*R2, error) {
 	accountId := os.Getenv("CLOUDFLARE_ACCOUNT_ID")
 	accessKeyId := os.Getenv("CLOUDFLARE_R2_ACCESS_KEY_ID")
 	accessSecretKey := os.Getenv("CLOUDFLARE_R2_ACCESS_SECRET_KEY")
@@ -38,13 +39,13 @@ func NewR2Storage(ctx context.Context) (*R2Storage, error) {
 		o.BaseEndpoint = aws.String(fmt.Sprintf("https://%s.r2.cloudflarestorage.com", accountId))
 	})
 
-	return &R2Storage{
+	return &R2{
 		client: client,
 		bucket: bucket,
 	}, nil
 }
 
-func (s *R2Storage) UploadImageBlobString(ctx context.Context, base64Image string) (string, error) {
+func (s *R2) UploadImageBlobString(ctx context.Context, base64Image string) (string, error) {
 	imageData, err := base64.StdEncoding.DecodeString(base64Image)
 	if err != nil {
 		return "", fmt.Errorf("failed to decode base64 image: %w", err)
@@ -67,7 +68,7 @@ func (s *R2Storage) UploadImageBlobString(ctx context.Context, base64Image strin
 	return url, nil
 }
 
-func (s *R2Storage) UploadImageBlob(ctx context.Context, reader io.Reader) (string, error) {
+func (s *R2) UploadImageBlob(ctx context.Context, reader io.Reader) (string, error) {
 	objectKey := fmt.Sprintf("%s.jpg", uuid.New().String())
 
 	_, err := s.client.PutObject(ctx, &s3.PutObjectInput{
