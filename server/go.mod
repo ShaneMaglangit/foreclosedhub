@@ -16,6 +16,7 @@ require (
 	github.com/twpayne/go-geos v0.20.1
 	github.com/twpayne/pgx-geos v0.0.4
 	github.com/vektah/gqlparser/v2 v2.5.27
+	github.com/vikstrous/dataloadgen v0.0.8
 	google.golang.org/grpc v1.72.0
 	google.golang.org/protobuf v1.36.6
 	googlemaps.github.io/maps v1.7.0
@@ -40,7 +41,6 @@ require (
 	github.com/aws/smithy-go v1.22.2 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
-	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -50,7 +50,6 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
 	github.com/urfave/cli/v2 v2.27.6 // indirect
-	github.com/vikstrous/dataloadgen v0.0.8 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	go.opencensus.io v0.22.3 // indirect
 	go.opentelemetry.io/otel v1.35.0 // indirect
