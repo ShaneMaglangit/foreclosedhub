@@ -127,9 +127,9 @@ resource "aws_route_table_association" "public_1a" {
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_security_group" "allow_inbound_ssh_grpc" {
+resource "aws_security_group" "allow_inbound_ssh_grpc_gql" {
   name        = "alloow-inbound-ssh-grpc"
-  description = "Allow inbound traffic for gRPC and SSH (IPv4 and IPv6)"
+  description = "Allow inbound traffic for gRPC, SSH, and GraphQL (IPv4 and IPv6)"
   vpc_id      = aws_vpc.app.id
 
   lifecycle {
@@ -153,6 +153,14 @@ resource "aws_security_group" "allow_inbound_ssh_grpc" {
   }
 
   ingress {
+    description = "GraphQL IPv4"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description      = "gRPC IPv6"
     from_port        = 50051
     to_port          = 50051
@@ -164,6 +172,14 @@ resource "aws_security_group" "allow_inbound_ssh_grpc" {
     description      = "SSH IPv6"
     from_port        = 22
     to_port          = 22
+    protocol         = "tcp"
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    description      = "GraphQL IPv6"
+    from_port        = 8080
+    to_port          = 8080
     protocol         = "tcp"
     ipv6_cidr_blocks = ["::/0"]
   }
