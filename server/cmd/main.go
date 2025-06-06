@@ -6,7 +6,6 @@ import (
 	"server/internal/cron"
 	"server/internal/db"
 	"server/internal/graph"
-	"server/internal/grpc"
 
 	"github.com/joho/godotenv"
 )
@@ -24,9 +23,5 @@ func main() {
 	c := cron.Start(pool)
 	defer c.Stop()
 
-	go func() { graph.Serve(pool) }()
-
-	if err := grpc.Serve(pool); err != nil {
-		log.Fatal(err)
-	}
+	graph.Serve(pool)
 }
