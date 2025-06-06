@@ -8,7 +8,7 @@ export const listingSchema = z.object({
     price: z.number(),
     floorArea: z.number(),
     lotArea: z.number(),
-    lat: z.number(),
-    lng: z.number(),
+    latitude: z.number(),
+    longitude: z.number(),
     imageUrls: z.array(z.string())
 })

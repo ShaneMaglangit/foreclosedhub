@@ -158,5 +158,5 @@ models:
       - github.com/99designs/gqlgen/graphql.Int64
   Listing:
     fields:
-      listingImages:
+      images:
         resolver: true

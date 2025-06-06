@@ -8,6 +8,8 @@ import (
 	"server/internal/loader"
 	"time"
 
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 	"github.com/vektah/gqlparser/v2/ast"
 
 	"github.com/99designs/gqlgen/graphql"
@@ -31,11 +33,12 @@ func Serve(pool *pgxpool.Pool) {
 	es := NewExecutableSchema(Config{Resolvers: resolver})
 	srv := newServer(es)
 
-    http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-    http.Handle("/query", loader.Middleware(srv, pool))
+	r := mux.NewRouter()
+    r.Handle("/", playground.Handler("GraphQL playground", "/graphql"))
+    r.Handle("/graphql", loader.Middleware(srv, pool))
 
 	log.Printf("Started GQL server on port :%s", port)
-    http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
+    log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), setupCORS()(r)))
 }
 
 func newServer(es graphql.ExecutableSchema) *handler.Server {
@@ -54,4 +57,12 @@ func newServer(es graphql.ExecutableSchema) *handler.Server {
     })
 
     return srv
+}
+
+func setupCORS() func(http.Handler) http.Handler {
+	return handlers.CORS(
+		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		handlers.AllowedMethods([]string{"POST"}),
+		handlers.AllowedOrigins([]string{"http://localhost:3000", "https://foreclosedhub.com"}),
+	)
 }

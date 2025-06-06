@@ -11,11 +11,13 @@ import (
 	"server/internal/loader"
 )
 
-func (r *listingResolver) ListingImages(ctx context.Context, obj *model.Listing) ([]*model.ListingImage, error) {
+// Images is the resolver for the images field.
+func (r *listingResolver) Images(ctx context.Context, obj *model.Listing) ([]*model.ListingImage, error) {
 	loaders := loader.For(ctx)
 	return loaders.ListingImageLoader.Load(ctx, obj.ID)
 }
 
+// Listings is the resolver for the listings field.
 func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64) (*model.ListingConnection, error) {
 	listingsRepository := db.NewListingsRepository()
 	dbListings, err := listingsRepository.GetListingsInBoundary(ctx, r.pool, db.GetListingsInBoundaryParams{
@@ -47,6 +49,7 @@ func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLa
 		listingNodes[i] = &model.Listing{
 			ID:        dbListing.ID,
 			Address:   dbListing.Address,
+			Price:     dbListing.Price,
 			FloorArea: floorArea.Float64,
 			LotArea:   lotArea.Float64,
 			Latitude:  dbListing.Coordinate.Y(),

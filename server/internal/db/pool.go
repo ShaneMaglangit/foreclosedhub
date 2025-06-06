@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"server/internal/utils"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/twpayne/go-geos"
@@ -39,7 +40,9 @@ func createConfig() (*pgxpool.Config, error) {
 		return nil, err
 	}
 
-	config.ConnConfig.Tracer = &Tracer{}
+	if utils.IsDevelopment() {
+		config.ConnConfig.Tracer = &Tracer{}
+	}
 
 	config.AfterConnect = registerCustomTypes
 

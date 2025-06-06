@@ -1,0 +1,36 @@
+schema {
+  query: Query
+}
+
+scalar Int64
+
+type Listing {
+  address: String!
+  floorArea: Float!
+  id: Int64!
+  latitude: Float!
+  listingImages: [ListingImage!]!
+  longitude: Float!
+  lotArea: Float!
+  price: Int!
+}
+
+type ListingConnection {
+  edges: [ListingEdge!]!
+  nodes: [Listing!]!
+}
+
+type ListingEdge {
+  cursor: String!
+  node: Listing!
+}
+
+type ListingImage {
+  id: Int64!
+  listingId: Int64!
+  url: String!
+}
+
+type Query {
+  listings(maxLatitude: Float!, maxLongitude: Float!, minLatitude: Float!, minLongitude: Float!): ListingConnection!
+}

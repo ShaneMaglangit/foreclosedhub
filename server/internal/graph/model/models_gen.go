@@ -3,14 +3,14 @@
 package model
 
 type Listing struct {
-	ID            int64           `json:"id"`
-	Address       string          `json:"address"`
-	Price         int32           `json:"price"`
-	FloorArea     float64         `json:"floorArea"`
-	LotArea       float64         `json:"lotArea"`
-	Latitude      float64         `json:"latitude"`
-	Longitude     float64         `json:"longitude"`
-	ListingImages []*ListingImage `json:"listingImages"`
+	ID        int64           `json:"id"`
+	Address   string          `json:"address"`
+	Price     int64           `json:"price"`
+	FloorArea float64         `json:"floorArea"`
+	LotArea   float64         `json:"lotArea"`
+	Latitude  float64         `json:"latitude"`
+	Longitude float64         `json:"longitude"`
+	Images    []*ListingImage `json:"images"`
 }
 
 type ListingConnection struct {

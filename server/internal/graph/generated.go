@@ -48,14 +48,14 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Listing struct {
-		Address       func(childComplexity int) int
-		FloorArea     func(childComplexity int) int
-		ID            func(childComplexity int) int
-		Latitude      func(childComplexity int) int
-		ListingImages func(childComplexity int) int
-		Longitude     func(childComplexity int) int
-		LotArea       func(childComplexity int) int
-		Price         func(childComplexity int) int
+		Address   func(childComplexity int) int
+		FloorArea func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Images    func(childComplexity int) int
+		Latitude  func(childComplexity int) int
+		Longitude func(childComplexity int) int
+		LotArea   func(childComplexity int) int
+		Price     func(childComplexity int) int
 	}
 
 	ListingConnection struct {
@@ -80,7 +80,7 @@ type ComplexityRoot struct {
 }
 
 type ListingResolver interface {
-	ListingImages(ctx context.Context, obj *model.Listing) ([]*model.ListingImage, error)
+	Images(ctx context.Context, obj *model.Listing) ([]*model.ListingImage, error)
 }
 type QueryResolver interface {
 	Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64) (*model.ListingConnection, error)
@@ -126,19 +126,19 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Listing.ID(childComplexity), true
 
+	case "Listing.images":
+		if e.complexity.Listing.Images == nil {
+			break
+		}
+
+		return e.complexity.Listing.Images(childComplexity), true
+
 	case "Listing.latitude":
 		if e.complexity.Listing.Latitude == nil {
 			break
 		}
 
 		return e.complexity.Listing.Latitude(childComplexity), true
-
-	case "Listing.listingImages":
-		if e.complexity.Listing.ListingImages == nil {
-			break
-		}
-
-		return e.complexity.Listing.ListingImages(childComplexity), true
 
 	case "Listing.longitude":
 		if e.complexity.Listing.Longitude == nil {
@@ -644,9 +644,9 @@ func (ec *executionContext) _Listing_price(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int32)
+	res := resTmp.(int64)
 	fc.Result = res
-	return ec.marshalNInt2int32(ctx, field.Selections, res)
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Listing_price(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -656,7 +656,7 @@ func (ec *executionContext) fieldContext_Listing_price(_ context.Context, field 
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Int64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -838,8 +838,8 @@ func (ec *executionContext) fieldContext_Listing_longitude(_ context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Listing_listingImages(ctx context.Context, field graphql.CollectedField, obj *model.Listing) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Listing_listingImages(ctx, field)
+func (ec *executionContext) _Listing_images(ctx context.Context, field graphql.CollectedField, obj *model.Listing) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Listing_images(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -852,7 +852,7 @@ func (ec *executionContext) _Listing_listingImages(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Listing().ListingImages(rctx, obj)
+		return ec.resolvers.Listing().Images(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -869,7 +869,7 @@ func (ec *executionContext) _Listing_listingImages(ctx context.Context, field gr
 	return ec.marshalNListingImage2ᚕᚖserverᚋinternalᚋgraphᚋmodelᚐListingImageᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Listing_listingImages(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Listing_images(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Listing",
 		Field:      field,
@@ -993,8 +993,8 @@ func (ec *executionContext) fieldContext_ListingConnection_nodes(_ context.Conte
 				return ec.fieldContext_Listing_latitude(ctx, field)
 			case "longitude":
 				return ec.fieldContext_Listing_longitude(ctx, field)
-			case "listingImages":
-				return ec.fieldContext_Listing_listingImages(ctx, field)
+			case "images":
+				return ec.fieldContext_Listing_images(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Listing", field.Name)
 		},
@@ -1055,8 +1055,8 @@ func (ec *executionContext) fieldContext_ListingEdge_node(_ context.Context, fie
 				return ec.fieldContext_Listing_latitude(ctx, field)
 			case "longitude":
 				return ec.fieldContext_Listing_longitude(ctx, field)
-			case "listingImages":
-				return ec.fieldContext_Listing_listingImages(ctx, field)
+			case "images":
+				return ec.fieldContext_Listing_images(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Listing", field.Name)
 		},
@@ -3437,7 +3437,7 @@ func (ec *executionContext) _Listing(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "listingImages":
+		case "images":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -3446,7 +3446,7 @@ func (ec *executionContext) _Listing(ctx context.Context, sel ast.SelectionSet, 
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Listing_listingImages(ctx, field, obj)
+				res = ec._Listing_images(ctx, field, obj)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -4070,22 +4070,6 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 		}
 	}
 	return graphql.WrapContextMarshaler(ctx, res)
-}
-
-func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v any) (int32, error) {
-	res, err := graphql.UnmarshalInt32(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.SelectionSet, v int32) graphql.Marshaler {
-	_ = sel
-	res := graphql.MarshalInt32(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
 }
 
 func (ec *executionContext) unmarshalNInt642int64(ctx context.Context, v any) (int64, error) {
