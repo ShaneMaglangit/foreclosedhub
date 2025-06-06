@@ -11,50 +11,22 @@ import (
 	"server/internal/service"
 )
 
-// TODO: Extract hardcoded "5", which refers to the number of instances for this job declared in cron/cron.job
-const skipCountAfterNoop = 24 * 60 * 5
-
-type ScrapeListingJob struct {
-	Pool *pgxpool.Pool
-}
-
-func (j *ScrapeListingJob) Run() error {
-	listings, err := getListings()
-	if err != nil {
-		return err
-	}
-
-	dbListings, err := listings.toDbListings()
-	if err != nil {
-		return err
-	}
-
-	ctx := context.Background()
-
-	tx, err := j.Pool.Begin(ctx)
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback(ctx)
-
-	listingsRepository := db.NewListingsRepository()
-
-	if err = listingsRepository.InsertListings(ctx, tx, dbListings); err != nil {
-		return err
-	}
-
-	if err = listingsRepository.UnlistOldListings(ctx, tx, db.SourceSecbank); err != nil {
-		return err
-	}
-
-	return tx.Commit(ctx)
-}
-
-type ScrapeListingImageJob struct {
-	Pool *pgxpool.Pool
-}
+const scrapeListingImageJobInstance = 5
+const skipCountAfterNoop = 24 * 60 * scrapeListingImageJobInstance
 
 var listingImageSkipCounter = 0
+
+type ScrapeListingImageJob struct {
+	pool *pgxpool.Pool
+}
+
+func NewScrapeListingImageJob(pool *pgxpool.Pool) *ScrapeListingImageJob {
+	return &ScrapeListingImageJob{pool: pool}
+}
+
+func (j *ScrapeListingImageJob) InstanceCount() int {
+	return scrapeListingImageJobInstance
+}
 
 func (j *ScrapeListingImageJob) Run() error {
 	if listingImageSkipCounter > 0 {
@@ -65,7 +37,7 @@ func (j *ScrapeListingImageJob) Run() error {
 	ctx := context.Background()
 
 	listingsRepository := db.NewListingsRepository()
-	listing, err := listingsRepository.GetListingByImageNotLoaded(ctx, j.Pool, db.SourceSecbank)
+	listing, err := listingsRepository.GetListingByImageNotLoaded(ctx, j.pool, db.SourceSecbank)
 	if errors.Is(err, pgx.ErrNoRows) {
 		listingImageSkipCounter = skipCountAfterNoop
 		return err

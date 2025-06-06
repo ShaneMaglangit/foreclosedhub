@@ -22,7 +22,7 @@ func (s *ImageBlobUploadService) Execute() (string, error) {
 func (s *ImageBlobUploadService) ExecuteBatch() ([]string, error) {
 	ctx := context.Background()
 
-	r2, err := storage.NewR2Storage(ctx)
+	r2, err := storage.NewR2(ctx)
 	if err != nil {
 		return nil, err
 	}

@@ -2,13 +2,12 @@ package db
 
 import (
 	"context"
+
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type ListingsRepository interface {
 	GetListing(ctx context.Context, dbtx DBTX, id int64) (*Listing, error)
-	GetListingsNextPage(ctx context.Context, dbtx DBTX, params GetListingsNextPageParams) ([]*Listing, error)
-	GetListingsPrevPage(ctx context.Context, dbtx DBTX, params GetListingsPrevPageParams) ([]*Listing, error)
 	GetListingsInBoundary(ctx context.Context, dbtx DBTX, params GetListingsInBoundaryParams) ([]*Listing, error)
 	GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error)
 	InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error
@@ -20,16 +19,12 @@ type ListingsRepository interface {
 
 type ListingsRepositoryImpl struct{}
 
+func NewListingsRepository() ListingsRepository {
+	return &ListingsRepositoryImpl{}
+}
+
 func (l ListingsRepositoryImpl) GetListing(ctx context.Context, dbtx DBTX, id int64) (*Listing, error) {
 	return New(dbtx).GetListing(ctx, id)
-}
-
-func (l ListingsRepositoryImpl) GetListingsNextPage(ctx context.Context, dbtx DBTX, params GetListingsNextPageParams) ([]*Listing, error) {
-	return New(dbtx).GetListingsNextPage(ctx, params)
-}
-
-func (l ListingsRepositoryImpl) GetListingsPrevPage(ctx context.Context, dbtx DBTX, params GetListingsPrevPageParams) ([]*Listing, error) {
-	return New(dbtx).GetListingsPrevPage(ctx, params)
 }
 
 func (l ListingsRepositoryImpl) GetListingsInBoundary(ctx context.Context, dbtx DBTX, params GetListingsInBoundaryParams) ([]*Listing, error) {
@@ -85,6 +80,7 @@ func (l ListingsRepositoryImpl) UpdateListingsImageLoaded(ctx context.Context, d
 func (l ListingsRepositoryImpl) UnlistOldListings(ctx context.Context, dbtx DBTX, source Source) error {
 	return New(dbtx).UnlistOldListings(ctx, source)
 }
+
 func (l ListingsRepositoryImpl) GetListingNotGeocoded(ctx context.Context, dbtx DBTX) (*GetListingNotGeocodedRow, error) {
 	return New(dbtx).GetListingNotGeocoded(ctx)
 }
@@ -95,8 +91,4 @@ func (l ListingsRepositoryImpl) UpdateListingCoordinate(ctx context.Context, dbt
 		Lat: lat,
 		Lng: long,
 	})
-}
-
-func NewListingsRepository() ListingsRepository {
-	return &ListingsRepositoryImpl{}
 }

@@ -5,12 +5,20 @@ import (
 )
 
 type ListingImagesRepository interface {
-	GetListingImagesByListings(ctx context.Context, dbtx DBTX, listings []*Listing) ([]*ListingImage, error)
 	GetListingImagesByListingIds(ctx context.Context, dbtx DBTX, listingIds []int64) ([]*ListingImage, error)
+	GetListingImagesByListings(ctx context.Context, dbtx DBTX, listings []*Listing) ([]*ListingImage, error)
 	InsertListingImages(ctx context.Context, dbtx DBTX, listingId int64, urls []string) error
 }
 
 type ListingImagesRepositoryImpl struct{}
+
+func NewListingImagesRepository() ListingImagesRepository {
+	return &ListingImagesRepositoryImpl{}
+}
+
+func (l ListingImagesRepositoryImpl) GetListingImagesByListingIds(ctx context.Context, dbtx DBTX, listingIds []int64) ([]*ListingImage, error) {
+	return New(dbtx).GetListingImagesByListingIds(ctx, listingIds)
+}
 
 func (l ListingImagesRepositoryImpl) GetListingImagesByListings(ctx context.Context, dbtx DBTX, listings []*Listing) ([]*ListingImage, error) {
 	listingIds := make([]int64, 0, len(listings))
@@ -18,11 +26,7 @@ func (l ListingImagesRepositoryImpl) GetListingImagesByListings(ctx context.Cont
 		listingIds = append(listingIds, listing.ID)
 	}
 
-	return New(dbtx).GetListingImagesByListingIds(ctx, listingIds)
-}
-
-func (l ListingImagesRepositoryImpl) GetListingImagesByListingIds(ctx context.Context, dbtx DBTX, listingIds []int64) ([]*ListingImage, error) {
-	return New(dbtx).GetListingImagesByListingIds(ctx, listingIds)
+	return l.GetListingImagesByListingIds(ctx, dbtx, listingIds)
 }
 
 func (l ListingImagesRepositoryImpl) InsertListingImages(ctx context.Context, dbtx DBTX, listingId int64, urls []string) error {
@@ -35,8 +39,4 @@ func (l ListingImagesRepositoryImpl) InsertListingImages(ctx context.Context, db
 		ListingIds: listingIds,
 		Urls:       urls,
 	})
-}
-
-func NewListingImagesRepository() ListingImagesRepository {
-	return &ListingImagesRepositoryImpl{}
 }

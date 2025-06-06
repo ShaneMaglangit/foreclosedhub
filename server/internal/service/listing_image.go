@@ -20,7 +20,7 @@ func (s *ListingImageService) Create(uploadService ImageUploadService, listingId
 		return err
 	}
 
-	pool, err := db.Connect(ctx)
+	pool, err := db.NewPool(ctx)
 	if err != nil {
 		return err
 	}

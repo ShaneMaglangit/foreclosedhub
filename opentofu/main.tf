@@ -127,21 +127,13 @@ resource "aws_route_table_association" "public_1a" {
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_security_group" "allow_inbound_ssh_grpc" {
-  name        = "alloow-inbound-ssh-grpc"
-  description = "Allow inbound traffic for gRPC and SSH (IPv4 and IPv6)"
+resource "aws_security_group" "allow_inbound_ssh_gql" {
+  name        = "allow-inbound-ssh"
+  description = "Allow inbound traffic for SSH and GraphQL (IPv4 and IPv6)"
   vpc_id      = aws_vpc.app.id
 
   lifecycle {
     create_before_destroy = true
-  }
-
-  ingress {
-    description = "gRPC IPv4"
-    from_port   = 50051
-    to_port     = 50051
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -153,17 +145,25 @@ resource "aws_security_group" "allow_inbound_ssh_grpc" {
   }
 
   ingress {
-    description      = "gRPC IPv6"
-    from_port        = 50051
-    to_port          = 50051
-    protocol         = "tcp"
-    ipv6_cidr_blocks = ["::/0"]
+    description = "GraphQL IPv4"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
     description      = "SSH IPv6"
     from_port        = 22
     to_port          = 22
+    protocol         = "tcp"
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    description      = "GraphQL IPv6"
+    from_port        = 8080
+    to_port          = 8080
     protocol         = "tcp"
     ipv6_cidr_blocks = ["::/0"]
   }
@@ -221,8 +221,8 @@ resource "vercel_project_environment_variables" "web" {
   project_id = vercel_project.web.id
   variables = [
     {
-      key    = "GRPC_ADDRESS"
-      value  = "${aws_instance.server.public_ip}:50051"
+      key    = "NEXT_PUBLIC_GRAPHQL_URI"
+      value  = "${aws_instance.server.public_ip}:8080"
       target = ["production"]
     },
     {

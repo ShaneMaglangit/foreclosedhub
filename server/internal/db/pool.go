@@ -3,15 +3,17 @@ package db
 import (
 	"context"
 	"fmt"
+	"os"
+	"server/internal/utils"
+
 	"github.com/jackc/pgx/v5"
 	"github.com/twpayne/go-geos"
 	pgxgeos "github.com/twpayne/pgx-geos"
-	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func Connect(ctx context.Context) (*pgxpool.Pool, error) {
+func NewPool(ctx context.Context) (*pgxpool.Pool, error) {
 	config, err := createConfig()
 	if err != nil {
 		return nil, err
@@ -36,6 +38,10 @@ func createConfig() (*pgxpool.Config, error) {
 	config, err := pgxpool.ParseConfig(url)
 	if err != nil {
 		return nil, err
+	}
+
+	if utils.IsDevelopment() {
+		config.ConnConfig.Tracer = &Tracer{}
 	}
 
 	config.AfterConnect = registerCustomTypes

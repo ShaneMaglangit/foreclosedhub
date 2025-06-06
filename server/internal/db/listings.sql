@@ -4,32 +4,6 @@ FROM listings
 WHERE id = @id::bigint
 LIMIT 1;
 
--- name: GetListingsNextPage :many
-SELECT *
-FROM listings
-WHERE id > @after::bigint
-  AND address ILIKE '%' || @address::text || '%'
-  AND source = ANY (@sources::source[])
-  AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
-  AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
-  AND status = 'active'
-  AND geocoded_at IS NOT NULL
-ORDER BY id
-LIMIT @row_limit::int;
-
--- name: GetListingsPrevPage :many
-SELECT *
-FROM listings
-WHERE id < @before::bigint
-  AND address ILIKE '%' || @address::text || '%'
-  AND source = ANY (@sources::source[])
-  AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
-  AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
-  AND status = 'active'
-  AND geocoded_at IS NOT NULL
-ORDER BY id DESC
-LIMIT @row_limit::int;
-
 -- name: GetListingsInBoundary :many
 SELECT *
 FROM listings
