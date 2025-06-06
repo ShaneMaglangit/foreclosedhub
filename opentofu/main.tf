@@ -188,7 +188,7 @@ resource "aws_instance" "server" {
   instance_type               = "t2.micro"
   key_name                    = aws_key_pair.ci_ssh.key_name
   subnet_id                   = aws_subnet.public_1a.id
-  vpc_security_group_ids      = [aws_security_group.allow_inbound_ssh_grpc.id]
+  vpc_security_group_ids      = [aws_security_group.allow_inbound_ssh_gql.id]
   associate_public_ip_address = true
 
   ipv6_address_count = 1
