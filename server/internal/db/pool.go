@@ -39,6 +39,8 @@ func createConfig() (*pgxpool.Config, error) {
 		return nil, err
 	}
 
+	config.ConnConfig.Tracer = &Tracer{}
+
 	config.AfterConnect = registerCustomTypes
 
 	return config, nil

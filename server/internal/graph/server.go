@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"server/internal/loader"
 	"time"
 
 	"github.com/vektah/gqlparser/v2/ast"
@@ -12,8 +13,8 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
-	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/handler/lru"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -31,7 +32,7 @@ func Serve(pool *pgxpool.Pool) {
 	srv := newServer(es)
 
     http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-    http.Handle("/query", srv)
+    http.Handle("/query", loader.Middleware(srv, pool))
 
 	log.Printf("Started GQL server on port :%s", port)
     http.ListenAndServe(fmt.Sprintf(":%s", port), nil)

@@ -10,6 +10,7 @@ import (
 	"math/rand/v2"
 	"server/internal/db"
 	"server/internal/graph/model"
+	"server/internal/loader"
 
 	"github.com/twpayne/go-geos"
 )
@@ -38,22 +39,8 @@ func jitterCoordinates(listings []*db.Listing) {
 
 // ListingImages is the resolver for the listingImages field.
 func (r *listingResolver) ListingImages(ctx context.Context, obj *model.Listing) ([]*model.ListingImage, error) {
-	listingImagesRepository := db.NewListingImagesRepository()
-	dbListingImages, err := listingImagesRepository.GetListingImagesByListingIds(ctx, r.pool, []int64{obj.ID})
-	if err != nil {
-		return nil, err
-	}
-
-	listingImages := make([]*model.ListingImage, len(dbListingImages))
-	for i, dbListingImage := range dbListingImages {
-		listingImages[i] = &model.ListingImage{
-			ID:        dbListingImage.ID,
-			ListingID: dbListingImage.ListingID,
-			URL:       dbListingImage.Url,
-		}
-	}
-
-	return listingImages, nil
+	loaders := loader.For(ctx)
+	return loaders.ListingImageLoader.Load(ctx, obj.ID)
 }
 
 // Listings is the resolver for the listings field.
