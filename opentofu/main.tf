@@ -221,8 +221,8 @@ resource "vercel_project_environment_variables" "web" {
   project_id = vercel_project.web.id
   variables = [
     {
-      key    = "GRPC_ADDRESS"
-      value  = "${aws_instance.server.public_ip}:50051"
+      key    = "NEXT_PUBLIC_GRAPHQL_URI"
+      value  = "${aws_instance.server.public_ip}:8080"
       target = ["production"]
     },
     {
