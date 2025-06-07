@@ -222,7 +222,7 @@ resource "vercel_project_environment_variables" "web" {
   variables = [
     {
       key    = "NEXT_PUBLIC_GRAPHQL_URI"
-      value  = "${aws_instance.server.public_ip}:8080"
+      value  = "http://${aws_instance.server.public_ip}:8080/graphql"
       target = ["production"]
     },
     {
