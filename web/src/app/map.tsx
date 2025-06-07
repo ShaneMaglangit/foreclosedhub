@@ -17,7 +17,7 @@ import { execute } from "@web/lib/graphql/execute";
 import { GetListingsQuery } from "@web/lib/graphql/getListings";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
-import { Listing } from "@web/lib/graphql/generated/graphql";
+import { type GetListingsQuery as GetListingsQuerySchema } from "@web/lib/graphql/generated/graphql";
 
 const defaultZoomLevel = 7;
 const philippinesCentralCoordinates = { lat: 12.8797, lng: 121.774 };
@@ -28,6 +28,8 @@ const paramsSchema = z.object({
     minLng: z.coerce.number().min(-180).max(180),
     maxLng: z.coerce.number().min(-180).max(180),
 });
+
+type Listing = GetListingsQuerySchema['listings']['nodes'][0]
 
 export default function Map({ className, ...props }: ComponentProps<typeof GMap>) {
     const router = useRouter();
@@ -83,7 +85,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
     }, 500);
 
     useEffect(() => {
-        const nodes = data?.data?.listings?.nodes
+        const nodes = data?.listings?.nodes
         if (nodes) setListings(nodes)
     }, [data])
 
