@@ -207,36 +207,36 @@ provider "vercel" {
   team      = var.vercel_team_id
 }
 
-resource "vercel_project" "web" {
-  name      = "foreclosedhub"
-  framework = "nextjs"
+# resource "vercel_project" "web" {
+#   name      = "foreclosedhub"
+#   framework = "nextjs"
 
-  git_repository = {
-    type = "gitlab"
-    repo = data.gitlab_project.foreclosedhub.path_with_namespace
-  }
-}
+#   git_repository = {
+#     type = "gitlab"
+#     repo = data.gitlab_project.foreclosedhub.path_with_namespace
+#   }
+# }
 
-resource "vercel_project_environment_variables" "web" {
-  project_id = vercel_project.web.id
-  variables = [
-    {
-      key    = "NEXT_PUBLIC_GRAPHQL_URI"
-      value  = "http://${aws_instance.server.public_ip}:8080/graphql"
-      target = ["production"]
-    },
-    {
-      key    = "NEXT_PUBLIC_MAPS_API_KEY"
-      value  = var.maps_api_key
-      target = ["production"]
-    }
-  ]
-}
+# resource "vercel_project_environment_variables" "web" {
+#   project_id = vercel_project.web.id
+#   variables = [
+#     {
+#       key    = "NEXT_PUBLIC_GRAPHQL_URI"
+#       value  = "http://${aws_instance.server.public_ip}:8080/graphql"
+#       target = ["production"]
+#     },
+#     {
+#       key    = "NEXT_PUBLIC_MAPS_API_KEY"
+#       value  = var.maps_api_key
+#       target = ["production"]
+#     }
+#   ]
+# }
 
-resource "vercel_project_domain" "web" {
-  domain     = "foreclosedhub.com"
-  project_id = vercel_project.web.id
-}
+# resource "vercel_project_domain" "web" {
+#   domain     = "foreclosedhub.com"
+#   project_id = vercel_project.web.id
+# }
 
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
