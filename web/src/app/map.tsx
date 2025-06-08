@@ -125,25 +125,28 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                     <InfoWindow
                         headerDisabled={true}
                         position={{ lat: selected.latitude, lng: selected.longitude }}
-                        className="max-w-[80dvw] md:max-w-[50dvw] lg:max-w-[40dvw] xl:max-w-[15dvw]"
+                        className="max-w-[80dvw] md:max-w-[50dvw] lg:max-w-[40dvw] xl:max-w-[20dvw]"
+                        pixelOffset={[0, -22]}
                     >
-                        <Carousel>
-                            <CarouselContent>
-                                {selected.images?.map((image) => (
-                                    <CarouselItem>
-                                        <Image
-                                            src={image.url}
-                                            width={400}
-                                            height={300}
-                                            alt="image of the selected property"
-                                            className="w-full aspect-[4/3]"
-                                        />
-                                    </CarouselItem>
-                                ))}
-                            </CarouselContent>
-                            <CarouselPrevious />
-                            <CarouselNext />
-                        </Carousel>
+                        {selected.images?.length > 0 && (
+                            <Carousel>
+                                <CarouselContent>
+                                    {selected.images.map((image) => (
+                                        <CarouselItem key={image.id}>
+                                            <Image
+                                                src={image.url}
+                                                width={400}
+                                                height={300}
+                                                alt="image of the selected property"
+                                                className="w-full aspect-[4/3]"
+                                            />
+                                        </CarouselItem>
+                                    ))}
+                                </CarouselContent>
+                                <CarouselPrevious />
+                                <CarouselNext />
+                            </Carousel>
+                        )}
                         <div className="flex flex-col gap-1 p-2">
                             <h4 className="font-bold text-lg">₱{formatNumeric(selected.price)}</h4>
                             <ul>
