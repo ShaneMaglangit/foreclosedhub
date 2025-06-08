@@ -101,6 +101,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                 gestureHandling="greedy"
                 disableDefaultUI
                 onCameraChanged={handleCameraChange}
+                onDrag={() => setSelected(undefined)}
                 onClick={() => setSelected(undefined)}
                 {...props}
             >
@@ -115,24 +116,27 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                 ))}
                 {selected && (
                     <InfoWindow
+                        headerDisabled={true}
                         position={{ lat: selected.latitude, lng: selected.longitude }}
-                        headerContent={<h4 className="font-bold text-lg">{formatNumeric(selected.price)}</h4>}
-                        className="flex flex-col gap-2"
+                        className="max-w-[80dvw] md:max-w-[50dvw] lg:max-w-[40dvw] xl:max-w-[15dvw]"
                     >
                         {selected.images?.[0] && (
                             <Image
                                 src={selected.images[0].url}
-                                width={500}
+                                width={400}
                                 height={300}
                                 alt="image of the selected property"
-                                className="w-full"
+                                className="w-full aspect-[4/3]"
                             />
                         )}
-                        <ul>
-                            <li>Address: {selected.address}</li>
-                            <li>FloorArea: {selected.floorArea}</li>
-                            <li>LotArea: {selected.lotArea}</li>
-                        </ul>
+                        <div className="flex flex-col gap-1 p-2">
+                            <h4 className="font-bold text-lg">₱{formatNumeric(selected.price)}</h4>
+                            <ul>
+                                <li><span className="font-bold">Address:</span> {selected.address}</li>
+                                <li><span className="font-bold">Floor Area:</span> {selected.floorArea} sqm</li>
+                                <li><span className="font-bold">Lot Area:</span> {selected.lotArea} sqm</li>
+                            </ul>
+                        </div>
                     </InfoWindow>
                 )}
             </GMap>
@@ -142,7 +146,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
 
 function getPriceCategoryColor(price: number): string {
     if (price < 1000000) return 'bg-green-500';
-    if (price < 5000000) return 'bg-blue-500'; 
-    if (price < 15000000) return 'bg-yellow-500'; 
-    return 'bg-red-500'; 
+    if (price < 5000000) return 'bg-blue-500';
+    if (price < 15000000) return 'bg-yellow-500';
+    return 'bg-red-500';
 }

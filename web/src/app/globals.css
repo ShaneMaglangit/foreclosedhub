@@ -17,3 +17,13 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.gm-style {
+  div[role="dialog"] {
+    padding: 0px !important;
+
+    .gm-style-iw-d {
+      overflow: auto !important;
+    }
+  }
+}
