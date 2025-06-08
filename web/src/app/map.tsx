@@ -6,6 +6,7 @@ import {
     Map as GMap,
     MapCameraChangedEvent,
     Marker,
+    AdvancedMarker
 } from "@vis.gl/react-google-maps";
 import { env } from "@web/env";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -92,6 +93,8 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
     return (
         <APIProvider apiKey={env.NEXT_PUBLIC_MAPS_API_KEY}>
             <GMap
+                mapId="8ac4deda93a79dfce50e76ae"
+                colorScheme="DARK"
                 className={cn("h-full w-full", className)}
                 defaultCenter={philippinesCentralCoordinates}
                 defaultZoom={defaultZoomLevel}
@@ -102,11 +105,13 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                 {...props}
             >
                 {listings.map((listing) => (
-                    <Marker
+                    <AdvancedMarker
                         key={listing.id}
                         position={{ lat: listing.latitude, lng: listing.longitude }}
                         onClick={() => setSelected(listing)}
-                    />
+                    >
+                        <div className={cn("bg-white p-1 rounded-full border text-md font-medium", getPriceCategoryColor(listing.price))}>{formatNumeric(listing.price)}</div>
+                    </AdvancedMarker>
                 ))}
                 {selected && (
                     <InfoWindow
@@ -133,4 +138,11 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
             </GMap>
         </APIProvider>
     );
+}
+
+function getPriceCategoryColor(price: number): string {
+    if (price < 1000000) return 'bg-green-500';
+    if (price < 5000000) return 'bg-blue-500'; 
+    if (price < 15000000) return 'bg-yellow-500'; 
+    return 'bg-red-500'; 
 }
