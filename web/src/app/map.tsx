@@ -18,7 +18,7 @@ import {
 import { env } from "@web/env";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ComponentProps, useCallback, useState, useMemo, useEffect } from "react";
-import { useDebounceCallback } from "usehooks-ts";
+import { useDebounceCallback, useMediaQuery } from "usehooks-ts";
 import { cn, formatNumeric } from "@web/lib/utils/utils";
 import Image from "next/image";
 import { execute } from "@web/lib/graphql/execute";
@@ -42,6 +42,7 @@ type Listing = GetListingsQuerySchema['listings']['nodes'][0]
 export default function Map({ className, ...props }: ComponentProps<typeof GMap>) {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const isMobile = useMediaQuery('(max-width: 768px)')
 
     const [listings, setListings] = useState<Listing[]>([])
     const [selected, setSelected] = useState<undefined | Listing>();
@@ -125,8 +126,9 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                     <InfoWindow
                         headerDisabled={true}
                         position={{ lat: selected.latitude, lng: selected.longitude }}
-                        className="max-w-[80dvw] md:max-w-[50dvw] lg:max-w-[40dvw] xl:max-w-[20dvw]"
                         pixelOffset={[0, -22]}
+                        minWidth={isMobile ? undefined : 400}
+                        maxWidth={isMobile ? undefined : 400}
                     >
                         {selected.images?.length > 0 && (
                             <Carousel>
