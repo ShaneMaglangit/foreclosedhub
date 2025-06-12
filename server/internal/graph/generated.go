@@ -75,7 +75,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Listings func(childComplexity int, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64) int
+		Listings func(childComplexity int, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string) int
 	}
 }
 
@@ -83,7 +83,7 @@ type ListingResolver interface {
 	Images(ctx context.Context, obj *model.Listing) ([]*model.ListingImage, error)
 }
 type QueryResolver interface {
-	Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64) (*model.ListingConnection, error)
+	Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string) (*model.ListingConnection, error)
 }
 
 type executableSchema struct {
@@ -220,7 +220,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.Listings(childComplexity, args["minLatitude"].(float64), args["maxLatitude"].(float64), args["minLongitude"].(float64), args["maxLongitude"].(float64)), true
+		return e.complexity.Query.Listings(childComplexity, args["minLatitude"].(float64), args["maxLatitude"].(float64), args["minLongitude"].(float64), args["maxLongitude"].(float64), args["address"].(*string)), true
 
 	}
 	return 0, false
@@ -376,6 +376,11 @@ func (ec *executionContext) field_Query_listings_args(ctx context.Context, rawAr
 		return nil, err
 	}
 	args["maxLongitude"] = arg3
+	arg4, err := ec.field_Query_listings_argsAddress(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["address"] = arg4
 	return args, nil
 }
 func (ec *executionContext) field_Query_listings_argsMinLatitude(
@@ -427,6 +432,19 @@ func (ec *executionContext) field_Query_listings_argsMaxLongitude(
 	}
 
 	var zeroVal float64
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_listings_argsAddress(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*string, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("address"))
+	if tmp, ok := rawArgs["address"]; ok {
+		return ec.unmarshalOString2ᚖstring(ctx, tmp)
+	}
+
+	var zeroVal *string
 	return zeroVal, nil
 }
 
@@ -1254,7 +1272,7 @@ func (ec *executionContext) _Query_listings(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Listings(rctx, fc.Args["minLatitude"].(float64), fc.Args["maxLatitude"].(float64), fc.Args["minLongitude"].(float64), fc.Args["maxLongitude"].(float64))
+		return ec.resolvers.Query().Listings(rctx, fc.Args["minLatitude"].(float64), fc.Args["maxLatitude"].(float64), fc.Args["minLongitude"].(float64), fc.Args["maxLongitude"].(float64), fc.Args["address"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

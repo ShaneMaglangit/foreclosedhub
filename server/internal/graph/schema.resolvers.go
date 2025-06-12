@@ -18,13 +18,14 @@ func (r *listingResolver) Images(ctx context.Context, obj *model.Listing) ([]*mo
 }
 
 // Listings is the resolver for the listings field.
-func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64) (*model.ListingConnection, error) {
+func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string) (*model.ListingConnection, error) {
 	listingsRepository := db.NewListingsRepository()
 	dbListings, err := listingsRepository.GetListingsInBoundary(ctx, r.pool, db.GetListingsInBoundaryParams{
 		MinLat:            minLatitude,
 		MaxLat:            maxLatitude,
 		MinLng:            minLongitude,
 		MaxLng:            maxLongitude,
+		Address:           *address,
 		Sources:           []db.Source{db.SourcePagibig, db.SourceSecbank},
 		OccupancyStatuses: []db.OccupancyStatus{db.OccupancyStatusOccupied, db.OccupancyStatusOccupied, db.OccupancyStatusOccupied},
 	})

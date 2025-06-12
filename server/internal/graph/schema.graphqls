@@ -28,5 +28,5 @@ type Listing {
 }
 
 type Query {
-    listings(minLatitude: Float!, maxLatitude: Float!, minLongitude: Float!, maxLongitude: Float!): ListingConnection!
+    listings(minLatitude: Float!, maxLatitude: Float!, minLongitude: Float!, maxLongitude: Float!, address: String): ListingConnection!
 }
