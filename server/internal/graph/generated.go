@@ -75,7 +75,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Listings func(childComplexity int, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string) int
+		Listings func(childComplexity int, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string, minPrice *int64, maxPrice *int64) int
 	}
 }
 
@@ -83,7 +83,7 @@ type ListingResolver interface {
 	Images(ctx context.Context, obj *model.Listing) ([]*model.ListingImage, error)
 }
 type QueryResolver interface {
-	Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string) (*model.ListingConnection, error)
+	Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string, minPrice *int64, maxPrice *int64) (*model.ListingConnection, error)
 }
 
 type executableSchema struct {
@@ -220,7 +220,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.Listings(childComplexity, args["minLatitude"].(float64), args["maxLatitude"].(float64), args["minLongitude"].(float64), args["maxLongitude"].(float64), args["address"].(*string)), true
+		return e.complexity.Query.Listings(childComplexity, args["minLatitude"].(float64), args["maxLatitude"].(float64), args["minLongitude"].(float64), args["maxLongitude"].(float64), args["address"].(*string), args["minPrice"].(*int64), args["maxPrice"].(*int64)), true
 
 	}
 	return 0, false
@@ -381,6 +381,16 @@ func (ec *executionContext) field_Query_listings_args(ctx context.Context, rawAr
 		return nil, err
 	}
 	args["address"] = arg4
+	arg5, err := ec.field_Query_listings_argsMinPrice(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["minPrice"] = arg5
+	arg6, err := ec.field_Query_listings_argsMaxPrice(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["maxPrice"] = arg6
 	return args, nil
 }
 func (ec *executionContext) field_Query_listings_argsMinLatitude(
@@ -445,6 +455,32 @@ func (ec *executionContext) field_Query_listings_argsAddress(
 	}
 
 	var zeroVal *string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_listings_argsMinPrice(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*int64, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("minPrice"))
+	if tmp, ok := rawArgs["minPrice"]; ok {
+		return ec.unmarshalOInt642ᚖint64(ctx, tmp)
+	}
+
+	var zeroVal *int64
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_listings_argsMaxPrice(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*int64, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("maxPrice"))
+	if tmp, ok := rawArgs["maxPrice"]; ok {
+		return ec.unmarshalOInt642ᚖint64(ctx, tmp)
+	}
+
+	var zeroVal *int64
 	return zeroVal, nil
 }
 
@@ -1272,7 +1308,7 @@ func (ec *executionContext) _Query_listings(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Listings(rctx, fc.Args["minLatitude"].(float64), fc.Args["maxLatitude"].(float64), fc.Args["minLongitude"].(float64), fc.Args["maxLongitude"].(float64), fc.Args["address"].(*string))
+		return ec.resolvers.Query().Listings(rctx, fc.Args["minLatitude"].(float64), fc.Args["maxLatitude"].(float64), fc.Args["minLongitude"].(float64), fc.Args["maxLongitude"].(float64), fc.Args["address"].(*string), fc.Args["minPrice"].(*int64), fc.Args["maxPrice"].(*int64))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4578,6 +4614,24 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	_ = sel
 	_ = ctx
 	res := graphql.MarshalBoolean(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOInt642ᚖint64(ctx context.Context, v any) (*int64, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt64(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt642ᚖint64(ctx context.Context, sel ast.SelectionSet, v *int64) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	_ = sel
+	_ = ctx
+	res := graphql.MarshalInt64(*v)
 	return res
 }
 

@@ -37,6 +37,8 @@ const paramsSchema = z.object({
     maxLat: z.coerce.number().min(-90).max(90),
     minLng: z.coerce.number().min(-180).max(180),
     maxLng: z.coerce.number().min(-180).max(180),
+    minPrice: z.coerce.number().default(0),
+    maxPrice: z.coerce.number().default(1_000_000_000),
     address: z.string().optional(),
 });
 
@@ -65,17 +67,21 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                 maxLatitude: params.maxLat,
                 minLongitude: params.minLng,
                 maxLongitude: params.maxLng,
+                minPrice: params.minPrice,
+                maxPrice: params.maxPrice,
                 address: params.address,
             });
         },
         enabled: !!params,
     });
 
-    const updateUrlParams = useCallback(({ minLat, maxLat, minLng, maxLng, address }: {
+    const updateUrlParams = useCallback(({ minLat, maxLat, minLng, maxLng, minPrice, maxPrice, address }: {
         minLat?: number;
         maxLat?: number;
         minLng?: number;
         maxLng?: number;
+        minPrice?: number;
+        maxPrice?: number;
         address?: string;
     }) => {
         const updatedParams = new URLSearchParams(searchParams);
@@ -84,6 +90,8 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
         if (maxLat) updatedParams.set("maxLat", maxLat.toFixed(6));
         if (minLng) updatedParams.set("minLng", minLng.toFixed(6));
         if (maxLng) updatedParams.set("maxLng", maxLng.toFixed(6));
+        if (minPrice) updatedParams.set("minPrice", minPrice.toString());
+        if (maxPrice) updatedParams.set("maxPrice", maxPrice.toString());
         if (address) updatedParams.set("address", address);
 
         router.replace(`?${updatedParams.toString()}`);
@@ -107,11 +115,22 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
         });
     }, 500);
 
-    const handleInputChange = useDebounceCallback((e: ChangeEvent<HTMLInputElement>) => {
+    const handleAddressChange = useDebounceCallback((e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
-
         if (value) updateUrlParams({ address: e.target.value })
         else deleteUrlParams(['address'])
+    }, 500)
+
+    const handleMinPriceChange = useDebounceCallback((e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value
+        if (value) updateUrlParams({ minPrice: z.coerce.number().default(0).parse(e.target.value) })
+        else deleteUrlParams(['minPrice'])
+    }, 500)
+
+    const handleMaxPriceChange = useDebounceCallback((e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value
+        if (value) updateUrlParams({ maxPrice: z.coerce.number().default(1_000_000_000).parse(e.target.value) })
+        else deleteUrlParams(['maxPrice'])
     }, 500)
 
     useEffect(() => {
@@ -123,7 +142,9 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
         <APIProvider apiKey={env.NEXT_PUBLIC_MAPS_API_KEY}>
             <div className={cn("h-full w-full flex flex-col", className)} >
                 <div className="w-full flex gap-1 p-2 items-center">
-                    <Input placeholder="Enter address" onChange={handleInputChange} defaultValue={params?.address}/>
+                    <Input className="flex-1" placeholder="Enter address" onChange={handleAddressChange} defaultValue={params?.address}/>
+                    <Input className="w-[100px]" placeholder="Minimum Price" type="number" onChange={handleMinPriceChange} defaultValue={params?.minPrice} />
+                    <Input className="w-[100px]" placeholder="Maximum Price" type="number" onChange={handleMaxPriceChange} defaultValue={params?.maxPrice} />
                 </div>
                 <GMap
                     mapId="8ac4deda93a79dfce50e76ae"

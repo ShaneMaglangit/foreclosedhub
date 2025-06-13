@@ -9,6 +9,8 @@ import (
 	"server/internal/db"
 	"server/internal/graph/model"
 	"server/internal/loader"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 // Images is the resolver for the images field.
@@ -18,12 +20,22 @@ func (r *listingResolver) Images(ctx context.Context, obj *model.Listing) ([]*mo
 }
 
 // Listings is the resolver for the listings field.
-func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string) (*model.ListingConnection, error) {
+func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string, minPrice *int64, maxPrice *int64) (*model.ListingConnection, error) {
+	var minPriceValue int64
+	if minPrice != nil {
+		minPriceValue = *minPrice
+	}
+
+	var maxPriceValue pgtype.Int8
+	if maxPrice != nil {
+		maxPriceValue = pgtype.Int8{Int64: *maxPrice, Valid: true}
+	}
+
 	addressValue := ""
 	if address != nil {
 		addressValue = *address
 	}
-	
+
 	listingsRepository := db.NewListingsRepository()
 	dbListings, err := listingsRepository.GetListingsInBoundary(ctx, r.pool, db.GetListingsInBoundaryParams{
 		MinLat:            minLatitude,
@@ -31,6 +43,8 @@ func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLa
 		MinLng:            minLongitude,
 		MaxLng:            maxLongitude,
 		Address:           addressValue,
+		MinPrice:          minPriceValue,
+		MaxPrice:          maxPriceValue,
 		Sources:           []db.Source{db.SourcePagibig, db.SourceSecbank},
 		OccupancyStatuses: []db.OccupancyStatus{db.OccupancyStatusOccupied, db.OccupancyStatusOccupied, db.OccupancyStatusOccupied},
 	})

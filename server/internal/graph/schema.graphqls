@@ -11,22 +11,22 @@ type ListingConnection {
 }
 
 type ListingImage {
-    id: Int64!
-    listingId: Int64!
-    url: String!
+  id: Int64!
+  listingId: Int64!
+  url: String!
 }
 
 type Listing {
-    id: Int64!
-    address: String!
-    price: Int64!
-    floorArea: Float!
-    lotArea: Float!
-    latitude: Float!
-    longitude: Float!
-    images: [ListingImage!]!
+  id: Int64!
+  address: String!
+  price: Int64!
+  floorArea: Float!
+  lotArea: Float!
+  latitude: Float!
+  longitude: Float!
+  images: [ListingImage!]!
 }
 
 type Query {
-    listings(minLatitude: Float!, maxLatitude: Float!, minLongitude: Float!, maxLongitude: Float!, address: String): ListingConnection!
+  listings(minLatitude: Float!, maxLatitude: Float!, minLongitude: Float!, maxLongitude: Float!, address: String, minPrice: Int64, maxPrice: Int64): ListingConnection!
 }
