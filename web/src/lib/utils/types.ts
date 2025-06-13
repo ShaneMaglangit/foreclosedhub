@@ -1,0 +1,1 @@
+type KeysAsStringLiterals<T> = (keyof T)[];

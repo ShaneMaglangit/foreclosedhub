@@ -19,12 +19,12 @@ import { env } from "@web/env";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ComponentProps, useCallback, useState, useMemo, useEffect, ChangeEvent } from "react";
 import { useDebounceCallback, useMediaQuery } from "usehooks-ts";
-import { cn, formatNumeric } from "@web/lib/utils/utils";
+import { cn, formatNumeric, typedEntries } from "@web/lib/utils/utils";
 import Image from "next/image";
 import { execute } from "@web/lib/graphql/execute";
 import { GetListingsQuery } from "@web/lib/graphql/getListings";
 import { useQuery } from "@tanstack/react-query";
-import { z } from "zod";
+import { boolean, z } from "zod";
 import { type GetListingsQuery as GetListingsQuerySchema } from "@web/lib/graphql/generated/graphql";
 import { Input } from "@web/components/ui/input";
 import { Cigarette, Search } from "lucide-react";
@@ -78,15 +78,23 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
         maxLng?: number;
         address?: string;
     }) => {
-        const params = new URLSearchParams(searchParams);
+        const updatedParams = new URLSearchParams(searchParams);
 
-        if (minLat) params.set("minLat", minLat.toFixed(6));
-        if (maxLat) params.set("maxLat", maxLat.toFixed(6));
-        if (minLng) params.set("minLng", minLng.toFixed(6));
-        if (maxLng) params.set("maxLng", maxLng.toFixed(6));
-        if (address) params.set("address", address);
+        if (minLat) updatedParams.set("minLat", minLat.toFixed(6));
+        if (maxLat) updatedParams.set("maxLat", maxLat.toFixed(6));
+        if (minLng) updatedParams.set("minLng", minLng.toFixed(6));
+        if (maxLng) updatedParams.set("maxLng", maxLng.toFixed(6));
+        if (address) updatedParams.set("address", address);
 
-        router.replace(`?${params.toString()}`);
+        router.replace(`?${updatedParams.toString()}`);
+    }, [router, searchParams]);
+
+    const deleteUrlParams = useCallback((keys: KeysAsStringLiterals<z.infer<typeof paramsSchema>>) => {
+        const updatedParams = new URLSearchParams(searchParams);
+
+        keys.forEach((key) => updatedParams.delete(key))
+
+        router.replace(`?${updatedParams.toString()}`);
     }, [router, searchParams]);
 
     const handleCameraChange = useDebounceCallback((e: MapCameraChangedEvent) => {
@@ -100,7 +108,10 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
     }, 500);
 
     const handleInputChange = useDebounceCallback((e: ChangeEvent<HTMLInputElement>) => {
-        updateUrlParams({ address: e.target.value })
+        const value = e.target.value
+
+        if (value) updateUrlParams({ address: e.target.value })
+        else deleteUrlParams(['address'])
     }, 500)
 
     useEffect(() => {
@@ -112,7 +123,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
         <APIProvider apiKey={env.NEXT_PUBLIC_MAPS_API_KEY}>
             <div className={cn("h-full w-full flex flex-col", className)} >
                 <div className="w-full flex gap-1 p-2 items-center">
-                    <Input placeholder="Enter address" onChange={handleInputChange} />
+                    <Input placeholder="Enter address" onChange={handleInputChange} defaultValue={params?.address}/>
                 </div>
                 <GMap
                     mapId="8ac4deda93a79dfce50e76ae"
