@@ -119,7 +119,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
         const value = e.target.value
         if (value) updateUrlParams({ address: e.target.value })
         else deleteUrlParams(['address'])
-    }, 500)
+    }, 1)
 
     const handleMinPriceChange = useDebounceCallback((e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
