@@ -8,7 +8,7 @@ import (
 	"github.com/twpayne/go-geos"
 )
 
-const jitterDistance = 0.00001
+const jitterDistance = 0.00005
 
 func jitterCoordinates(listings []*db.Listing) {
 	coordMap := make(map[string]int)
@@ -18,8 +18,10 @@ func jitterCoordinates(listings []*db.Listing) {
 
 		count := coordMap[key]
 		if count > 0 {
-			newLng := listing.Coordinate.X() + (rand.Float64()*2-1)*jitterDistance
-			newLat := listing.Coordinate.Y() + (rand.Float64()*2-1)*jitterDistance
+			rng := rand.New(rand.NewPCG(uint64(listing.ID), 0))
+
+			newLng := listing.Coordinate.X() + (rng.Float64()*2-1)*jitterDistance
+			newLat := listing.Coordinate.Y() + (rng.Float64()*2-1)*jitterDistance
 
 			listings[i].Coordinate = geos.NewPointFromXY(newLng, newLat)
 
