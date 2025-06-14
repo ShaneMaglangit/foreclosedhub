@@ -32,7 +32,13 @@ import { Cigarette, Info, Search } from "lucide-react";
 const occupancyStatusLabel = {
     occupied: "Occupied",
     unoccupied: "Unoccupied",
-    unspecified: "Unspecified"
+    unspecified: "Unspecified occupancy"
+} satisfies Record<OccupancyStatus, string>
+
+const occupancyStatusBadgeColor = {
+    occupied: "bg-red-100 text-red-800",
+    unoccupied: "bg-green-100 text-green-800",
+    unspecified: ""
 } satisfies Record<OccupancyStatus, string>
 
 const defaultZoomLevel = 7;
@@ -205,14 +211,32 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                                     <CarouselNext />
                                 </Carousel>
                             )}
-                            <div className="flex flex-col gap-1 p-2">
-                                <h4 className="font-bold text-lg">₱{formatNumeric(selected.price)}</h4>
-                                <ul>
-                                    <li><span className="font-bold">Address:</span> {selected.address}</li>
-                                    <li><span className="font-bold">Floor Area:</span> {selected.floorArea} sqm</li>
-                                    <li><span className="font-bold">Lot Area:</span> {selected.lotArea} sqm</li>
-                                    <li><span className="font-bold">Occupancy Status:</span> {occupancyStatusLabel[selected.occupancyStatus]}</li>
-                                </ul>
+                            <div className="rounded-lg shadow-md border bg-card text-card-foreground p-4 space-y-3 w-full max-w-md">
+                                <div className="flex justify-between items-start">
+                                    <div className="text-xl font-semibold text-primary leading-tight">
+                                        ₱{formatNumeric(selected.price)}
+                                    </div>
+                                    <span className={cn("text-xs bg-muted px-2 py-0.5 rounded font-semibold", occupancyStatusBadgeColor[selected.occupancyStatus])}>
+                                        {occupancyStatusLabel[selected.occupancyStatus]}
+                                    </span>
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                    {selected.address}
+                                </div>
+                                <div className="grid grid-cols-3 gap-4 pt-2 text-sm">
+                                    <div className="flex flex-col gap-1">
+                                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                                            Floor Area
+                                        </span>
+                                        <span className="text-foreground">{selected.floorArea} sqm</span>
+                                    </div>
+                                    <div className="flex flex-col gap-1">
+                                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                                            Lot Area
+                                        </span>
+                                        <span className="text-foreground">{selected.lotArea} sqm</span>
+                                    </div>
+                                </div>
                             </div>
                         </InfoWindow>
                     )}

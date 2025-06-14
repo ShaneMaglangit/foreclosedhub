@@ -46,7 +46,7 @@ func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLa
 		MinPrice:          minPriceValue,
 		MaxPrice:          maxPriceValue,
 		Sources:           []db.Source{db.SourcePagibig, db.SourceSecbank},
-		OccupancyStatuses: []db.OccupancyStatus{db.OccupancyStatusOccupied, db.OccupancyStatusOccupied, db.OccupancyStatusOccupied},
+		OccupancyStatuses: []db.OccupancyStatus{db.OccupancyStatusOccupied, db.OccupancyStatusUnoccupied, db.OccupancyStatusUnspecified},
 	})
 	if err != nil {
 		return nil, err
@@ -67,14 +67,14 @@ func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLa
 		}
 
 		listingNodes[i] = &model.Listing{
-			ID:        dbListing.ID,
-			Address:   dbListing.Address,
-			Price:     dbListing.Price,
-			FloorArea: floorArea.Float64,
-			LotArea:   lotArea.Float64,
+			ID:              dbListing.ID,
+			Address:         dbListing.Address,
+			Price:           dbListing.Price,
+			FloorArea:       floorArea.Float64,
+			LotArea:         lotArea.Float64,
 			OccupancyStatus: dbListing.OccupancyStatus,
-			Latitude:  dbListing.Coordinate.Y(),
-			Longitude: dbListing.Coordinate.X(),
+			Latitude:        dbListing.Coordinate.Y(),
+			Longitude:       dbListing.Coordinate.X(),
 		}
 	}
 
