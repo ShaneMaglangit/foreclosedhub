@@ -25,7 +25,7 @@ import { execute } from "@web/lib/graphql/execute";
 import { GetListingsQuery } from "@web/lib/graphql/getListings";
 import { useQuery } from "@tanstack/react-query";
 import { boolean, z } from "zod";
-import { OccupancyStatus, type GetListingsQuery as GetListingsQuerySchema } from "@web/lib/graphql/generated/graphql";
+import { OccupancyStatus, Source, type GetListingsQuery as GetListingsQuerySchema } from "@web/lib/graphql/generated/graphql";
 import { Input } from "@web/components/ui/input";
 import { Cigarette, ExternalLink, Info, Search } from "lucide-react";
 import { Button } from "@web/components/ui/button";
@@ -41,6 +41,16 @@ const occupancyStatusBadgeColor = {
     unoccupied: "bg-green-100 text-green-800",
     unspecified: ""
 } satisfies Record<OccupancyStatus, string>
+
+const sourceLabel = {
+    secbank: "Security Bank",
+    pagibig: "Pagibig",
+} satisfies Record<Source, string>
+
+const sourceBadgeColor = {
+    secbank: "bg-[#caffb9] text-black",
+    pagibig: "bg-[#104183] text-white",
+} satisfies Record<Source, string>;
 
 const defaultZoomLevel = 7;
 const philippinesCentralCoordinates = { lat: 12.8797, lng: 121.774 };
@@ -213,10 +223,13 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                                 </Carousel>
                             )}
                             <div className="rounded-lg shadow-md border bg-card text-card-foreground p-4 space-y-3 w-full max-w-md">
-                                <div className="flex justify-between items-start">
-                                    <div className="text-xl font-semibold text-primary leading-tight">
+                                <div className="flex gap-1 items-start">
+                                    <div className="flex-1 text-xl font-semibold text-primary leading-tight">
                                         ₱{formatNumeric(selected.price)}
                                     </div>
+                                    <span className={cn("text-xs bg-muted px-2 py-0.5 rounded font-semibold", sourceBadgeColor[selected.source])}>
+                                        {sourceLabel[selected.source]}
+                                    </span>
                                     {selected.occupancyStatus !== "unspecified" && (
                                         <span className={cn("text-xs bg-muted px-2 py-0.5 rounded font-semibold", occupancyStatusBadgeColor[selected.occupancyStatus])}>
                                             {occupancyStatusLabel[selected.occupancyStatus]}
