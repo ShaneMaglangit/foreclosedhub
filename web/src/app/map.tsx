@@ -25,9 +25,15 @@ import { execute } from "@web/lib/graphql/execute";
 import { GetListingsQuery } from "@web/lib/graphql/getListings";
 import { useQuery } from "@tanstack/react-query";
 import { boolean, z } from "zod";
-import { type GetListingsQuery as GetListingsQuerySchema } from "@web/lib/graphql/generated/graphql";
+import { OccupancyStatus, type GetListingsQuery as GetListingsQuerySchema } from "@web/lib/graphql/generated/graphql";
 import { Input } from "@web/components/ui/input";
 import { Cigarette, Search } from "lucide-react";
+
+const occupancyStatusLabel = {
+    occupied: "Occupied",
+    unoccupied: "Unoccupied",
+    unspecified: "Unspecified"
+} satisfies Record<OccupancyStatus, string>
 
 const defaultZoomLevel = 7;
 const philippinesCentralCoordinates = { lat: 12.8797, lng: 121.774 };
@@ -142,7 +148,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
         <APIProvider apiKey={env.NEXT_PUBLIC_MAPS_API_KEY}>
             <div className={cn("h-full w-full flex flex-col", className)} >
                 <div className="w-full flex gap-1 p-2 items-center">
-                    <Input className="flex-1" placeholder="Enter address" onChange={handleAddressChange} defaultValue={params?.address}/>
+                    <Input className="flex-1" placeholder="Enter address" onChange={handleAddressChange} defaultValue={params?.address} />
                     <Input className="w-[100px]" placeholder="Minimum Price" type="number" onChange={handleMinPriceChange} defaultValue={params?.minPrice} />
                     <Input className="w-[100px]" placeholder="Maximum Price" type="number" onChange={handleMaxPriceChange} defaultValue={params?.maxPrice} />
                 </div>
@@ -203,6 +209,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                                     <li><span className="font-bold">Address:</span> {selected.address}</li>
                                     <li><span className="font-bold">Floor Area:</span> {selected.floorArea} sqm</li>
                                     <li><span className="font-bold">Lot Area:</span> {selected.lotArea} sqm</li>
+                                    <li><span className="font-bold">Occupancy Status:</span> {occupancyStatusLabel[selected.occupancyStatus]}</li>
                                 </ul>
                             </div>
                         </InfoWindow>
