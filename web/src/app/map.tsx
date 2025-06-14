@@ -153,8 +153,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                     <Input className="w-[100px]" placeholder="Maximum Price" type="number" onChange={handleMaxPriceChange} defaultValue={params?.maxPrice} />
                 </div>
                 <GMap
-                    mapId="8ac4deda93a79dfce50e76ae"
-                    colorScheme="DARK"
+                    mapId="f8c223bbf451ffb115f60be0"
                     className="flex-1"
                     defaultCenter={philippinesCentralCoordinates}
                     defaultZoom={defaultZoomLevel}
