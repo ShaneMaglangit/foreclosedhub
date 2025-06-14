@@ -220,8 +220,8 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
 }
 
 function getPriceCategoryColor(price: number): string {
-    if (price < 1000000) return 'bg-green-500';
-    if (price < 5000000) return 'bg-blue-500';
-    if (price < 15000000) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (price < 1_000_000) return 'bg-emerald-300 text-emerald-900';
+    if (price < 5_000_000) return 'bg-sky-300 text-sky-900';
+    if (price < 15_000_000) return 'bg-amber-300 text-amber-900';
+    return 'bg-rose-300 text-rose-900';
 }
