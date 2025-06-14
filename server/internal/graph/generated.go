@@ -8,6 +8,7 @@ import (
 	"embed"
 	"errors"
 	"fmt"
+	"server/internal/db"
 	"server/internal/graph/model"
 	"strconv"
 	"sync"
@@ -48,14 +49,15 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Listing struct {
-		Address   func(childComplexity int) int
-		FloorArea func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Images    func(childComplexity int) int
-		Latitude  func(childComplexity int) int
-		Longitude func(childComplexity int) int
-		LotArea   func(childComplexity int) int
-		Price     func(childComplexity int) int
+		Address         func(childComplexity int) int
+		FloorArea       func(childComplexity int) int
+		ID              func(childComplexity int) int
+		Images          func(childComplexity int) int
+		Latitude        func(childComplexity int) int
+		Longitude       func(childComplexity int) int
+		LotArea         func(childComplexity int) int
+		OccupancyStatus func(childComplexity int) int
+		Price           func(childComplexity int) int
 	}
 
 	ListingConnection struct {
@@ -153,6 +155,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Listing.LotArea(childComplexity), true
+
+	case "Listing.occupancyStatus":
+		if e.complexity.Listing.OccupancyStatus == nil {
+			break
+		}
+
+		return e.complexity.Listing.OccupancyStatus(childComplexity), true
 
 	case "Listing.price":
 		if e.complexity.Listing.Price == nil {
@@ -892,6 +901,50 @@ func (ec *executionContext) fieldContext_Listing_longitude(_ context.Context, fi
 	return fc, nil
 }
 
+func (ec *executionContext) _Listing_occupancyStatus(ctx context.Context, field graphql.CollectedField, obj *model.Listing) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Listing_occupancyStatus(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OccupancyStatus, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(db.OccupancyStatus)
+	fc.Result = res
+	return ec.marshalNOccupancyStatus2serverᚋinternalᚋdbᚐOccupancyStatus(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Listing_occupancyStatus(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Listing",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type OccupancyStatus does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Listing_images(ctx context.Context, field graphql.CollectedField, obj *model.Listing) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Listing_images(ctx, field)
 	if err != nil {
@@ -1047,6 +1100,8 @@ func (ec *executionContext) fieldContext_ListingConnection_nodes(_ context.Conte
 				return ec.fieldContext_Listing_latitude(ctx, field)
 			case "longitude":
 				return ec.fieldContext_Listing_longitude(ctx, field)
+			case "occupancyStatus":
+				return ec.fieldContext_Listing_occupancyStatus(ctx, field)
 			case "images":
 				return ec.fieldContext_Listing_images(ctx, field)
 			}
@@ -1109,6 +1164,8 @@ func (ec *executionContext) fieldContext_ListingEdge_node(_ context.Context, fie
 				return ec.fieldContext_Listing_latitude(ctx, field)
 			case "longitude":
 				return ec.fieldContext_Listing_longitude(ctx, field)
+			case "occupancyStatus":
+				return ec.fieldContext_Listing_occupancyStatus(ctx, field)
 			case "images":
 				return ec.fieldContext_Listing_images(ctx, field)
 			}
@@ -3491,6 +3548,11 @@ func (ec *executionContext) _Listing(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "occupancyStatus":
+			out.Values[i] = ec._Listing_occupancyStatus(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "images":
 			field := field
 
@@ -4316,6 +4378,23 @@ func (ec *executionContext) marshalNListingImage2ᚖserverᚋinternalᚋgraphᚋ
 		return graphql.Null
 	}
 	return ec._ListingImage(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNOccupancyStatus2serverᚋinternalᚋdbᚐOccupancyStatus(ctx context.Context, v any) (db.OccupancyStatus, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := db.OccupancyStatus(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNOccupancyStatus2serverᚋinternalᚋdbᚐOccupancyStatus(ctx context.Context, sel ast.SelectionSet, v db.OccupancyStatus) graphql.Marshaler {
+	_ = sel
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v any) (string, error) {

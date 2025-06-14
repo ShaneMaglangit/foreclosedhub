@@ -160,3 +160,6 @@ models:
     fields:
       images:
         resolver: true
+  OccupancyStatus:
+    model:
+      - server/internal/db.OccupancyStatus

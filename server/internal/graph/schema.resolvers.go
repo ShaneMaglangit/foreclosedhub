@@ -72,6 +72,7 @@ func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLa
 			Price:     dbListing.Price,
 			FloorArea: floorArea.Float64,
 			LotArea:   lotArea.Float64,
+			OccupancyStatus: dbListing.OccupancyStatus,
 			Latitude:  dbListing.Coordinate.Y(),
 			Longitude: dbListing.Coordinate.X(),
 		}
