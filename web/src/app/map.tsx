@@ -27,7 +27,7 @@ import { useQuery } from "@tanstack/react-query";
 import { boolean, z } from "zod";
 import { OccupancyStatus, type GetListingsQuery as GetListingsQuerySchema } from "@web/lib/graphql/generated/graphql";
 import { Input } from "@web/components/ui/input";
-import { Cigarette, Search } from "lucide-react";
+import { Cigarette, Info, Search } from "lucide-react";
 
 const occupancyStatusLabel = {
     occupied: "Occupied",
@@ -154,7 +154,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                 </div>
                 <GMap
                     mapId="f8c223bbf451ffb115f60be0"
-                    className="flex-1"
+                    className="flex-1 relative"
                     defaultCenter={philippinesCentralCoordinates}
                     defaultZoom={defaultZoomLevel}
                     gestureHandling="greedy"
@@ -164,6 +164,9 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                     onClick={() => setSelected(undefined)}
                     {...props}
                 >
+                    <div className="absolute top-2 left-2 py-2 px-4 bg-white flex gap-1 items-center ">
+                        <Info className="h-4 w-4"/> You're seeing the first {listings.length} properties for the area currently shown on the map.
+                    </div>
                     {listings.map((listing) => (
                         <AdvancedMarker
                             key={listing.id}
