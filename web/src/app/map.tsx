@@ -236,6 +236,14 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                                         </span>
                                         <span className="text-foreground">{selected.lotArea} sqm</span>
                                     </div>
+                                    <div className="flex flex-col gap-1">
+                                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                                            Actions
+                                        </span>
+                                        {selected.source == "secbank" && (
+                                            <a className="text-blue-600 underline" href={buildSecbankOfferUrl(selected)} target="_blank">Submit offer</a>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </InfoWindow>
@@ -251,6 +259,17 @@ function getPriceCategoryColor(price: number): string {
     if (price < 1_000_000) return 'bg-slate-300 text-slate-900';
     if (price < 10_000_000) return 'bg-slate-500 text-white';
     return 'bg-slate-700 text-white';
+}
+
+function buildSecbankOfferUrl(listing: Listing): string {
+    const url = new URL("https://www.securitybank.com/personal/loans/repossessed-assets/properties-for-sale/offer-form");
+
+    url.searchParams.set("tfa_4", listing.lotArea.toString() + "sqms");
+    url.searchParams.set("tfa_6", listing.address);
+    url.searchParams.set("tfa_7", listing.floorArea.toString() + "sqms");
+    url.searchParams.set("tfa_9", listing.price.toString());
+
+    return url.toString();
 }
 
 export function SearchInput({ className, ...props }: ComponentProps<typeof Input>) {

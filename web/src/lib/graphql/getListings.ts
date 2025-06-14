@@ -10,6 +10,7 @@ export const GetListingsQuery = graphql(`
                 lotArea
                 floorArea
                 occupancyStatus
+                source
                 latitude
                 longitude
                 images {
