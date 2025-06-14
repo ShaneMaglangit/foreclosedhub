@@ -50,6 +50,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Listing struct {
 		Address         func(childComplexity int) int
+		ExternalID      func(childComplexity int) int
 		FloorArea       func(childComplexity int) int
 		ID              func(childComplexity int) int
 		Images          func(childComplexity int) int
@@ -57,7 +58,9 @@ type ComplexityRoot struct {
 		Longitude       func(childComplexity int) int
 		LotArea         func(childComplexity int) int
 		OccupancyStatus func(childComplexity int) int
+		Payload         func(childComplexity int) int
 		Price           func(childComplexity int) int
+		Source          func(childComplexity int) int
 	}
 
 	ListingConnection struct {
@@ -114,6 +117,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Listing.Address(childComplexity), true
 
+	case "Listing.externalId":
+		if e.complexity.Listing.ExternalID == nil {
+			break
+		}
+
+		return e.complexity.Listing.ExternalID(childComplexity), true
+
 	case "Listing.floorArea":
 		if e.complexity.Listing.FloorArea == nil {
 			break
@@ -163,12 +173,26 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Listing.OccupancyStatus(childComplexity), true
 
+	case "Listing.payload":
+		if e.complexity.Listing.Payload == nil {
+			break
+		}
+
+		return e.complexity.Listing.Payload(childComplexity), true
+
 	case "Listing.price":
 		if e.complexity.Listing.Price == nil {
 			break
 		}
 
 		return e.complexity.Listing.Price(childComplexity), true
+
+	case "Listing.source":
+		if e.complexity.Listing.Source == nil {
+			break
+		}
+
+		return e.complexity.Listing.Source(childComplexity), true
 
 	case "ListingConnection.edges":
 		if e.complexity.ListingConnection.Edges == nil {
@@ -637,6 +661,50 @@ func (ec *executionContext) fieldContext_Listing_id(_ context.Context, field gra
 	return fc, nil
 }
 
+func (ec *executionContext) _Listing_externalId(ctx context.Context, field graphql.CollectedField, obj *model.Listing) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Listing_externalId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExternalID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Listing_externalId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Listing",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Listing_address(ctx context.Context, field graphql.CollectedField, obj *model.Listing) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Listing_address(ctx, field)
 	if err != nil {
@@ -945,6 +1013,94 @@ func (ec *executionContext) fieldContext_Listing_occupancyStatus(_ context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _Listing_source(ctx context.Context, field graphql.CollectedField, obj *model.Listing) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Listing_source(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Source, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(db.Source)
+	fc.Result = res
+	return ec.marshalNSource2serverᚋinternalᚋdbᚐSource(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Listing_source(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Listing",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Source does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Listing_payload(ctx context.Context, field graphql.CollectedField, obj *model.Listing) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Listing_payload(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Payload, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Listing_payload(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Listing",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Listing_images(ctx context.Context, field graphql.CollectedField, obj *model.Listing) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Listing_images(ctx, field)
 	if err != nil {
@@ -1088,6 +1244,8 @@ func (ec *executionContext) fieldContext_ListingConnection_nodes(_ context.Conte
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Listing_id(ctx, field)
+			case "externalId":
+				return ec.fieldContext_Listing_externalId(ctx, field)
 			case "address":
 				return ec.fieldContext_Listing_address(ctx, field)
 			case "price":
@@ -1102,6 +1260,10 @@ func (ec *executionContext) fieldContext_ListingConnection_nodes(_ context.Conte
 				return ec.fieldContext_Listing_longitude(ctx, field)
 			case "occupancyStatus":
 				return ec.fieldContext_Listing_occupancyStatus(ctx, field)
+			case "source":
+				return ec.fieldContext_Listing_source(ctx, field)
+			case "payload":
+				return ec.fieldContext_Listing_payload(ctx, field)
 			case "images":
 				return ec.fieldContext_Listing_images(ctx, field)
 			}
@@ -1152,6 +1314,8 @@ func (ec *executionContext) fieldContext_ListingEdge_node(_ context.Context, fie
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Listing_id(ctx, field)
+			case "externalId":
+				return ec.fieldContext_Listing_externalId(ctx, field)
 			case "address":
 				return ec.fieldContext_Listing_address(ctx, field)
 			case "price":
@@ -1166,6 +1330,10 @@ func (ec *executionContext) fieldContext_ListingEdge_node(_ context.Context, fie
 				return ec.fieldContext_Listing_longitude(ctx, field)
 			case "occupancyStatus":
 				return ec.fieldContext_Listing_occupancyStatus(ctx, field)
+			case "source":
+				return ec.fieldContext_Listing_source(ctx, field)
+			case "payload":
+				return ec.fieldContext_Listing_payload(ctx, field)
 			case "images":
 				return ec.fieldContext_Listing_images(ctx, field)
 			}
@@ -3518,6 +3686,11 @@ func (ec *executionContext) _Listing(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "externalId":
+			out.Values[i] = ec._Listing_externalId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "address":
 			out.Values[i] = ec._Listing_address(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -3550,6 +3723,16 @@ func (ec *executionContext) _Listing(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "occupancyStatus":
 			out.Values[i] = ec._Listing_occupancyStatus(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "source":
+			out.Values[i] = ec._Listing_source(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "payload":
+			out.Values[i] = ec._Listing_payload(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
@@ -4387,6 +4570,23 @@ func (ec *executionContext) unmarshalNOccupancyStatus2serverᚋinternalᚋdbᚐO
 }
 
 func (ec *executionContext) marshalNOccupancyStatus2serverᚋinternalᚋdbᚐOccupancyStatus(ctx context.Context, sel ast.SelectionSet, v db.OccupancyStatus) graphql.Marshaler {
+	_ = sel
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNSource2serverᚋinternalᚋdbᚐSource(ctx context.Context, v any) (db.Source, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := db.Source(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNSource2serverᚋinternalᚋdbᚐSource(ctx context.Context, sel ast.SelectionSet, v db.Source) graphql.Marshaler {
 	_ = sel
 	res := graphql.MarshalString(string(v))
 	if res == graphql.Null {

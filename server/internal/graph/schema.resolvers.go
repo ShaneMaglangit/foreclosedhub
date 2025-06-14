@@ -68,11 +68,14 @@ func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLa
 
 		listingNodes[i] = &model.Listing{
 			ID:              dbListing.ID,
+			ExternalID:      dbListing.ExternalID,
 			Address:         dbListing.Address,
 			Price:           dbListing.Price,
 			FloorArea:       floorArea.Float64,
 			LotArea:         lotArea.Float64,
 			OccupancyStatus: dbListing.OccupancyStatus,
+			Source:          dbListing.Source,
+			Payload:         string(dbListing.Payload),
 			Latitude:        dbListing.Coordinate.Y(),
 			Longitude:       dbListing.Coordinate.X(),
 		}

@@ -8,6 +8,7 @@ import (
 
 type Listing struct {
 	ID              int64              `json:"id"`
+	ExternalID      string             `json:"externalId"`
 	Address         string             `json:"address"`
 	Price           int64              `json:"price"`
 	FloorArea       float64            `json:"floorArea"`
@@ -15,6 +16,8 @@ type Listing struct {
 	Latitude        float64            `json:"latitude"`
 	Longitude       float64            `json:"longitude"`
 	OccupancyStatus db.OccupancyStatus `json:"occupancyStatus"`
+	Source          db.Source          `json:"source"`
+	Payload         string             `json:"payload"`
 	Images          []*ListingImage    `json:"images"`
 }
 

@@ -6,6 +6,11 @@ enum OccupancyStatus {
   unspecified
 }
 
+enum Source {
+  pagibig
+  secbank
+}
+
 type ListingEdge {
   node: Listing!
   cursor: String!
@@ -24,6 +29,7 @@ type ListingImage {
 
 type Listing {
   id: Int64!
+  externalId: String!
   address: String!
   price: Int64!
   floorArea: Float!
@@ -31,6 +37,8 @@ type Listing {
   latitude: Float!
   longitude: Float!
   occupancyStatus: OccupancyStatus!
+  source: Source!
+  payload: String!
   images: [ListingImage!]!
 }
 

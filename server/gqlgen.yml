@@ -163,3 +163,6 @@ models:
   OccupancyStatus:
     model:
       - server/internal/db.OccupancyStatus
+  Source:
+    model:
+      - server/internal/db.Source
