@@ -33,7 +33,7 @@ import { Button } from "@web/components/ui/button";
 const occupancyStatusLabel = {
     occupied: "Occupied",
     unoccupied: "Unoccupied",
-    unspecified: "Unspecified occupancy"
+    unspecified: "Unspecified"
 } satisfies Record<OccupancyStatus, string>
 
 const occupancyStatusBadgeColor = {
@@ -217,9 +217,11 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                                     <div className="text-xl font-semibold text-primary leading-tight">
                                         ₱{formatNumeric(selected.price)}
                                     </div>
-                                    <span className={cn("text-xs bg-muted px-2 py-0.5 rounded font-semibold", occupancyStatusBadgeColor[selected.occupancyStatus])}>
-                                        {occupancyStatusLabel[selected.occupancyStatus]}
-                                    </span>
+                                    {selected.occupancyStatus !== "unspecified" && (
+                                        <span className={cn("text-xs bg-muted px-2 py-0.5 rounded font-semibold", occupancyStatusBadgeColor[selected.occupancyStatus])}>
+                                            {occupancyStatusLabel[selected.occupancyStatus]}
+                                        </span>
+                                    )}
                                 </div>
                                 <div className="text-sm text-muted-foreground">
                                     {selected.address}
@@ -241,8 +243,8 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                                         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                                             Actions
                                         </span>
-                                        {selected.source == "secbank" && <SecbankOfferButton listing={selected} />}
-                                        {selected.source == "pagibig" && <PagibigFormButton listing={selected} />}
+                                        {selected.source === "secbank" && <SecbankOfferButton listing={selected} />}
+                                        {selected.source === "pagibig" && <PagibigFormButton listing={selected} />}
                                     </div>
                                 </div>
                             </div>
