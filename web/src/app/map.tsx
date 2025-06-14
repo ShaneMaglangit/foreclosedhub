@@ -165,7 +165,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                     {...props}
                 >
                     <div className="absolute top-2 left-2 py-2 px-4 bg-white flex gap-1 items-center ">
-                        <Info className="h-4 w-4"/> You're seeing the first {listings.length} properties for the area currently shown on the map.
+                        <Info className="h-4 w-4" /> You may only see a maximum of 1000 property listings within your viewed area.
                     </div>
                     {listings.map((listing) => (
                         <AdvancedMarker
