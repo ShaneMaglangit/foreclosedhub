@@ -8,7 +8,7 @@ import (
 	"github.com/twpayne/go-geos"
 )
 
-const jitterDistance = 0.00005
+const jitterDistance = 0.0001
 
 func jitterCoordinates(listings []*db.Listing) {
 	coordMap := make(map[string]int)
