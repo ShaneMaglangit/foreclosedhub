@@ -5,12 +5,14 @@ export const GetListingsQuery = graphql(`
         listings(minLatitude: $minLatitude, maxLatitude: $maxLatitude, minLongitude: $minLongitude, maxLongitude: $maxLongitude, address: $address, minPrice: $minPrice, maxPrice: $maxPrice) {
             nodes {
                 id
+                externalId
                 address
                 price
                 lotArea
                 floorArea
                 occupancyStatus
                 source
+                payload
                 latitude
                 longitude
                 images {

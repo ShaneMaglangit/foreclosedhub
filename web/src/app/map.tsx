@@ -27,7 +27,8 @@ import { useQuery } from "@tanstack/react-query";
 import { boolean, z } from "zod";
 import { OccupancyStatus, type GetListingsQuery as GetListingsQuerySchema } from "@web/lib/graphql/generated/graphql";
 import { Input } from "@web/components/ui/input";
-import { Cigarette, Info, Search } from "lucide-react";
+import { Cigarette, ExternalLink, Info, Search } from "lucide-react";
+import { Button } from "@web/components/ui/button";
 
 const occupancyStatusLabel = {
     occupied: "Occupied",
@@ -240,9 +241,8 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                                         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                                             Actions
                                         </span>
-                                        {selected.source == "secbank" && (
-                                            <a className="text-blue-600 underline" href={buildSecbankOfferUrl(selected)} target="_blank">Submit offer</a>
-                                        )}
+                                        {selected.source == "secbank" && <SecbankOfferButton listing={selected} />}
+                                        {selected.source == "pagibig" && <PagibigFormButton listing={selected} />}
                                     </div>
                                 </div>
                             </div>
@@ -254,14 +254,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
     );
 }
 
-function getPriceCategoryColor(price: number): string {
-    if (price < 500_000) return 'bg-slate-200 text-slate-800';
-    if (price < 1_000_000) return 'bg-slate-300 text-slate-900';
-    if (price < 10_000_000) return 'bg-slate-500 text-white';
-    return 'bg-slate-700 text-white';
-}
-
-function buildSecbankOfferUrl(listing: Listing): string {
+function SecbankOfferButton({ listing }: { listing: Listing }) {
     const url = new URL("https://www.securitybank.com/personal/loans/repossessed-assets/properties-for-sale/offer-form");
 
     url.searchParams.set("tfa_4", listing.lotArea.toString() + "sqms");
@@ -269,10 +262,42 @@ function buildSecbankOfferUrl(listing: Listing): string {
     url.searchParams.set("tfa_7", listing.floorArea.toString() + "sqms");
     url.searchParams.set("tfa_9", listing.price.toString());
 
-    return url.toString();
+    return (
+        <Button variant="link" size="sm" asChild>
+            <a className="text-blue-600 underline h-auto has-[>svg]:p-0" href={url.toString()} target="_blank">
+                <ExternalLink /> Submit offer
+            </a>
+        </Button>
+    )
 }
 
-export function SearchInput({ className, ...props }: ComponentProps<typeof Input>) {
+function PagibigFormButton({ listing }: { listing: Listing }) {
+    const rawPayload = JSON.parse(listing.payload);
+    const batchNumber = rawPayload.batch_number;
+    const flag = "3"; // I have no clue what does this mean, this was derived straight from PagibigFund's source code.
+    const hbc =
+        rawPayload.status === "1" || rawPayload.status === "2"
+            ? batchNumber.substring(3, 5)
+            : batchNumber.substring(0, 2);
+
+    return (
+        <form
+            method="POST"
+            action="https://www.pagibigfundservices.com/OnlinePublicAuction/Bidding/Login"
+            target="_blank"
+        >
+            <input type="hidden" name="batchNo" value={batchNumber} />
+            <input type="hidden" name="ropaId" value={listing.externalId} />
+            <input type="hidden" name="flag" value={flag} />
+            <input type="hidden" name="hbc" value={hbc} />
+            <Button variant="link" size="sm" className="h-auto has-[>svg]:p-0">
+                <ExternalLink /> Submit offer
+            </Button>
+        </form>
+    );
+}
+
+function SearchInput({ className, ...props }: ComponentProps<typeof Input>) {
     return (
         <div className={cn("relative w-full", className)}>
             <Input
@@ -283,4 +308,11 @@ export function SearchInput({ className, ...props }: ComponentProps<typeof Input
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
         </div>
     );
+}
+
+function getPriceCategoryColor(price: number): string {
+    if (price < 500_000) return 'bg-slate-200 text-slate-800';
+    if (price < 1_000_000) return 'bg-slate-300 text-slate-900';
+    if (price < 10_000_000) return 'bg-slate-500 text-white';
+    return 'bg-slate-700 text-white';
 }
