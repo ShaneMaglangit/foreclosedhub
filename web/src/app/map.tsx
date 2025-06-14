@@ -43,8 +43,8 @@ const paramsSchema = z.object({
     maxLat: z.coerce.number().min(-90).max(90),
     minLng: z.coerce.number().min(-180).max(180),
     maxLng: z.coerce.number().min(-180).max(180),
-    minPrice: z.coerce.number().default(0),
-    maxPrice: z.coerce.number().default(1_000_000_000),
+    minPrice: z.coerce.number().optional(),
+    maxPrice: z.coerce.number().optional(),
     address: z.string().optional(),
 });
 
@@ -148,9 +148,9 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
         <APIProvider apiKey={env.NEXT_PUBLIC_MAPS_API_KEY}>
             <div className={cn("h-full w-full flex flex-col", className)} >
                 <div className="w-full flex gap-1 p-2 items-center">
-                    <Input className="flex-1" placeholder="Enter address" onChange={handleAddressChange} defaultValue={params?.address} />
-                    <Input className="w-[100px]" placeholder="Minimum Price" type="number" onChange={handleMinPriceChange} defaultValue={params?.minPrice} />
-                    <Input className="w-[100px]" placeholder="Maximum Price" type="number" onChange={handleMaxPriceChange} defaultValue={params?.maxPrice} />
+                    <SearchInput className="flex-1 max-w-[500px]" placeholder="Address" onChange={handleAddressChange} defaultValue={params?.address} />
+                    <Input className="w-[150px]" placeholder="Minimum Price" type="number" onChange={handleMinPriceChange} defaultValue={params?.minPrice} />
+                    <Input className="w-[150px]" placeholder="Maximum Price" type="number" onChange={handleMaxPriceChange} defaultValue={params?.maxPrice} />
                 </div>
                 <GMap
                     mapId="f8c223bbf451ffb115f60be0"
@@ -220,8 +220,21 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
 }
 
 function getPriceCategoryColor(price: number): string {
-    if (price < 1_000_000) return 'bg-emerald-300 text-emerald-900';
-    if (price < 5_000_000) return 'bg-sky-300 text-sky-900';
-    if (price < 15_000_000) return 'bg-amber-300 text-amber-900';
-    return 'bg-rose-300 text-rose-900';
+    if (price < 500_000) return 'bg-slate-200 text-slate-800';
+    if (price < 1_000_000) return 'bg-slate-300 text-slate-900';
+    if (price < 10_000_000) return 'bg-slate-500 text-white';
+    return 'bg-slate-700 text-white';
+}
+
+export function SearchInput({ className, ...props }: ComponentProps<typeof Input>) {
+    return (
+        <div className={cn("relative w-full", className)}>
+            <Input
+                className="pr-9"
+                placeholder="Search..."
+                {...props}
+            />
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+        </div>
+    );
 }
