@@ -54,6 +54,7 @@ function Carousel({
   const [carouselRef, api] = useEmblaCarousel(
     {
       ...opts,
+      watchDrag: false,
       axis: orientation === "horizontal" ? "x" : "y",
     },
     plugins
@@ -138,7 +139,7 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       ref={carouselRef}
-      className={cn("overflow-hidden", canScrollNext || canScrollPrev ? "cursor-grab" : "")}
+      className="overflow-hidden"
       data-slot="carousel-content"
     >
       <div

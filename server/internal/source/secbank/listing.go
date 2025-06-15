@@ -31,6 +31,7 @@ func (listings Listings) toDbListings() ([]*db.Listing, error) {
 
 	for _, listing := range listings {
 		floorArea := pgtype.Numeric{Int: big.NewInt(int64(listing.FloorArea * 100)), Exp: -2, Valid: true}
+		lotArea := pgtype.Numeric{Int: big.NewInt(int64(listing.LotArea * 100)), Exp: -2, Valid: true}
 
 		payload, err := json.Marshal(listing)
 		if err != nil {
@@ -42,6 +43,7 @@ func (listings Listings) toDbListings() ([]*db.Listing, error) {
 			ExternalID:      listing.Id,
 			Address:         listing.Description,
 			FloorArea:       floorArea,
+			LotArea:         lotArea,
 			Price:           listing.SuggestedPrice,
 			OccupancyStatus: db.OccupancyStatusUnspecified,
 			Payload:         payload,

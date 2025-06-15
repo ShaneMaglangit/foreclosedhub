@@ -51,7 +51,7 @@ func (l ListingsRepositoryImpl) InsertListings(ctx context.Context, dbtx DBTX, l
 		addresses = append(addresses, listing.Address)
 		prices = append(prices, listing.Price)
 		floorAreas = append(floorAreas, listing.FloorArea)
-		lotAreas = append(lotAreas, listing.FloorArea)
+		lotAreas = append(lotAreas, listing.LotArea)
 		occupancyStatuses = append(occupancyStatuses, listing.OccupancyStatus)
 		payloads = append(payloads, listing.Payload)
 	}
