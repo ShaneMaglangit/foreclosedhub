@@ -172,6 +172,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                 <GMap
                     mapId="f8c223bbf451ffb115f60be0"
                     className="flex-1 relative"
+                    clickableIcons={false}
                     defaultCenter={philippinesCentralCoordinates}
                     defaultZoom={defaultZoomLevel}
                     gestureHandling="greedy"
