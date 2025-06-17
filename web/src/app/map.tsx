@@ -24,11 +24,13 @@ import Image from "next/image";
 import { execute } from "@web/lib/graphql/execute";
 import { GetListingsQuery } from "@web/lib/graphql/getListings";
 import { useQuery } from "@tanstack/react-query";
-import { boolean, z } from "zod";
+import { boolean, z, ZodArray, ZodDefault } from "zod";
 import { OccupancyStatus, Source, type GetListingsQuery as GetListingsQuerySchema } from "@web/lib/graphql/generated/graphql";
 import { Input } from "@web/components/ui/input";
-import { Cigarette, ExternalLink, Info, Search } from "lucide-react";
+import { ChevronDown, Cigarette, ExternalLink, Info, Search } from "lucide-react";
 import { Button } from "@web/components/ui/button";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@web/components/ui/dropdown-menu";
+import { Checkbox } from "@web/components/ui/checkbox";
 
 const occupancyStatusLabel = {
     occupied: "Occupied",
@@ -62,6 +64,7 @@ const paramsSchema = z.object({
     maxLng: z.coerce.number().min(-180).max(180),
     minPrice: z.coerce.number().optional(),
     maxPrice: z.coerce.number().optional(),
+    occupancyStatuses: z.array(z.nativeEnum(OccupancyStatus)).default(Object.values(OccupancyStatus)),
     address: z.string().optional(),
 });
 
@@ -76,7 +79,18 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
     const [selected, setSelected] = useState<undefined | Listing>();
 
     const params = useMemo(() => {
-        const raw = Object.fromEntries(searchParams.entries());
+        const raw: Record<string, unknown> = {};
+
+        for (const [key, schema] of Object.entries(paramsSchema.shape)) {
+            if (isZodArrayType(schema)) {
+                const values = searchParams.getAll(key);
+                if (values.length) raw[key] = values;
+            } else {
+                const value = searchParams.get(key);
+                if (value !== null) raw[key] = value;
+            }
+        }
+
         const parsed = paramsSchema.safeParse(raw);
         return parsed.success ? parsed.data : null;
     }, [searchParams]);
@@ -98,7 +112,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
         enabled: !!params,
     });
 
-    const updateUrlParams = useCallback(({ minLat, maxLat, minLng, maxLng, minPrice, maxPrice, address }: {
+    const updateUrlParams = useCallback(({ minLat, maxLat, minLng, maxLng, minPrice, maxPrice, address, occupancyStatuses }: {
         minLat?: number;
         maxLat?: number;
         minLng?: number;
@@ -106,6 +120,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
         minPrice?: number;
         maxPrice?: number;
         address?: string;
+        occupancyStatuses?: OccupancyStatus[],
     }) => {
         const updatedParams = new URLSearchParams(searchParams);
 
@@ -116,6 +131,9 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
         if (minPrice) updatedParams.set("minPrice", minPrice.toString());
         if (maxPrice) updatedParams.set("maxPrice", maxPrice.toString());
         if (address) updatedParams.set("address", address);
+
+        updatedParams.delete("occupancyStatuses")
+        occupancyStatuses?.forEach((occupancyStatus) => updatedParams.append("occupancyStatuses", occupancyStatus));
 
         router.replace(`?${updatedParams.toString()}`);
     }, [router, searchParams]);
@@ -156,6 +174,14 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
         else deleteUrlParams(['maxPrice'])
     }, 500)
 
+    const handleOccupancyStatusCheck = (occupancyStatus: OccupancyStatus, checked: boolean) => {
+        const currentOccupancyStatuses = params?.occupancyStatuses || []
+        const updatedOccupancyStatuses = checked ? [...currentOccupancyStatuses, occupancyStatus] : currentOccupancyStatuses.filter((status) => status !== occupancyStatus)
+
+        if (updatedOccupancyStatuses.length > 0) updateUrlParams({ occupancyStatuses: updatedOccupancyStatuses })
+        else deleteUrlParams(['occupancyStatuses'])
+    }
+
     useEffect(() => {
         const nodes = data?.listings?.nodes
         if (nodes) setListings(nodes)
@@ -168,6 +194,18 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                     <SearchInput className="flex-1 max-w-[500px]" placeholder="Address" onChange={handleAddressChange} defaultValue={params?.address} />
                     <Input className="w-[150px]" placeholder="Minimum Price" type="number" onChange={handleMinPriceChange} defaultValue={params?.minPrice} />
                     <Input className="w-[150px]" placeholder="Maximum Price" type="number" onChange={handleMaxPriceChange} defaultValue={params?.maxPrice} />
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline">Occupancy Status <ChevronDown /></Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56" align="start">
+                            {Object.values(OccupancyStatus).map((occupancyStatus) => (
+                                <DropdownMenuCheckboxItem key={occupancyStatus} checked={params?.occupancyStatuses.includes(occupancyStatus)} onCheckedChange={(checked) => handleOccupancyStatusCheck(occupancyStatus, checked)} onSelect={(e) => e.preventDefault()}>
+                                    {occupancyStatusLabel[occupancyStatus]}
+                                </DropdownMenuCheckboxItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
                 <GMap
                     mapId="f8c223bbf451ffb115f60be0"
@@ -331,4 +369,10 @@ function getPriceCategoryColor(price: number): string {
     if (price < 1_000_000) return 'bg-slate-300 text-slate-900';
     if (price < 10_000_000) return 'bg-slate-500 text-white';
     return 'bg-slate-700 text-white';
+}
+
+function isZodArrayType(schema: any): schema is ZodArray<any> {
+    if (schema instanceof ZodArray) return true;
+    if (schema instanceof ZodDefault && schema._def.innerType instanceof ZodArray) return true;
+    return false;
 }
