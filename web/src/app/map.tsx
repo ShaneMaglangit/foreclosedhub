@@ -107,6 +107,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                 minPrice: params.minPrice,
                 maxPrice: params.maxPrice,
                 address: params.address,
+                occupancyStatuses: params.occupancyStatuses,
             });
         },
         enabled: !!params,
@@ -132,8 +133,10 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
         if (maxPrice) updatedParams.set("maxPrice", maxPrice.toString());
         if (address) updatedParams.set("address", address);
 
-        updatedParams.delete("occupancyStatuses")
-        occupancyStatuses?.forEach((occupancyStatus) => updatedParams.append("occupancyStatuses", occupancyStatus));
+        if (occupancyStatuses) {
+            updatedParams.delete("occupancyStatuses")
+            occupancyStatuses?.forEach((occupancyStatus) => updatedParams.append("occupancyStatuses", occupancyStatus));
+        }
 
         router.replace(`?${updatedParams.toString()}`);
     }, [router, searchParams]);
