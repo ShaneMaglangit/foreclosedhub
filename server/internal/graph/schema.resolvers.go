@@ -20,34 +20,34 @@ func (r *listingResolver) Images(ctx context.Context, obj *model.Listing) ([]*mo
 }
 
 // Listings is the resolver for the listings field.
-func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string, minPrice *int64, maxPrice *int64) (*model.ListingConnection, error) {
-	var minPriceValue int64
-	if minPrice != nil {
-		minPriceValue = *minPrice
-	}
-
-	var maxPriceValue pgtype.Int8
-	if maxPrice != nil {
-		maxPriceValue = pgtype.Int8{Int64: *maxPrice, Valid: true}
-	}
-
-	addressValue := ""
-	if address != nil {
-		addressValue = *address
-	}
-
-	listingsRepository := db.NewListingsRepository()
-	dbListings, err := listingsRepository.GetListingsInBoundary(ctx, r.pool, db.GetListingsInBoundaryParams{
+func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string, minPrice *int64, maxPrice *int64, occupancyStatuses []db.OccupancyStatus) (*model.ListingConnection, error) {
+	params := db.GetListingsInBoundaryParams{
 		MinLat:            minLatitude,
 		MaxLat:            maxLatitude,
 		MinLng:            minLongitude,
 		MaxLng:            maxLongitude,
-		Address:           addressValue,
-		MinPrice:          minPriceValue,
-		MaxPrice:          maxPriceValue,
 		Sources:           []db.Source{db.SourcePagibig, db.SourceSecbank},
 		OccupancyStatuses: []db.OccupancyStatus{db.OccupancyStatusOccupied, db.OccupancyStatusUnoccupied, db.OccupancyStatusUnspecified},
-	})
+	}
+
+	if minPrice != nil {
+		params.MinPrice = *minPrice
+	}
+
+	if maxPrice != nil {
+		params.MaxPrice = pgtype.Int8{Int64: *maxPrice, Valid: true}
+	}
+
+	if address != nil {
+		params.Address = *address
+	}
+
+	if len(occupancyStatuses) > 0 {
+		params.OccupancyStatuses = occupancyStatuses
+	}
+
+	listingsRepository := db.NewListingsRepository()
+	dbListings, err := listingsRepository.GetListingsInBoundary(ctx, r.pool, params)
 	if err != nil {
 		return nil, err
 	}

@@ -80,7 +80,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Listings func(childComplexity int, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string, minPrice *int64, maxPrice *int64) int
+		Listings func(childComplexity int, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string, minPrice *int64, maxPrice *int64, occupancyStatuses []db.OccupancyStatus) int
 	}
 }
 
@@ -88,7 +88,7 @@ type ListingResolver interface {
 	Images(ctx context.Context, obj *model.Listing) ([]*model.ListingImage, error)
 }
 type QueryResolver interface {
-	Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string, minPrice *int64, maxPrice *int64) (*model.ListingConnection, error)
+	Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string, minPrice *int64, maxPrice *int64, occupancyStatuses []db.OccupancyStatus) (*model.ListingConnection, error)
 }
 
 type executableSchema struct {
@@ -253,7 +253,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.Listings(childComplexity, args["minLatitude"].(float64), args["maxLatitude"].(float64), args["minLongitude"].(float64), args["maxLongitude"].(float64), args["address"].(*string), args["minPrice"].(*int64), args["maxPrice"].(*int64)), true
+		return e.complexity.Query.Listings(childComplexity, args["minLatitude"].(float64), args["maxLatitude"].(float64), args["minLongitude"].(float64), args["maxLongitude"].(float64), args["address"].(*string), args["minPrice"].(*int64), args["maxPrice"].(*int64), args["occupancyStatuses"].([]db.OccupancyStatus)), true
 
 	}
 	return 0, false
@@ -424,6 +424,11 @@ func (ec *executionContext) field_Query_listings_args(ctx context.Context, rawAr
 		return nil, err
 	}
 	args["maxPrice"] = arg6
+	arg7, err := ec.field_Query_listings_argsOccupancyStatuses(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["occupancyStatuses"] = arg7
 	return args, nil
 }
 func (ec *executionContext) field_Query_listings_argsMinLatitude(
@@ -514,6 +519,19 @@ func (ec *executionContext) field_Query_listings_argsMaxPrice(
 	}
 
 	var zeroVal *int64
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_listings_argsOccupancyStatuses(
+	ctx context.Context,
+	rawArgs map[string]any,
+) ([]db.OccupancyStatus, error) {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("occupancyStatuses"))
+	if tmp, ok := rawArgs["occupancyStatuses"]; ok {
+		return ec.unmarshalOOccupancyStatus2ᚕserverᚋinternalᚋdbᚐOccupancyStatusᚄ(ctx, tmp)
+	}
+
+	var zeroVal []db.OccupancyStatus
 	return zeroVal, nil
 }
 
@@ -1533,7 +1551,7 @@ func (ec *executionContext) _Query_listings(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Listings(rctx, fc.Args["minLatitude"].(float64), fc.Args["maxLatitude"].(float64), fc.Args["minLongitude"].(float64), fc.Args["maxLongitude"].(float64), fc.Args["address"].(*string), fc.Args["minPrice"].(*int64), fc.Args["maxPrice"].(*int64))
+		return ec.resolvers.Query().Listings(rctx, fc.Args["minLatitude"].(float64), fc.Args["maxLatitude"].(float64), fc.Args["minLongitude"].(float64), fc.Args["maxLongitude"].(float64), fc.Args["address"].(*string), fc.Args["minPrice"].(*int64), fc.Args["maxPrice"].(*int64), fc.Args["occupancyStatuses"].([]db.OccupancyStatus))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4912,6 +4930,71 @@ func (ec *executionContext) marshalOInt642ᚖint64(ctx context.Context, sel ast.
 	_ = ctx
 	res := graphql.MarshalInt64(*v)
 	return res
+}
+
+func (ec *executionContext) unmarshalOOccupancyStatus2ᚕserverᚋinternalᚋdbᚐOccupancyStatusᚄ(ctx context.Context, v any) ([]db.OccupancyStatus, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]db.OccupancyStatus, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNOccupancyStatus2serverᚋinternalᚋdbᚐOccupancyStatus(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOOccupancyStatus2ᚕserverᚋinternalᚋdbᚐOccupancyStatusᚄ(ctx context.Context, sel ast.SelectionSet, v []db.OccupancyStatus) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNOccupancyStatus2serverᚋinternalᚋdbᚐOccupancyStatus(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v any) (*string, error) {

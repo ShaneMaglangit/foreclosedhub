@@ -30,7 +30,6 @@ import { Input } from "@web/components/ui/input";
 import { ChevronDown, Cigarette, ExternalLink, Info, Search } from "lucide-react";
 import { Button } from "@web/components/ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@web/components/ui/dropdown-menu";
-import { Checkbox } from "@web/components/ui/checkbox";
 
 const occupancyStatusLabel = {
     occupied: "Occupied",
@@ -223,8 +222,8 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                     onClick={() => setSelected(undefined)}
                     {...props}
                 >
-                    <div className="absolute top-2 left-2 py-2 px-4 bg-white flex gap-1 items-center ">
-                        <Info className="h-4 w-4" /> You may only see a maximum of 1000 property listings within your viewed area.
+                    <div className="absolute top-2 left-2 py-2 px-3 text-sm bg-white flex gap-1 items-center ">
+                        <Info className="h-4 w-4" /> Only a maximum of 1000 property listings is shown within the area. Please zoom in to narrow down the search.
                     </div>
                     {listings.map((listing) => (
                         <AdvancedMarker
