@@ -46,11 +46,13 @@ const occupancyStatusBadgeColor = {
 const sourceLabel = {
     secbank: "Security Bank",
     pagibig: "Pagibig",
+    unionbank: "Unionbank"
 } satisfies Record<Source, string>
 
 const sourceBadgeColor = {
     secbank: "bg-[#caffb9] text-black",
     pagibig: "bg-[#104183] text-white",
+    unionbank: "bg-[#ff6f00] text-white",
 } satisfies Record<Source, string>;
 
 const defaultZoomLevel = 7;

@@ -77,7 +77,8 @@ export type QueryListingsArgs = {
 
 export enum Source {
   Pagibig = 'pagibig',
-  Secbank = 'secbank'
+  Secbank = 'secbank',
+  Unionbank = 'unionbank'
 }
 
 export type GetListingsQueryVariables = Exact<{

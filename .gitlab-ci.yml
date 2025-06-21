@@ -66,9 +66,6 @@ apply:
 migrate:
   stage: deploy
   image: golang:latest
-  needs:
-    - job: apply
-      artifacts: true
   rules:
     - changes:
         - server/internal/db/migrations/*
@@ -76,8 +73,7 @@ migrate:
     - apt-get update && apt-get install -y curl unzip
     - if [ ! -f /usr/local/bin/migrate ]; then curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz && mv migrate /usr/local/bin/migrate; fi
   script:
-    - source apply.env
-    - migrate -path ./server/internal/db/migrations -database "$DATABASE_URL" up
+    - migrate -path ./server/internal/db/migrations -database "$DATABASE_URL_POOL" up
 
 deploy_server:
   stage: deploy
