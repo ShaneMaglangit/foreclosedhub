@@ -1,9 +1,10 @@
-package secbank
+package unionbank
 
 import (
 	"context"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"server/internal/db"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 const scrapeListingJobInstance = 1
@@ -39,16 +40,15 @@ func (j *ScrapeListingJob) Run() error {
 	}
 
 	listingsRepository := db.NewListingsRepository()
-
 	if err = listingsRepository.InsertListings(ctx, tx, dbListings); err != nil {
 		tx.Rollback(ctx)
 		return err
 	}
 
-	if err = listingsRepository.UnlistOldListings(ctx, tx, db.SourceSecbank); err != nil {
+	if err = listingsRepository.UnlistOldListings(ctx, tx, db.SourceUnionbank); err != nil {
 		tx.Rollback(ctx)
 		return err
 	}
-
+	
 	return tx.Commit(ctx)
 }

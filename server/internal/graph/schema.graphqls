@@ -9,6 +9,7 @@ enum OccupancyStatus {
 enum Source {
   pagibig
   secbank
+  unionbank
 }
 
 type ListingEdge {

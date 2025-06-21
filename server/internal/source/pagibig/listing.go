@@ -64,12 +64,12 @@ func (listings Listings) toDbListings() ([]*db.Listing, error) {
 }
 
 func parseNumeric(raw string) (pgtype.Numeric, error) {
-	floorArea, err := strconv.ParseFloat(raw, 64)
+	parsed, err := strconv.ParseFloat(raw, 64)
 	if err != nil {
 		return pgtype.Numeric{}, err
 	}
 
-	return pgtype.Numeric{Int: big.NewInt(int64(floorArea * 100)), Exp: -2, Valid: true}, nil
+	return pgtype.Numeric{Int: big.NewInt(int64(parsed * 100)), Exp: -2, Valid: true}, nil
 }
 
 func getOccupancyStatus(remarks string) db.OccupancyStatus {

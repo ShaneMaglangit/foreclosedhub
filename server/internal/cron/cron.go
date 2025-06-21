@@ -6,6 +6,7 @@ import (
 	"server/internal/geocode"
 	"server/internal/source/pagibig"
 	"server/internal/source/secbank"
+	"server/internal/source/unionbank"
 	"server/internal/utils"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -46,6 +47,17 @@ var scheduledJobs = []ScheduledJob{
 		schedule:   "* * * * *",
 		isDisabled: func() bool { return utils.IsDevelopment() },
 		factory:    func(pool *pgxpool.Pool) Job { return secbank.NewScrapeListingImageJob(pool) },
+	},
+	{
+		name:       "UnionbankScrapeListing",
+		schedule:   "0 0 * * *",
+		factory:    func(pool *pgxpool.Pool) Job { return unionbank.NewScrapeListingJob(pool) },
+	},
+	{
+		name:       "UnionbankScrapeListingImages",
+		schedule:   "* * * * *",
+		isDisabled: func() bool { return utils.IsDevelopment() },
+		factory:    func(pool *pgxpool.Pool) Job { return unionbank.NewScrapeListingImageJob(pool) },
 	},
 	{
 		name:       "GeocodeListing",

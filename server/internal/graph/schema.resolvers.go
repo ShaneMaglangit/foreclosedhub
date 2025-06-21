@@ -26,7 +26,7 @@ func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLa
 		MaxLat:            maxLatitude,
 		MinLng:            minLongitude,
 		MaxLng:            maxLongitude,
-		Sources:           []db.Source{db.SourcePagibig, db.SourceSecbank},
+		Sources:           []db.Source{db.SourcePagibig, db.SourceSecbank, db.SourceUnionbank},
 		OccupancyStatuses: []db.OccupancyStatus{db.OccupancyStatusOccupied, db.OccupancyStatusUnoccupied, db.OccupancyStatusUnspecified},
 	}
 

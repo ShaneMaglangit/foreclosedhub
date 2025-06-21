@@ -100,8 +100,9 @@ func (ns NullOccupancyStatus) Value() (driver.Value, error) {
 type Source string
 
 const (
-	SourcePagibig Source = "pagibig"
-	SourceSecbank Source = "secbank"
+	SourcePagibig   Source = "pagibig"
+	SourceSecbank   Source = "secbank"
+	SourceUnionbank Source = "unionbank"
 )
 
 func (e *Source) Scan(src interface{}) error {

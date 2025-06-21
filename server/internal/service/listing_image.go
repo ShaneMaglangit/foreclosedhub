@@ -30,15 +30,16 @@ func (s *ListingImageService) Create(uploadService ImageUploadService, listingId
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback(ctx)
 
 	listingImagesRepository := db.NewListingImagesRepository()
 	if err = listingImagesRepository.InsertListingImages(ctx, tx, listingId, urls); err != nil {
+		tx.Rollback(ctx)
 		return err
 	}
 
 	listingsRepository := db.NewListingsRepository()
 	if err = listingsRepository.UpdateListingsImageLoaded(ctx, tx, listingId, true); err != nil {
+		tx.Rollback(ctx)
 		return err
 	}
 

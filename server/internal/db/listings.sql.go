@@ -82,6 +82,38 @@ func (q *Queries) GetListingNotGeocoded(ctx context.Context) (*GetListingNotGeoc
 	return &i, err
 }
 
+const getListingsByImageNotLoaded = `-- name: GetListingsByImageNotLoaded :many
+SELECT id, payload
+FROM listings
+WHERE source = $1::source
+  AND image_loaded = FALSE
+`
+
+type GetListingsByImageNotLoadedRow struct {
+	ID      int64
+	Payload []byte
+}
+
+func (q *Queries) GetListingsByImageNotLoaded(ctx context.Context, source Source) ([]*GetListingsByImageNotLoadedRow, error) {
+	rows, err := q.db.Query(ctx, getListingsByImageNotLoaded, source)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetListingsByImageNotLoadedRow
+	for rows.Next() {
+		var i GetListingsByImageNotLoadedRow
+		if err := rows.Scan(&i.ID, &i.Payload); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getListingsInBoundary = `-- name: GetListingsInBoundary :many
 SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate
 FROM listings
@@ -121,142 +153,6 @@ func (q *Queries) GetListingsInBoundary(ctx context.Context, arg GetListingsInBo
 		arg.OccupancyStatuses,
 		arg.MinPrice,
 		arg.MaxPrice,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []*Listing
-	for rows.Next() {
-		var i Listing
-		if err := rows.Scan(
-			&i.ID,
-			&i.Source,
-			&i.ExternalID,
-			&i.Address,
-			&i.FloorArea,
-			&i.LotArea,
-			&i.Price,
-			&i.ImageLoaded,
-			&i.OccupancyStatus,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Payload,
-			&i.Status,
-			&i.GeocodedAt,
-			&i.Coordinate,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, &i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getListingsNextPage = `-- name: GetListingsNextPage :many
-SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate
-FROM listings
-WHERE id > $1::bigint
-  AND address ILIKE '%' || $2::text || '%'
-  AND source = ANY ($3::source[])
-  AND occupancy_status = ANY ($4::occupancy_status[])
-  AND price BETWEEN $5::bigint AND COALESCE($6, 9223372036854775807)
-  AND status = 'active'
-  AND geocoded_at IS NOT NULL
-ORDER BY id
-LIMIT $7::int
-`
-
-type GetListingsNextPageParams struct {
-	After             int64
-	Address           string
-	Sources           []Source
-	OccupancyStatuses []OccupancyStatus
-	MinPrice          int64
-	MaxPrice          pgtype.Int8
-	RowLimit          int32
-}
-
-func (q *Queries) GetListingsNextPage(ctx context.Context, arg GetListingsNextPageParams) ([]*Listing, error) {
-	rows, err := q.db.Query(ctx, getListingsNextPage,
-		arg.After,
-		arg.Address,
-		arg.Sources,
-		arg.OccupancyStatuses,
-		arg.MinPrice,
-		arg.MaxPrice,
-		arg.RowLimit,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []*Listing
-	for rows.Next() {
-		var i Listing
-		if err := rows.Scan(
-			&i.ID,
-			&i.Source,
-			&i.ExternalID,
-			&i.Address,
-			&i.FloorArea,
-			&i.LotArea,
-			&i.Price,
-			&i.ImageLoaded,
-			&i.OccupancyStatus,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Payload,
-			&i.Status,
-			&i.GeocodedAt,
-			&i.Coordinate,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, &i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getListingsPrevPage = `-- name: GetListingsPrevPage :many
-SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate
-FROM listings
-WHERE id < $1::bigint
-  AND address ILIKE '%' || $2::text || '%'
-  AND source = ANY ($3::source[])
-  AND occupancy_status = ANY ($4::occupancy_status[])
-  AND price BETWEEN $5::bigint AND COALESCE($6, 9223372036854775807)
-  AND status = 'active'
-  AND geocoded_at IS NOT NULL
-ORDER BY id DESC
-LIMIT $7::int
-`
-
-type GetListingsPrevPageParams struct {
-	Before            int64
-	Address           string
-	Sources           []Source
-	OccupancyStatuses []OccupancyStatus
-	MinPrice          int64
-	MaxPrice          pgtype.Int8
-	RowLimit          int32
-}
-
-func (q *Queries) GetListingsPrevPage(ctx context.Context, arg GetListingsPrevPageParams) ([]*Listing, error) {
-	rows, err := q.db.Query(ctx, getListingsPrevPage,
-		arg.Before,
-		arg.Address,
-		arg.Sources,
-		arg.OccupancyStatuses,
-		arg.MinPrice,
-		arg.MaxPrice,
-		arg.RowLimit,
 	)
 	if err != nil {
 		return nil, err
