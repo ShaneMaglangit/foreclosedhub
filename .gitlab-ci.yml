@@ -68,6 +68,7 @@ migrate:
   image: golang:latest
   rules:
     - changes:
+        - .gitlab-ci.yml
         - server/internal/db/migrations/*
   before_script:
     - apt-get update && apt-get install -y curl unzip
