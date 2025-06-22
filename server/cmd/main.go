@@ -3,9 +3,8 @@ package main
 import (
 	"context"
 	"log"
-	"server/internal/cron"
 	"server/internal/db"
-	"server/internal/graph"
+	"server/internal/source/unionbank"
 
 	"github.com/joho/godotenv"
 )
@@ -20,8 +19,12 @@ func main() {
 	}
 	defer pool.Close()
 
-	c := cron.Start(pool)
-	defer c.Stop()
+	if err = unionbank.NewScrapeListingJob(pool).Run(); err != nil {
+		log.Fatal(err)
+	}
 
-	graph.Serve(pool)
+	// c := cron.Start(pool)
+	// defer c.Stop()
+
+	// graph.Serve(pool)
 }

@@ -3,6 +3,7 @@ package unionbank
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"math/big"
 	"net/http"
 	"server/internal/db"
@@ -61,6 +62,7 @@ func (listings Listings) toDbListings() ([]*db.Listing, error) {
 
 func getListings() (Listings, error) {
 	page := 1
+	retryBudget := 30
 
 	var listings Listings
 	for {
@@ -73,6 +75,11 @@ func getListings() (Listings, error) {
 
 		var pageResponse PageResponse
 		if err := json.NewDecoder(resp.Body).Decode(&pageResponse); err != nil {
+			log.Printf("Failed:%s | Retry Budget: %d", url, retryBudget)
+			if retryBudget > 0 {
+				retryBudget--
+				continue
+			}
 			return nil, err
 		}
 
@@ -83,10 +90,22 @@ func getListings() (Listings, error) {
 		listings = append(listings, pageResponse.Listings...)
 		page++
 
-		time.Sleep(1 * time.Minute)
+		time.Sleep(20 * time.Second)
 	}
 
-	return listings, nil
+	var dedupedListings Listings
+	listingKeys := map[string]bool{}
+
+	for _, listing := range listings {
+		if listingKeys[listing.ID] {
+			continue
+		}
+
+		listingKeys[listing.ID] = true
+		dedupedListings = append(dedupedListings, listing)
+	}
+
+	return dedupedListings, nil
 }
 
 func floatToNumeric(raw float64) pgtype.Numeric {
