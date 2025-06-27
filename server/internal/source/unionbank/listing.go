@@ -62,7 +62,7 @@ func (listings Listings) toDbListings() ([]*db.Listing, error) {
 
 func getListings() (Listings, error) {
 	page := 1
-	retryBudget := 30
+	retryBudget := 50
 
 	var listings Listings
 	for {
@@ -90,7 +90,7 @@ func getListings() (Listings, error) {
 		listings = append(listings, pageResponse.Listings...)
 		page++
 
-		time.Sleep(20 * time.Second)
+		time.Sleep(30 * time.Second)
 	}
 
 	var dedupedListings Listings
