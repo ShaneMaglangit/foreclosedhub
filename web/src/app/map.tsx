@@ -301,6 +301,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                                         </span>
                                         {selected.source === "secbank" && <SecbankOfferButton listing={selected} />}
                                         {selected.source === "pagibig" && <PagibigFormButton listing={selected} />}
+                                        {selected.source === "unionbank" && <UnionbankOfferButton listing={selected} />}
                                     </div>
                                 </div>
                             </div>
@@ -310,6 +311,17 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
             </div>
         </APIProvider>
     );
+}
+
+function UnionbankOfferButton({ listing }: { listing: Listing }) {
+    const url = `https://www.unionbankph.com/foreclosed-properties/${listing.externalId}`
+    return (
+        <Button variant="link" size="sm" asChild>
+            <a className="text-blue-600 underline h-auto has-[>svg]:p-0" href={url.toString()} target="_blank">
+                <ExternalLink /> Submit offer
+            </a>
+        </Button>
+    )
 }
 
 function SecbankOfferButton({ listing }: { listing: Listing }) {

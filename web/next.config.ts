@@ -17,6 +17,13 @@ const nextConfig: NextConfig = {
                 pathname: "/wp-content/uploads/**",
                 search: "",
             },
+            {
+                protocol: "https",
+                hostname: "www.unionbankph.com",
+                port: "",
+                pathname: "/sites/default/files/**",
+                search: "",
+            },
         ],
     },
 };
