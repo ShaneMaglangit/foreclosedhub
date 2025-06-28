@@ -224,9 +224,6 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                     onClick={() => setSelected(undefined)}
                     {...props}
                 >
-                    <div className="absolute top-2 left-2 py-2 px-3 text-sm bg-white flex gap-1 items-center ">
-                        <Info className="h-4 w-4" /> Only a maximum of 1000 property listings is shown within the area. Please zoom in to narrow down the search.
-                    </div>
                     {listings.map((listing) => (
                         <AdvancedMarker
                             key={listing.id}
@@ -282,7 +279,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                                 <div className="text-sm text-muted-foreground">
                                     {selected.address}
                                 </div>
-                                <div className="grid grid-cols-3 gap-4 pt-2 text-sm">
+                                <div className="flex flex-col md:grid md:grid-cols-3 gap-2 md:gap-4 pt-2 text-sm">
                                     <div className="flex flex-col gap-1">
                                         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                                             Floor Area
@@ -295,7 +292,7 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                                         </span>
                                         <span className="text-foreground">{selected.lotArea} sqm</span>
                                     </div>
-                                    <div className="flex flex-col gap-1">
+                                    <div className="flex flex-col gap-1 items-start">
                                         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                                             Actions
                                         </span>
@@ -316,8 +313,8 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
 function UnionbankOfferButton({ listing }: { listing: Listing }) {
     const url = `https://www.unionbankph.com/foreclosed-properties/${listing.externalId}`
     return (
-        <Button variant="link" size="sm" asChild>
-            <a className="text-blue-600 underline h-auto has-[>svg]:p-0" href={url.toString()} target="_blank">
+        <Button variant="link" className="text-blue-600 underline h-auto has-[>svg]:p-0" size="sm" asChild>
+            <a href={url.toString()} target="_blank">
                 <ExternalLink /> Submit offer
             </a>
         </Button>
@@ -333,8 +330,8 @@ function SecbankOfferButton({ listing }: { listing: Listing }) {
     url.searchParams.set("tfa_9", listing.price.toString());
 
     return (
-        <Button variant="link" size="sm" asChild>
-            <a className="text-blue-600 underline h-auto has-[>svg]:p-0" href={url.toString()} target="_blank">
+        <Button variant="link" className="text-blue-600 underline h-auto has-[>svg]:p-0" size="sm" asChild>
+            <a href={url.toString()} target="_blank">
                 <ExternalLink /> Submit offer
             </a>
         </Button>
