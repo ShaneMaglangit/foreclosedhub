@@ -27,9 +27,10 @@ import { useQuery } from "@tanstack/react-query";
 import { boolean, z, ZodArray, ZodDefault } from "zod";
 import { OccupancyStatus, Source, type GetListingsQuery as GetListingsQuerySchema } from "@web/lib/graphql/generated/graphql";
 import { Input } from "@web/components/ui/input";
-import { ChevronDown, Cigarette, ExternalLink, Info, Search } from "lucide-react";
+import { ChevronDown, Cigarette, ExternalLink, Filter, Info, Search } from "lucide-react";
 import { Button } from "@web/components/ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@web/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@web/components/ui/sheet";
 
 const occupancyStatusLabel = {
     occupied: "Occupied",
@@ -194,23 +195,30 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
     return (
         <APIProvider apiKey={env.NEXT_PUBLIC_MAPS_API_KEY}>
             <div className={cn("h-full w-full flex flex-col", className)} >
-                <div className="w-full flex gap-1 p-2 items-center">
-                    <SearchInput className="flex-1 max-w-[500px]" placeholder="Address" onChange={handleAddressChange} defaultValue={params?.address} />
-                    <Input className="w-[150px]" placeholder="Minimum Price" type="number" onChange={handleMinPriceChange} defaultValue={params?.minPrice} />
-                    <Input className="w-[150px]" placeholder="Maximum Price" type="number" onChange={handleMaxPriceChange} defaultValue={params?.maxPrice} />
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline">Occupancy Status <ChevronDown /></Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56" align="start">
-                            {Object.values(OccupancyStatus).map((occupancyStatus) => (
-                                <DropdownMenuCheckboxItem key={occupancyStatus} checked={params?.occupancyStatuses.includes(occupancyStatus)} onCheckedChange={(checked) => handleOccupancyStatusCheck(occupancyStatus, checked)} onSelect={(e) => e.preventDefault()}>
-                                    {occupancyStatusLabel[occupancyStatus]}
-                                </DropdownMenuCheckboxItem>
-                            ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
+                {isMobile ? (
+                    <div className="flex items-center p-2">
+                        <Sheet>
+                            <SheetTrigger asChild>
+                                <Button variant="outline" size="sm">
+                                    <Filter className="mr-2 h-4 w-4" /> Filters
+                                </Button>
+                            </SheetTrigger>
+
+                            <SheetContent side="left" className="w-[300px] gap-0">
+                                <SheetHeader>
+                                    <SheetTitle>Filter</SheetTitle>
+                                </SheetHeader>
+                                <div className="p-2">
+                                    <FilterBar params={params} handlers={{ handleAddressChange, handleMinPriceChange, handleMaxPriceChange, handleOccupancyStatusCheck }} />
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+                    </div>
+                ) : (
+                    <div className="flex gap-1 p-2 items-center">
+                        <FilterBar params={params} handlers={{ handleAddressChange, handleMinPriceChange, handleMaxPriceChange, handleOccupancyStatusCheck }} />
+                    </div>
+                )}
                 <GMap
                     mapId="f8c223bbf451ffb115f60be0"
                     className="flex-1 relative"
@@ -307,6 +315,36 @@ export default function Map({ className, ...props }: ComponentProps<typeof GMap>
                 </GMap>
             </div>
         </APIProvider>
+    );
+}
+
+function FilterBar({ params, handlers }: {
+    params: any,
+    handlers: any
+}) {
+    return (
+        <div className="w-full flex flex-col gap-2 md:flex-row md:items-center md:gap-1">
+            <SearchInput className="flex-1 max-w-[500px]" placeholder="Address" onChange={handlers.handleAddressChange} defaultValue={params?.address} />
+            <Input className="w-full md:w-[150px]" placeholder="Minimum Price" type="number" onChange={handlers.handleMinPriceChange} defaultValue={params?.minPrice} />
+            <Input className="w-full md:w-[150px]" placeholder="Maximum Price" type="number" onChange={handlers.handleMaxPriceChange} defaultValue={params?.maxPrice} />
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline">Occupancy Status <ChevronDown /></Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="start">
+                    {Object.values(OccupancyStatus).map((status) => (
+                        <DropdownMenuCheckboxItem
+                            key={status}
+                            checked={params?.occupancyStatuses.includes(status)}
+                            onCheckedChange={(checked) => handlers.handleOccupancyStatusCheck(status, checked)}
+                            onSelect={(e) => e.preventDefault()}
+                        >
+                            {occupancyStatusLabel[status]}
+                        </DropdownMenuCheckboxItem>
+                    ))}
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
     );
 }
 
