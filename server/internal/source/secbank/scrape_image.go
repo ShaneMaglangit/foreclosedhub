@@ -11,7 +11,6 @@ import (
 	"server/internal/service"
 )
 
-const scrapeListingImageJobInstance = 1
 const skipCountAfterNoop = 24 * 60 * scrapeListingImageJobInstance
 
 var listingImageSkipCounter = 0
@@ -22,10 +21,6 @@ type ScrapeListingImageJob struct {
 
 func NewScrapeListingImageJob(pool *pgxpool.Pool) *ScrapeListingImageJob {
 	return &ScrapeListingImageJob{pool: pool}
-}
-
-func (j *ScrapeListingImageJob) InstanceCount() int {
-	return scrapeListingImageJobInstance
 }
 
 func (j *ScrapeListingImageJob) Run() error {

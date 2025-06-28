@@ -7,18 +7,12 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-const scrapeListingJobInstance = 1
-
 type ScrapeListingJob struct {
 	pool *pgxpool.Pool
 }
 
 func NewScrapeListingJob(pool *pgxpool.Pool) *ScrapeListingJob {
 	return &ScrapeListingJob{pool: pool}
-}
-
-func (j *ScrapeListingJob) InstanceCount() int {
-	return scrapeListingJobInstance
 }
 
 func (j *ScrapeListingJob) Run() error {
@@ -49,6 +43,6 @@ func (j *ScrapeListingJob) Run() error {
 		tx.Rollback(ctx)
 		return err
 	}
-	
+
 	return tx.Commit(ctx)
 }

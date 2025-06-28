@@ -12,7 +12,6 @@ import (
 	"googlemaps.github.io/maps"
 )
 
-const instance = 1
 const skipCountAfterNoop = 24 * 60 * instance
 
 var skipCounter = 0
@@ -23,10 +22,6 @@ type Job struct {
 
 func NewJob(pool *pgxpool.Pool) *Job {
 	return &Job{pool: pool}
-}
-
-func (j *Job) InstanceCount() int {
-	return instance
 }
 
 func (j *Job) Run() error {

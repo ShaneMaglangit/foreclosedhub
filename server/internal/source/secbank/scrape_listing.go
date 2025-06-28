@@ -6,18 +6,12 @@ import (
 	"server/internal/db"
 )
 
-const scrapeListingJobInstance = 1
-
 type ScrapeListingJob struct {
 	pool *pgxpool.Pool
 }
 
 func NewScrapeListingJob(pool *pgxpool.Pool) *ScrapeListingJob {
 	return &ScrapeListingJob{pool: pool}
-}
-
-func (j *ScrapeListingJob) InstanceCount() int {
-	return scrapeListingJobInstance
 }
 
 func (j *ScrapeListingJob) Run() error {

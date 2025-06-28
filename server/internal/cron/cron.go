@@ -15,7 +15,6 @@ import (
 
 type Job interface {
 	Run() error
-	InstanceCount() int
 }
 
 type ScheduledJob struct {
@@ -27,9 +26,9 @@ type ScheduledJob struct {
 
 var scheduledJobs = []ScheduledJob{
 	{
-		name:       "PagibigScrapeListing",
-		schedule:   "0 0 * * *",
-		factory:    func(pool *pgxpool.Pool) Job { return pagibig.NewScrapeListingJob(pool) },
+		name:     "PagibigScrapeListing",
+		schedule: "0 0 * * *",
+		factory:  func(pool *pgxpool.Pool) Job { return pagibig.NewScrapeListingJob(pool) },
 	},
 	{
 		name:       "PagibigScrapeListingImages",
@@ -38,9 +37,9 @@ var scheduledJobs = []ScheduledJob{
 		factory:    func(pool *pgxpool.Pool) Job { return pagibig.NewScrapeListingImageJob(pool) },
 	},
 	{
-		name:       "SecbankScrapeListing",
-		schedule:   "0 0 * * *",
-		factory:    func(pool *pgxpool.Pool) Job { return secbank.NewScrapeListingJob(pool) },
+		name:     "SecbankScrapeListing",
+		schedule: "0 0 * * *",
+		factory:  func(pool *pgxpool.Pool) Job { return secbank.NewScrapeListingJob(pool) },
 	},
 	{
 		name:       "SecbankScrapeListingImages",
@@ -49,9 +48,9 @@ var scheduledJobs = []ScheduledJob{
 		factory:    func(pool *pgxpool.Pool) Job { return secbank.NewScrapeListingImageJob(pool) },
 	},
 	{
-		name:       "UnionbankScrapeListing",
-		schedule:   "0 0 * * *",
-		factory:    func(pool *pgxpool.Pool) Job { return unionbank.NewScrapeListingJob(pool) },
+		name:     "UnionbankScrapeListing",
+		schedule: "0 0 * * *",
+		factory:  func(pool *pgxpool.Pool) Job { return unionbank.NewScrapeListingJob(pool) },
 	},
 	{
 		name:       "UnionbankScrapeListingImages",
@@ -76,19 +75,17 @@ func Start(pool *pgxpool.Pool) *cron.Cron {
 		}
 
 		job := scheduledJob.factory(pool)
-		for range job.InstanceCount() {
-			_, err := c.AddFunc(scheduledJob.schedule, func() {
-				if err := job.Run(); err != nil {
-					log.Printf("%s: %v", scheduledJob.name, err)
-				}
-			})
-
-			if err != nil {
-				log.Printf("Error scheduling %s job: %v", scheduledJob.name, err)
+		_, err := c.AddFunc(scheduledJob.schedule, func() {
+			if err := job.Run(); err != nil {
+				log.Printf("%s: %v", scheduledJob.name, err)
 			}
+		})
 
-			log.Printf("Added %s job", scheduledJob.name)
+		if err != nil {
+			log.Printf("Error scheduling %s job: %v", scheduledJob.name, err)
 		}
+
+		log.Printf("Added %s job", scheduledJob.name)
 	}
 
 	log.Println("Scheduler started...")
