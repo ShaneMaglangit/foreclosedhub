@@ -9,7 +9,8 @@ SELECT *
 FROM listings
 WHERE ST_Intersects(
         coordinate,
-        ST_SetSRID(ST_MakeEnvelope(@min_lng::double precision, @min_lat::double precision, @max_lng::double precision, @max_lat::double precision), 4326)::geography
+        ST_SetSRID(ST_MakeEnvelope(@min_lng::double precision, @min_lat::double precision, @max_lng::double precision,
+                                   @max_lat::double precision), 4326)::geography
       )
   AND address ILIKE '%' || @address::text || '%'
   AND source = ANY (@sources::source[])
@@ -60,8 +61,9 @@ WHERE listings.source = @source::source
 -- name: GetListingNotGeocoded :one
 SELECT id, address
 FROM listings
-WHERE geocoded_at IS NULL
-  AND status = 'active'::listing_status
+WHERE status = 'active'::listing_status
+  -- Note: Coordinates must be refreshed every 30 days to abide by Google Map's policy.
+  AND (geocoded_at IS NULL OR geocoded_at < NOW() - INTERVAL '30 days')
 LIMIT 1;
 
 -- name: UpdateListingCoordinate :exec

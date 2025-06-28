@@ -65,8 +65,9 @@ func (q *Queries) GetListingByImageNotLoaded(ctx context.Context, source Source)
 const getListingNotGeocoded = `-- name: GetListingNotGeocoded :one
 SELECT id, address
 FROM listings
-WHERE geocoded_at IS NULL
-  AND status = 'active'::listing_status
+WHERE status = 'active'::listing_status
+  -- Note: Coordinates must be refreshed every 30 days to abide by Google Map's policy.
+  AND (geocoded_at IS NULL OR geocoded_at < NOW() - INTERVAL '30 days')
 LIMIT 1
 `
 
@@ -82,44 +83,13 @@ func (q *Queries) GetListingNotGeocoded(ctx context.Context) (*GetListingNotGeoc
 	return &i, err
 }
 
-const getListingsByImageNotLoaded = `-- name: GetListingsByImageNotLoaded :many
-SELECT id, payload
-FROM listings
-WHERE source = $1::source
-  AND image_loaded = FALSE
-`
-
-type GetListingsByImageNotLoadedRow struct {
-	ID      int64
-	Payload []byte
-}
-
-func (q *Queries) GetListingsByImageNotLoaded(ctx context.Context, source Source) ([]*GetListingsByImageNotLoadedRow, error) {
-	rows, err := q.db.Query(ctx, getListingsByImageNotLoaded, source)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []*GetListingsByImageNotLoadedRow
-	for rows.Next() {
-		var i GetListingsByImageNotLoadedRow
-		if err := rows.Scan(&i.ID, &i.Payload); err != nil {
-			return nil, err
-		}
-		items = append(items, &i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const getListingsInBoundary = `-- name: GetListingsInBoundary :many
 SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate
 FROM listings
 WHERE ST_Intersects(
         coordinate,
-        ST_SetSRID(ST_MakeEnvelope($1::double precision, $2::double precision, $3::double precision, $4::double precision), 4326)::geography
+        ST_SetSRID(ST_MakeEnvelope($1::double precision, $2::double precision, $3::double precision,
+                                   $4::double precision), 4326)::geography
       )
   AND address ILIKE '%' || $5::text || '%'
   AND source = ANY ($6::source[])
