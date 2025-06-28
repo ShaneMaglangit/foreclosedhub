@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"log"
-	"server/internal/cron"
+
+	// "server/internal/cron"
 	"server/internal/db"
-	"server/internal/graph"
+	"server/internal/source/unionbank"
+	// "server/internal/graph"
 
 	"github.com/joho/godotenv"
 )
@@ -20,8 +22,10 @@ func main() {
 	}
 	defer pool.Close()
 
-	c := cron.Start(pool)
-	defer c.Stop()
+	log.Println(unionbank.NewScrapeListingJob(pool).Run())
 
-	graph.Serve(pool)
+	// c := cron.Start(pool)
+	// defer c.Stop()
+
+	// graph.Serve(pool)
 }
