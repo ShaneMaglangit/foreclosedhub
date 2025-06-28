@@ -11,7 +11,7 @@ import (
 	"server/internal/service"
 )
 
-const skipCountAfterNoop = 24 * 60 * scrapeListingImageJobInstance
+const skipCountAfterNoop = 24 * 60
 
 var listingImageSkipCounter = 0
 

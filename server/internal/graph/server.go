@@ -30,7 +30,7 @@ var (
 	visitors   = make(map[string]*rate.Limiter)
 	mu         sync.Mutex
 	rateLimit  = rate.Every(1 * time.Second)
-	burstLimit = 10                      
+	burstLimit = 10
 )
 
 func getVisitor(ip string) *rate.Limiter {

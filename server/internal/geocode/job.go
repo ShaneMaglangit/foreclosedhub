@@ -12,7 +12,7 @@ import (
 	"googlemaps.github.io/maps"
 )
 
-const skipCountAfterNoop = 24 * 60 * instance
+const skipCountAfterNoop = 24 * 60
 
 var skipCounter = 0
 

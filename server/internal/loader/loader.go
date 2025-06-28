@@ -41,7 +41,7 @@ func NewLoaders(pool *pgxpool.Pool) *Loaders {
 
 				result := make([][]*model.ListingImage, len(keys))
 				for i, key := range keys {
-					result[i] = mapping[key] 
+					result[i] = mapping[key]
 				}
 
 				return result, nil

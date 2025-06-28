@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-const skipCountAfterNoop = 24 * 60 * scrapeListingImageJobInstance
+const skipCountAfterNoop = 24 * 60
 
 var listingImageSkipCounter = 0
 

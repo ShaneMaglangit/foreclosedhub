@@ -6,8 +6,8 @@ import useEmblaCarousel, {
 } from "embla-carousel-react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 
-import { Button } from "@web/components/ui/button"
 import { cn } from "@web/lib/utils/utils"
+import { Button } from "@web/components/ui/button"
 
 type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
@@ -54,7 +54,6 @@ function Carousel({
   const [carouselRef, api] = useEmblaCarousel(
     {
       ...opts,
-      watchDrag: false,
       axis: orientation === "horizontal" ? "x" : "y",
     },
     plugins
@@ -134,7 +133,7 @@ function Carousel({
 }
 
 function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
-  const { carouselRef, orientation, canScrollNext, canScrollPrev } = useCarousel()
+  const { carouselRef, orientation } = useCarousel()
 
   return (
     <div
@@ -186,9 +185,9 @@ function CarouselPrevious({
       variant={variant}
       size={size}
       className={cn(
-        "absolute size-8 rounded-full cursor-pointer",
+        "absolute size-8 rounded-full",
         orientation === "horizontal"
-          ? "top-1/2 left-4"
+          ? "top-1/2 -left-12 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
@@ -216,9 +215,9 @@ function CarouselNext({
       variant={variant}
       size={size}
       className={cn(
-        "absolute size-8 rounded-full cursor-pointer",
+        "absolute size-8 rounded-full",
         orientation === "horizontal"
-          ? "top-1/2 right-4"
+          ? "top-1/2 -right-12 -translate-y-1/2"
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
