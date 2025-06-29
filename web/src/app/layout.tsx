@@ -27,6 +27,14 @@ export const metadata: Metadata = {
     "cheap lots for sale",
     "foreclosed listings Philippines",
   ],
+  icons: {
+    icon: [
+      {
+        url: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2280%22 font-size=%2290%22>🏠</text></svg>",
+        type: "image/svg+xml",
+      },
+    ],
+  },
   metadataBase: new URL("https://www.foreclosedhub.com"),
   openGraph: {
     title: "ForeclosedHub | Foreclosed Properties in the Philippines",

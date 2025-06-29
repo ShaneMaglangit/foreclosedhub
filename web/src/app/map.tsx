@@ -41,6 +41,7 @@ import {
   ChevronDown,
   ExternalLink,
   Filter,
+  Mailbox,
   PhilippinePeso,
   Search,
 } from "lucide-react";
@@ -485,6 +486,16 @@ function FilterBar({ params, handlers }: { params: any; handlers: any }) {
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
+      <Button variant="link" asChild>
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLScnO8sK4I05BtWG7iE8s4wiSLEjCxhWdiToaZrLLr3ssQRuHw/viewform?usp=header"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-blue-600 hover:underline md:ml-auto"
+        >
+          <Mailbox /> Join Mailing List
+        </a>
+      </Button>
     </div>
   );
 }
