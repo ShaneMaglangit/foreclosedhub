@@ -375,28 +375,30 @@ export default function Map({
                 </Carousel>
               )}
               <div className="rounded-lg shadow-md border bg-card text-card-foreground p-4 space-y-3 w-full max-w-md">
-                <div className="flex gap-1 items-start">
+                <div className="flex flex-col-reverse md:flex-row gap-3 md:gap-1 items-start">
                   <div className="flex-1 text-xl font-semibold text-primary leading-tight">
                     ₱{formatNumeric(selected.price)}
                   </div>
-                  <span
-                    className={cn(
-                      "text-xs bg-muted px-2 py-0.5 rounded font-semibold",
-                      sourceBadgeColor[selected.source],
-                    )}
-                  >
-                    {sourceLabel[selected.source]}
-                  </span>
-                  {selected.occupancyStatus !== "unspecified" && (
+                  <div className="flex flex-wrap gap-1">
                     <span
                       className={cn(
                         "text-xs bg-muted px-2 py-0.5 rounded font-semibold",
-                        occupancyStatusBadgeColor[selected.occupancyStatus],
+                        sourceBadgeColor[selected.source],
                       )}
                     >
-                      {occupancyStatusLabel[selected.occupancyStatus]}
+                      {sourceLabel[selected.source]}
                     </span>
-                  )}
+                    {selected.occupancyStatus !== "unspecified" && (
+                      <span
+                        className={cn(
+                          "text-xs bg-muted px-2 py-0.5 rounded font-semibold",
+                          occupancyStatusBadgeColor[selected.occupancyStatus],
+                        )}
+                      >
+                        {occupancyStatusLabel[selected.occupancyStatus]}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="text-sm text-muted-foreground">
                   {selected.address}

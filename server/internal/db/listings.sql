@@ -18,7 +18,7 @@ WHERE ST_Intersects(
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
   AND status = 'active'
   AND geocoded_at IS NOT NULL
-LIMIT 1000;
+LIMIT 500;
 
 -- name: GetListingByImageNotLoaded :one
 SELECT id, external_id, payload
