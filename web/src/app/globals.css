@@ -4,8 +4,6 @@
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
 
     --color-chart-5: var(--chart-5);
     --color-chart-4: var(--chart-4);
@@ -43,13 +41,13 @@
     --radius-xl: calc(var(--radius) + 4px);
 }
 
-.gm-style {
-    div[role="dialog"] {
-        padding: 0px !important;
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
 
-        .gm-style-iw-d {
-            overflow: auto !important;
-        }
+    body {
+        @apply bg-background text-foreground;
     }
 }
 
@@ -88,12 +86,12 @@
     --sidebar-ring: oklch(0.709 0.01 56.259);
 }
 
-@layer base {
-    * {
-        @apply border-border outline-ring/50;
-    }
+.gm-style {
+    div[role="dialog"] {
+        padding: 0 !important;
 
-    body {
-        @apply bg-background text-foreground;
+        .gm-style-iw-d {
+            overflow: auto !important;
+        }
     }
 }
