@@ -37,7 +37,13 @@ import {
   Source,
 } from "@web/lib/graphql/generated/graphql";
 import { Input } from "@web/components/ui/input";
-import { ChevronDown, ExternalLink, Filter, Search } from "lucide-react";
+import {
+  ChevronDown,
+  ExternalLink,
+  Filter,
+  PhilippinePeso,
+  Search,
+} from "lucide-react";
 import { Button } from "@web/components/ui/button";
 import {
   DropdownMenu,
@@ -103,6 +109,7 @@ export default function Map({
   const searchParams = useSearchParams();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
+  const [filterOpen, setFilterOpen] = useState(false);
   const [listings, setListings] = useState<Listing[]>([]);
   const [selected, setSelected] = useState<undefined | Listing>();
 
@@ -259,49 +266,50 @@ export default function Map({
     if (nodes) setListings(nodes);
   }, [data]);
 
+  useEffect(() => {
+    if (!isMobile) setFilterOpen(false);
+  }, [isMobile]);
+
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_MAPS_API_KEY}>
       <div className={cn("h-full w-full flex flex-col", className)}>
-        {isMobile ? (
-          <div className="flex items-center p-2">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Filter className="mr-2 h-4 w-4" /> Filters
-                </Button>
-              </SheetTrigger>
+        <div className="flex md:hidden items-center p-2">
+          <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Filter className="mr-2 h-4 w-4" /> Filters
+              </Button>
+            </SheetTrigger>
 
-              <SheetContent side="left" className="w-[300px] gap-0">
-                <SheetHeader>
-                  <SheetTitle>Filter</SheetTitle>
-                </SheetHeader>
-                <div className="p-2">
-                  <FilterBar
-                    params={params}
-                    handlers={{
-                      handleAddressChange,
-                      handleMinPriceChange,
-                      handleMaxPriceChange,
-                      handleOccupancyStatusCheck,
-                    }}
-                  />
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        ) : (
-          <div className="flex gap-1 p-2 items-center">
-            <FilterBar
-              params={params}
-              handlers={{
-                handleAddressChange,
-                handleMinPriceChange,
-                handleMaxPriceChange,
-                handleOccupancyStatusCheck,
-              }}
-            />
-          </div>
-        )}
+            <SheetContent side="left" className="w-[300px] gap-0">
+              <SheetHeader>
+                <SheetTitle>Filter</SheetTitle>
+              </SheetHeader>
+              <div className="p-2">
+                <FilterBar
+                  params={params}
+                  handlers={{
+                    handleAddressChange,
+                    handleMinPriceChange,
+                    handleMaxPriceChange,
+                    handleOccupancyStatusCheck,
+                  }}
+                />
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+        <div className="hidden md:flex gap-1 p-2 items-center">
+          <FilterBar
+            params={params}
+            handlers={{
+              handleAddressChange,
+              handleMinPriceChange,
+              handleMaxPriceChange,
+              handleOccupancyStatusCheck,
+            }}
+          />
+        </div>
         <GMap
           mapId="f8c223bbf451ffb115f60be0"
           className="flex-1 relative"
@@ -323,10 +331,17 @@ export default function Map({
             >
               <div
                 className={cn(
-                  "p-1 rounded-full border border-gray-200 text-md font-medium",
-                  getPriceCategoryColor(listing.price),
+                  "p-1 pr-2 rounded-full border border-gray-500 bg-white text-md font-medium flex items-center gap-1",
                 )}
               >
+                <span
+                  className={cn(
+                    "rounded-full p-1",
+                    getPriceCategoryColor(listing.price),
+                  )}
+                >
+                  <PhilippinePeso className="h-2 w-2 " />
+                </span>
                 {formatNumeric(listing.price)}
               </div>
             </AdvancedMarker>
@@ -451,7 +466,7 @@ function FilterBar({ params, handlers }: { params: any; handlers: any }) {
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline">
+          <Button className="flex justify-between" variant="outline">
             Occupancy Status <ChevronDown />
           </Button>
         </DropdownMenuTrigger>
@@ -550,11 +565,11 @@ function SearchInput({ className, ...props }: ComponentProps<typeof Input>) {
 }
 
 function getPriceCategoryColor(price: number): string {
-  if (price < 500_000) return "bg-green-200 text-green-900";
-  if (price < 1_000_000) return "bg-green-400 text-green-900";
+  if (price < 500_000) return "bg-gray-200 text-black";
+  if (price < 1_000_000) return "bg-green-400 text-black";
   if (price < 5_000_000) return "bg-green-600 text-white";
-  if (price < 10_000_000) return "bg-amber-400 text-amber-900";
-  return "bg-amber-500 text-amber-900";
+  if (price < 10_000_000) return "bg-amber-400 text-white";
+  return "bg-amber-500 text-white";
 }
 
 function isZodArrayType(schema: any): schema is ZodArray<any> {
