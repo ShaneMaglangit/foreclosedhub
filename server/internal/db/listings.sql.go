@@ -97,7 +97,7 @@ WHERE ST_Intersects(
   AND price BETWEEN $8::bigint AND COALESCE($9, 9223372036854775807)
   AND status = 'active'
   AND geocoded_at IS NOT NULL
-LIMIT 500
+LIMIT $10::int
 `
 
 type GetListingsInBoundaryParams struct {
@@ -110,6 +110,7 @@ type GetListingsInBoundaryParams struct {
 	OccupancyStatuses []OccupancyStatus
 	MinPrice          int64
 	MaxPrice          pgtype.Int8
+	PageSize          int32
 }
 
 func (q *Queries) GetListingsInBoundary(ctx context.Context, arg GetListingsInBoundaryParams) ([]*Listing, error) {
@@ -123,6 +124,7 @@ func (q *Queries) GetListingsInBoundary(ctx context.Context, arg GetListingsInBo
 		arg.OccupancyStatuses,
 		arg.MinPrice,
 		arg.MaxPrice,
+		arg.PageSize,
 	)
 	if err != nil {
 		return nil, err

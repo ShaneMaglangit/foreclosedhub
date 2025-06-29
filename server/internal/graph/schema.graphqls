@@ -44,5 +44,5 @@ type Listing {
 }
 
 type Query {
-  listings(minLatitude: Float!, maxLatitude: Float!, minLongitude: Float!, maxLongitude: Float!, address: String, minPrice: Int64, maxPrice: Int64, occupancyStatuses: [OccupancyStatus!]): ListingConnection!
+  listings(minLatitude: Float!, maxLatitude: Float!, minLongitude: Float!, maxLongitude: Float!, address: String, minPrice: Int64, maxPrice: Int64, occupancyStatuses: [OccupancyStatus!], pageSize: Int!): ListingConnection!
 }

@@ -20,7 +20,7 @@ func (r *listingResolver) Images(ctx context.Context, obj *model.Listing) ([]*mo
 }
 
 // Listings is the resolver for the listings field.
-func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string, minPrice *int64, maxPrice *int64, occupancyStatuses []db.OccupancyStatus) (*model.ListingConnection, error) {
+func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLatitude float64, minLongitude float64, maxLongitude float64, address *string, minPrice *int64, maxPrice *int64, occupancyStatuses []db.OccupancyStatus, pageSize int32) (*model.ListingConnection, error) {
 	params := db.GetListingsInBoundaryParams{
 		MinLat:            minLatitude,
 		MaxLat:            maxLatitude,
@@ -28,6 +28,7 @@ func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLa
 		MaxLng:            maxLongitude,
 		Sources:           []db.Source{db.SourcePagibig, db.SourceSecbank, db.SourceUnionbank},
 		OccupancyStatuses: []db.OccupancyStatus{db.OccupancyStatusOccupied, db.OccupancyStatusUnoccupied, db.OccupancyStatusUnspecified},
+		PageSize:          min(pageSize, 1000),
 	}
 
 	if minPrice != nil {

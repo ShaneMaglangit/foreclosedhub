@@ -144,6 +144,7 @@ export default function Map({
         maxPrice: params.maxPrice,
         address: params.address,
         occupancyStatuses: params.occupancyStatuses,
+        pageSize: isMobile ? 100 : 1000,
       });
     },
     enabled: !!params,
