@@ -105,8 +105,8 @@ deploy_server:
     - |
       ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP <<-'EOF'
       sudo apt-get update
-      sudo apt-get install -y pkg-config libgeos-dev
-      
+      sudo apt-get install -y pkg-config libgeos-dev nginx
+
       echo '[Unit]
       Description=Go Server for ForeclosedHub
       After=network.target
@@ -127,6 +127,25 @@ deploy_server:
       sudo systemctl daemon-reload
       sudo systemctl enable foreclosedhub.service
       sudo systemctl restart foreclosedhub.service
+
+      # Write Nginx reverse proxy config
+      echo 'server {
+          listen 80;
+          server_name api.foreclosedhub.com;
+
+          location / {
+              proxy_pass http://localhost:8080;
+              proxy_http_version 1.1;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+          }
+      }' | sudo tee /etc/nginx/sites-available/foreclosedhub > /dev/null
+
+      sudo ln -sf /etc/nginx/sites-available/foreclosedhub /etc/nginx/sites-enabled/foreclosedhub
+      sudo rm -f /etc/nginx/sites-enabled/default
+      sudo nginx -t && sudo systemctl reload nginx
       EOF
 
 deploy_web:

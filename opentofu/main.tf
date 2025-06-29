@@ -145,9 +145,17 @@ resource "aws_security_group" "allow_inbound_ssh_gql" {
   }
 
   ingress {
-    description = "GraphQL IPv4"
-    from_port   = 8080
-    to_port     = 8080
+    description = "HTTP IPv4"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTPS IPv4"
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -161,10 +169,18 @@ resource "aws_security_group" "allow_inbound_ssh_gql" {
   }
 
   ingress {
-    description      = "GraphQL IPv6"
-    from_port        = 8080
-    to_port          = 8080
-    protocol         = "tcp"
+    description = "HTTP IPv6"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    description = "HTTPS IPv6"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     ipv6_cidr_blocks = ["::/0"]
   }
 
