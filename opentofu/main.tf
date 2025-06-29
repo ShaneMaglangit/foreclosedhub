@@ -169,18 +169,18 @@ resource "aws_security_group" "allow_inbound_ssh_gql" {
   }
 
   ingress {
-    description = "HTTP IPv6"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
+    description      = "HTTP IPv6"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
     ipv6_cidr_blocks = ["::/0"]
   }
 
   ingress {
-    description = "HTTPS IPv6"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    description      = "HTTPS IPv6"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
     ipv6_cidr_blocks = ["::/0"]
   }
 
