@@ -73,6 +73,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} ${jetBrainsMono.variable}`}>
         {children}
+        <Analytics />
       </body>
     </html>
   );
