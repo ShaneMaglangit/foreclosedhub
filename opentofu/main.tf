@@ -103,7 +103,7 @@ resource "aws_internet_gateway" "app" {
 resource "aws_subnet" "public_1a" {
   vpc_id                          = aws_vpc.app.id
   cidr_block                      = "10.0.1.0/24"
-  ipv6_cidr_block = cidrsubnet(aws_vpc.app.ipv6_cidr_block, 8, 0)
+  ipv6_cidr_block                 = cidrsubnet(aws_vpc.app.ipv6_cidr_block, 8, 0)
   assign_ipv6_address_on_creation = true
   map_public_ip_on_launch         = true
 }
@@ -153,32 +153,32 @@ resource "aws_security_group" "allow_inbound_ssh_gql" {
   }
 
   ingress {
-    description = "SSH IPv6"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
+    description      = "SSH IPv6"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
     ipv6_cidr_blocks = ["::/0"]
   }
 
   ingress {
-    description = "GraphQL IPv6"
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
+    description      = "GraphQL IPv6"
+    from_port        = 8080
+    to_port          = 8080
+    protocol         = "tcp"
     ipv6_cidr_blocks = ["::/0"]
   }
 
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
     ipv6_cidr_blocks = ["::/0"]
   }
 }
@@ -188,14 +188,14 @@ resource "aws_instance" "server" {
   instance_type               = "t2.micro"
   key_name                    = aws_key_pair.ci_ssh.key_name
   subnet_id                   = aws_subnet.public_1a.id
-  vpc_security_group_ids = [aws_security_group.allow_inbound_ssh_gql.id]
+  vpc_security_group_ids      = [aws_security_group.allow_inbound_ssh_gql.id]
   associate_public_ip_address = true
 
   ipv6_address_count = 1
 }
 
 resource "aws_eip" "server" {
-  domain   = "vpc"
+  domain = "vpc"
 }
 
 resource "aws_eip_association" "eip_assoc" {
@@ -230,13 +230,13 @@ resource "vercel_project_environment_variables" "web" {
   project_id = vercel_project.web.id
   variables = [
     {
-      key   = "NEXT_PUBLIC_GRAPHQL_URI"
-      value = "https://api.foreclosedhub.com/graphql"
+      key    = "NEXT_PUBLIC_GRAPHQL_URI"
+      value  = "https://api.foreclosedhub.com/graphql"
       target = ["production"]
     },
     {
-      key   = "NEXT_PUBLIC_MAPS_API_KEY"
-      value = var.maps_api_key
+      key    = "NEXT_PUBLIC_MAPS_API_KEY"
+      value  = var.maps_api_key
       target = ["production"]
     }
   ]
@@ -270,7 +270,7 @@ resource "cloudflare_r2_custom_domain" "storage" {
 
 resource "cloudflare_dns_record" "api" {
   zone_id = var.cloudflare_zone_id
-  content   = aws_eip.server.public_ip
+  content = aws_eip.server.public_ip
   name    = "api"
   type    = "A"
   ttl     = 1
