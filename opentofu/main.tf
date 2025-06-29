@@ -270,7 +270,7 @@ resource "cloudflare_r2_custom_domain" "storage" {
 
 resource "cloudflare_dns_record" "api" {
   zone_id = var.cloudflare_zone_id
-  content   = aws_eip.server_ip.public_ip
+  content   = aws_eip.server.public_ip
   name    = "api"
   type    = "A"
   ttl     = 1
