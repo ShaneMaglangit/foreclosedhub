@@ -356,7 +356,7 @@ export default function Map({
               maxWidth={isMobile ? undefined : 400}
             >
               {selected.images?.length > 0 && (
-                <Carousel>
+                <Carousel opts={{ watchDrag: false }}>
                   <CarouselContent>
                     {selected.images.map((image) => (
                       <CarouselItem key={image.id}>
