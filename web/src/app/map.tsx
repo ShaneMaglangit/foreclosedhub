@@ -343,7 +343,7 @@ export default function Map({
             <AdvancedMarker
               key={listing.id}
               position={{ lat: listing.latitude, lng: listing.longitude }}
-              onClick={() => setSelected(listing)}
+              onClick={() => setSelected({ ...listing })}
             >
               <div className="flex items-center gap-1 rounded-full border border-gray-300 bg-white p-1 text-xs font-medium">
                 <div
