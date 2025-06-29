@@ -59,6 +59,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@web/components/ui/sheet";
+import { toast } from "sonner";
 
 const occupancyStatusLabel = {
   occupied: "Occupied",
@@ -144,7 +145,7 @@ export default function Map({
         maxPrice: params.maxPrice,
         address: params.address,
         occupancyStatuses: params.occupancyStatuses,
-        pageSize: isMobile ? 100 : 1000,
+        pageSize: isMobile ? 100 : 500,
       });
     },
     enabled: !!params,
@@ -271,6 +272,19 @@ export default function Map({
   useEffect(() => {
     if (!isMobile) setFilterOpen(false);
   }, [isMobile]);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    toast.custom(() => (
+      <div className="flex flex-col items-start gap-1 bg-white p-3 rounded-xl shadow-md">
+        <p className="font-semibold">Hey there! 👋</p>
+        <p className="text-sm text-muted-foreground">
+          For the best experience, we recommend using a laptop or desktop to
+          browse the site.
+        </p>
+      </div>
+    ));
+  }, []);
 
   return (
     <APIProvider apiKey={env.NEXT_PUBLIC_MAPS_API_KEY}>

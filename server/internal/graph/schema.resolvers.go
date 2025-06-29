@@ -28,7 +28,7 @@ func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLa
 		MaxLng:            maxLongitude,
 		Sources:           []db.Source{db.SourcePagibig, db.SourceSecbank, db.SourceUnionbank},
 		OccupancyStatuses: []db.OccupancyStatus{db.OccupancyStatusOccupied, db.OccupancyStatusUnoccupied, db.OccupancyStatusUnspecified},
-		PageSize:          min(pageSize, 1000),
+		PageSize:          min(pageSize, 500),
 	}
 
 	if minPrice != nil {

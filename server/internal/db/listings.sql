@@ -18,7 +18,8 @@ WHERE ST_Intersects(
   AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
   AND status = 'active'
   AND geocoded_at IS NOT NULL
-LIMIT @page_size::int;
+ORDER BY coordinate <-> ST_SetSRID(ST_MakePoint(@center_lng::double precision, @center_lat::double precision), 4326)
+LIMIT @page_size;
 
 -- name: GetListingByImageNotLoaded :one
 SELECT id, external_id, payload

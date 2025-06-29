@@ -3,6 +3,7 @@ import "./globals.css";
 import { ReactNode } from "react";
 import { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import { Toaster } from "@web/components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -74,6 +75,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} ${jetBrainsMono.variable}`}>
         {children}
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            className: "mt-[48px]",
+          }}
+        />
         <Analytics />
       </body>
     </html>
