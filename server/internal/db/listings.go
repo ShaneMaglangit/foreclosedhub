@@ -28,10 +28,6 @@ func (l ListingsRepositoryImpl) GetListing(ctx context.Context, dbtx DBTX, id in
 }
 
 func (l ListingsRepositoryImpl) GetListingsInBoundary(ctx context.Context, dbtx DBTX, params GetListingsInBoundaryParams) ([]*Listing, error) {
-	if params.CenterLng == 0 && params.CenterLat == 0 {
-		params.CenterLng = (params.MinLng + params.MaxLng) / 2.0
-		params.CenterLat = (params.MinLat + params.MaxLat) / 2.0
-	}
 	return New(dbtx).GetListingsInBoundary(ctx, params)
 }
 
