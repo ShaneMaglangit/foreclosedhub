@@ -97,6 +97,7 @@ WHERE ST_Intersects(
   AND price BETWEEN $8::bigint AND COALESCE($9, 9223372036854775807)
   AND status = 'active'
   AND geocoded_at IS NOT NULL
+ORDER BY id
 LIMIT $10
 `
 
