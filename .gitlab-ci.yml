@@ -129,25 +129,25 @@ deploy_server:
       sudo systemctl restart foreclosedhub.service
       EOF
 
-  deploy_web:
-    stage: deploy
-    image: node:23.10.0
-    needs:
-      - job: apply
-      - job: deploy_server
-        optional: true
-    rules:
-      - changes:
-          - web/**/*
-          - opentofu/**/*
-          - .gitlab-ci.yml
-        when: on_success
-      - when: manual
-        allow_failure: true
-    script:
-      - cd web
-      - npm install --global vercel
-      - vercel link --yes --project foreclosedhub --token=$TF_VAR_vercel_token
-      - vercel pull --yes --environment=production --token=$TF_VAR_vercel_token
-      - vercel build --prod --token=$TF_VAR_vercel_token
-      - vercel deploy --prebuilt --prod --token=$TF_VAR_vercel_token
+deploy_web:
+  stage: deploy
+  image: node:23.10.0
+  needs:
+    - job: apply
+    - job: deploy_server
+      optional: true
+  rules:
+    - changes:
+        - web/**/*
+        - opentofu/**/*
+        - .gitlab-ci.yml
+      when: on_success
+    - when: manual
+      allow_failure: true
+  script:
+    - cd web
+    - npm install --global vercel
+    - vercel link --yes --project foreclosedhub --token=$TF_VAR_vercel_token
+    - vercel pull --yes --environment=production --token=$TF_VAR_vercel_token
+    - vercel build --prod --token=$TF_VAR_vercel_token
+    - vercel deploy --prebuilt --prod --token=$TF_VAR_vercel_token
