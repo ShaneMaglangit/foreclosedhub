@@ -145,7 +145,7 @@ export default function Map({
         maxPrice: params.maxPrice,
         address: params.address,
         occupancyStatuses: params.occupancyStatuses,
-        pageSize: isMobile ? 100 : 500,
+        pageSize: isMobile ? 200 : 500,
       });
     },
     enabled: !!params,
@@ -345,19 +345,15 @@ export default function Map({
               position={{ lat: listing.latitude, lng: listing.longitude }}
               onClick={() => setSelected(listing)}
             >
-              <div
-                className={cn(
-                  "p-1 pr-2 rounded-full border border-gray-500 bg-white text-md font-medium flex items-center gap-1",
-                )}
-              >
-                <span
+              <div className="flex items-center gap-1 rounded-full border border-gray-300 bg-white px-2 py-1 text-xs font-medium">
+                <div
                   className={cn(
-                    "rounded-full p-1",
+                    "rounded-full p-0.5",
                     getPriceCategoryColor(listing.price),
                   )}
                 >
-                  <PhilippinePeso className="h-2 w-2 " />
-                </span>
+                  <PhilippinePeso className="h-2 w-2" />
+                </div>
                 {formatNumeric(listing.price)}
               </div>
             </AdvancedMarker>
