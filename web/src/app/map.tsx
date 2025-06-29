@@ -345,7 +345,7 @@ export default function Map({
               position={{ lat: listing.latitude, lng: listing.longitude }}
               onClick={() => setSelected(listing)}
             >
-              <div className="flex items-center gap-1 rounded-full border border-gray-300 bg-white px-2 py-1 text-xs font-medium">
+              <div className="flex items-center gap-1 rounded-full border border-gray-300 bg-white p-1 text-xs font-medium">
                 <div
                   className={cn(
                     "rounded-full p-0.5",
@@ -385,7 +385,7 @@ export default function Map({
                   <CarouselNext />
                 </Carousel>
               )}
-              <div className="rounded-lg shadow-md border bg-card text-card-foreground p-4 space-y-3 w-full max-w-md">
+              <div className="bg-card text-card-foreground p-4 space-y-3 w-full max-w-md">
                 <div className="flex flex-col-reverse md:flex-row gap-3 md:gap-1 items-start">
                   <div className="flex-1 text-xl font-semibold text-primary leading-tight">
                     ₱{formatNumeric(selected.price)}
