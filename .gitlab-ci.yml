@@ -153,8 +153,6 @@ deploy_web:
   image: node:23.10.0
   needs:
     - job: apply
-    - job: deploy_server
-      optional: true
   rules:
     - changes:
         - web/**/*
