@@ -5,24 +5,35 @@ WHERE id = @id::bigint
 LIMIT 1;
 
 -- name: GetListingsInBoundary :many
-SELECT DISTINCT ON (coordinate_grid) *
-FROM listings
-WHERE ST_Intersects(
-        coordinate,
-        ST_SetSRID(ST_MakeEnvelope(
-                           @min_lng::double precision,
-                           @min_lat::double precision,
-                           @max_lng::double precision,
-                           @max_lat::double precision
-                   ), 4326)::geography
-      )
-  AND (address % @address::text OR coalesce(@address::text, '') = '')
-  AND source = ANY (@sources::source[])
-  AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
-  AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
-  AND status = 'active'
-  AND geocoded_at IS NOT NULL
-ORDER BY coordinate_grid, id
+WITH filtered_listings AS (SELECT *
+                           FROM listings
+                           WHERE ST_Intersects(
+                                   coordinate,
+                                   ST_SetSRID(ST_MakeEnvelope(
+                                                      @min_lng::double precision,
+                                                      @min_lat::double precision,
+                                                      @max_lng::double precision,
+                                                      @max_lat::double precision
+                                              ), 4326)::geography
+                                 )
+                             AND (address % @address::text OR coalesce(@address::text, '') = '')
+                             AND source = ANY (@sources::source[])
+                             AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
+                             AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
+                             AND status = 'active'
+                             AND geocoded_at IS NOT NULL),
+     first_picks AS (SELECT DISTINCT ON (coordinate_grid) *
+                     FROM filtered_listings
+                     ORDER BY coordinate_grid, id),
+     remaining_listings AS (SELECT *
+                            FROM filtered_listings
+                            WHERE id NOT IN (SELECT id FROM first_picks))
+SELECT *
+FROM (SELECT *
+      FROM first_picks
+      UNION ALL
+      SELECT *
+      FROM remaining_listings) AS combined_results
 LIMIT @page_size::int;
 
 -- name: GetListingByImageNotLoaded :one
