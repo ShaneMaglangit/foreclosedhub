@@ -13,7 +13,7 @@ import (
 )
 
 const getListing = `-- name: GetListing :one
-SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate
+SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, coordinate_grid
 FROM listings
 WHERE id = $1::bigint
 LIMIT 1
@@ -38,6 +38,7 @@ func (q *Queries) GetListing(ctx context.Context, id int64) (*Listing, error) {
 		&i.Status,
 		&i.GeocodedAt,
 		&i.Coordinate,
+		&i.CoordinateGrid,
 	)
 	return &i, err
 }
@@ -85,30 +86,34 @@ func (q *Queries) GetListingNotGeocoded(ctx context.Context) (*GetListingNotGeoc
 }
 
 const getListingsInBoundary = `-- name: GetListingsInBoundary :many
-WITH filtered_listings AS (SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate
-                           FROM listings
-                           WHERE ST_Intersects(
-                                   coordinate,
-                                   ST_SetSRID(ST_MakeEnvelope(
-                                                      $2::double precision,
-                                                      $3::double precision,
-                                                      $4::double precision,
-                                                      $5::double precision
-                                              ), 4326)::geography
-                                 )
-                             AND address ILIKE '%' || $6::text || '%'
-                             AND source = ANY ($7::source[])
-                             AND occupancy_status = ANY ($8::occupancy_status[])
-                             AND price BETWEEN $9::bigint AND COALESCE($10, 9223372036854775807)
-                             AND status = 'active'
-                             AND geocoded_at IS NOT NULL),
-     ranked AS (SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate,
-                       ROW_NUMBER() OVER (
-                           PARTITION BY ST_SnapToGrid(coordinate::geometry, 0.01, 0.01)
-                           ORDER BY id ASC
-                           ) AS rn
-                FROM filtered_listings)
-SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, rn
+WITH filtered_listings AS (
+    SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, coordinate_grid
+    FROM listings
+    WHERE ST_Intersects(
+            coordinate,
+            ST_SetSRID(ST_MakeEnvelope(
+                               $2::double precision,
+                               $3::double precision,
+                               $4::double precision,
+                               $5::double precision
+                       ), 4326)::geography
+          )
+      AND address ILIKE '%' || $6::text || '%'
+      AND source = ANY ($7::source[])
+      AND occupancy_status = ANY ($8::occupancy_status[])
+      AND price BETWEEN $9::bigint AND COALESCE($10, 9223372036854775807)
+      AND status = 'active'
+      AND geocoded_at IS NOT NULL
+),
+     ranked AS (
+         SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, coordinate_grid,
+                ROW_NUMBER() OVER (
+                    PARTITION BY coordinate_grid
+                    ORDER BY id ASC
+                    ) AS rn
+         FROM filtered_listings
+     )
+SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, coordinate_grid, rn
 FROM ranked
 WHERE rn = 1
 ORDER BY id
@@ -144,6 +149,7 @@ type GetListingsInBoundaryRow struct {
 	Status          ListingStatus
 	GeocodedAt      pgtype.Timestamptz
 	Coordinate      *geos.Geom
+	CoordinateGrid  interface{}
 	Rn              int64
 }
 
@@ -183,6 +189,7 @@ func (q *Queries) GetListingsInBoundary(ctx context.Context, arg GetListingsInBo
 			&i.Status,
 			&i.GeocodedAt,
 			&i.Coordinate,
+			&i.CoordinateGrid,
 			&i.Rn,
 		); err != nil {
 			return nil, err

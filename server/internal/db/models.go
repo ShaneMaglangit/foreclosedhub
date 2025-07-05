@@ -156,6 +156,7 @@ type Listing struct {
 	Status          ListingStatus
 	GeocodedAt      pgtype.Timestamptz
 	Coordinate      *geos.Geom
+	CoordinateGrid  interface{}
 }
 
 type ListingImage struct {

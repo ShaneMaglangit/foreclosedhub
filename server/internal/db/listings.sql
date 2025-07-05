@@ -5,33 +5,24 @@ WHERE id = @id::bigint
 LIMIT 1;
 
 -- name: GetListingsInBoundary :many
-WITH filtered_listings AS (SELECT *
-                           FROM listings
-                           WHERE ST_Intersects(
-                                   coordinate,
-                                   ST_SetSRID(ST_MakeEnvelope(
-                                                      @min_lng::double precision,
-                                                      @min_lat::double precision,
-                                                      @max_lng::double precision,
-                                                      @max_lat::double precision
-                                              ), 4326)::geography
-                                 )
-                             AND address ILIKE '%' || @address::text || '%'
-                             AND source = ANY (@sources::source[])
-                             AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
-                             AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
-                             AND status = 'active'
-                             AND geocoded_at IS NOT NULL),
-     ranked AS (SELECT *,
-                       ROW_NUMBER() OVER (
-                           PARTITION BY ST_SnapToGrid(coordinate::geometry, 0.01, 0.01)
-                           ORDER BY id ASC
-                           ) AS rn
-                FROM filtered_listings)
-SELECT *
-FROM ranked
-WHERE rn = 1
-ORDER BY id
+SELECT DISTINCT ON (coordinate_grid) *
+FROM listings
+WHERE ST_Intersects(
+        coordinate,
+        ST_SetSRID(ST_MakeEnvelope(
+                           @min_lng::double precision,
+                           @min_lat::double precision,
+                           @max_lng::double precision,
+                           @max_lat::double precision
+                   ), 4326)::geography
+      )
+  AND (address % @address::text OR coalesce(@address::text, '') = '')
+  AND source = ANY (@sources::source[])
+  AND occupancy_status = ANY (@occupancy_statuses::occupancy_status[])
+  AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
+  AND status = 'active'
+  AND geocoded_at IS NOT NULL
+ORDER BY coordinate_grid, id
 LIMIT @page_size::int;
 
 -- name: GetListingByImageNotLoaded :one

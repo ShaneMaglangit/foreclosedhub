@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS idx_listings_on_src_occ_grid_id_price_where_active_geocoded;
