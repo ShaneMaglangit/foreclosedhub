@@ -53,8 +53,6 @@ func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLa
 		return nil, err
 	}
 
-	jitterCoordinates(dbListings)
-
 	listingNodes := make([]*model.Listing, len(dbListings))
 	for i, dbListing := range dbListings {
 		floorArea, err := dbListing.FloorArea.Float64Value()
@@ -81,6 +79,8 @@ func (r *queryResolver) Listings(ctx context.Context, minLatitude float64, maxLa
 			Longitude:       dbListing.Coordinate.X(),
 		}
 	}
+
+	jitterCoordinates(listingNodes)
 
 	return &model.ListingConnection{Nodes: listingNodes}, nil
 }

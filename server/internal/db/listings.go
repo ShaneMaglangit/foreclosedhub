@@ -8,7 +8,7 @@ import (
 
 type ListingsRepository interface {
 	GetListing(ctx context.Context, dbtx DBTX, id int64) (*Listing, error)
-	GetListingsInBoundary(ctx context.Context, dbtx DBTX, params GetListingsInBoundaryParams) ([]*Listing, error)
+	GetListingsInBoundary(ctx context.Context, dbtx DBTX, params GetListingsInBoundaryParams) ([]*GetListingsInBoundaryRow, error)
 	GetListingByImageNotLoaded(ctx context.Context, dbtx DBTX, source Source) (*GetListingByImageNotLoadedRow, error)
 	InsertListings(ctx context.Context, dbtx DBTX, listings []*Listing) error
 	UpdateListingsImageLoaded(ctx context.Context, dbtx DBTX, id int64, imageLoaded bool) error
@@ -27,7 +27,7 @@ func (l ListingsRepositoryImpl) GetListing(ctx context.Context, dbtx DBTX, id in
 	return New(dbtx).GetListing(ctx, id)
 }
 
-func (l ListingsRepositoryImpl) GetListingsInBoundary(ctx context.Context, dbtx DBTX, params GetListingsInBoundaryParams) ([]*Listing, error) {
+func (l ListingsRepositoryImpl) GetListingsInBoundary(ctx context.Context, dbtx DBTX, params GetListingsInBoundaryParams) ([]*GetListingsInBoundaryRow, error) {
 	return New(dbtx).GetListingsInBoundary(ctx, params)
 }
 

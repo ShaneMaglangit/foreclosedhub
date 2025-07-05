@@ -3,27 +3,26 @@ package graph
 import (
 	"fmt"
 	"math/rand/v2"
-	"server/internal/db"
-
-	"github.com/twpayne/go-geos"
+	"server/internal/graph/model"
 )
 
 const jitterDistance = 0.0001
 
-func jitterCoordinates(listings []*db.Listing) {
+func jitterCoordinates(listings []*model.Listing) {
 	coordMap := make(map[string]int)
 
 	for i, listing := range listings {
-		key := fmt.Sprintf("%.8f,%.8f", listing.Coordinate.X(), listing.Coordinate.Y())
+		key := fmt.Sprintf("%.8f,%.8f", listing.Longitude, listing.Latitude)
 
 		count := coordMap[key]
 		if count > 0 {
 			rng := rand.New(rand.NewPCG(uint64(listing.ID), 0))
 
-			newLng := listing.Coordinate.X() + (rng.Float64()*2-1)*jitterDistance
-			newLat := listing.Coordinate.Y() + (rng.Float64()*2-1)*jitterDistance
+			newLng := listing.Longitude + (rng.Float64()*2-1)*jitterDistance
+			newLat := listing.Latitude + (rng.Float64()*2-1)*jitterDistance
 
-			listings[i].Coordinate = geos.NewPointFromXY(newLng, newLat)
+			listings[i].Longitude = newLng
+			listings[i].Latitude = newLat
 
 			key = fmt.Sprintf("%.8f,%.8f", newLng, newLat)
 		}

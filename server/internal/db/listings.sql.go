@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5/pgtype"
+	geos "github.com/twpayne/go-geos"
 )
 
 const getListing = `-- name: GetListing :one
@@ -84,24 +85,38 @@ func (q *Queries) GetListingNotGeocoded(ctx context.Context) (*GetListingNotGeoc
 }
 
 const getListingsInBoundary = `-- name: GetListingsInBoundary :many
-SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate
-FROM listings
-WHERE ST_Intersects(
-        coordinate,
-        ST_SetSRID(ST_MakeEnvelope($1::double precision, $2::double precision, $3::double precision,
-                                   $4::double precision), 4326)::geography
-      )
-  AND address ILIKE '%' || $5::text || '%'
-  AND source = ANY ($6::source[])
-  AND occupancy_status = ANY ($7::occupancy_status[])
-  AND price BETWEEN $8::bigint AND COALESCE($9, 9223372036854775807)
-  AND status = 'active'
-  AND geocoded_at IS NOT NULL
+WITH filtered_listings AS (SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate
+                           FROM listings
+                           WHERE ST_Intersects(
+                                   coordinate,
+                                   ST_SetSRID(ST_MakeEnvelope(
+                                                      $2::double precision,
+                                                      $3::double precision,
+                                                      $4::double precision,
+                                                      $5::double precision
+                                              ), 4326)::geography
+                                 )
+                             AND address ILIKE '%' || $6::text || '%'
+                             AND source = ANY ($7::source[])
+                             AND occupancy_status = ANY ($8::occupancy_status[])
+                             AND price BETWEEN $9::bigint AND COALESCE($10, 9223372036854775807)
+                             AND status = 'active'
+                             AND geocoded_at IS NOT NULL),
+     ranked AS (SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate,
+                       ROW_NUMBER() OVER (
+                           PARTITION BY ST_SnapToGrid(coordinate::geometry, 0.01, 0.01)
+                           ORDER BY id ASC
+                           ) AS rn
+                FROM filtered_listings)
+SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, rn
+FROM ranked
+WHERE rn = 1
 ORDER BY id
-LIMIT $10
+LIMIT $1::int
 `
 
 type GetListingsInBoundaryParams struct {
+	PageSize          int32
 	MinLng            float64
 	MinLat            float64
 	MaxLng            float64
@@ -111,11 +126,30 @@ type GetListingsInBoundaryParams struct {
 	OccupancyStatuses []OccupancyStatus
 	MinPrice          int64
 	MaxPrice          pgtype.Int8
-	PageSize          int32
 }
 
-func (q *Queries) GetListingsInBoundary(ctx context.Context, arg GetListingsInBoundaryParams) ([]*Listing, error) {
+type GetListingsInBoundaryRow struct {
+	ID              int64
+	Source          Source
+	ExternalID      string
+	Address         string
+	FloorArea       pgtype.Numeric
+	LotArea         pgtype.Numeric
+	Price           int64
+	ImageLoaded     bool
+	OccupancyStatus OccupancyStatus
+	CreatedAt       pgtype.Timestamptz
+	UpdatedAt       pgtype.Timestamptz
+	Payload         []byte
+	Status          ListingStatus
+	GeocodedAt      pgtype.Timestamptz
+	Coordinate      *geos.Geom
+	Rn              int64
+}
+
+func (q *Queries) GetListingsInBoundary(ctx context.Context, arg GetListingsInBoundaryParams) ([]*GetListingsInBoundaryRow, error) {
 	rows, err := q.db.Query(ctx, getListingsInBoundary,
+		arg.PageSize,
 		arg.MinLng,
 		arg.MinLat,
 		arg.MaxLng,
@@ -125,15 +159,14 @@ func (q *Queries) GetListingsInBoundary(ctx context.Context, arg GetListingsInBo
 		arg.OccupancyStatuses,
 		arg.MinPrice,
 		arg.MaxPrice,
-		arg.PageSize,
 	)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []*Listing
+	var items []*GetListingsInBoundaryRow
 	for rows.Next() {
-		var i Listing
+		var i GetListingsInBoundaryRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Source,
@@ -150,6 +183,7 @@ func (q *Queries) GetListingsInBoundary(ctx context.Context, arg GetListingsInBo
 			&i.Status,
 			&i.GeocodedAt,
 			&i.Coordinate,
+			&i.Rn,
 		); err != nil {
 			return nil, err
 		}
