@@ -6,6 +6,7 @@ import (
 	"math/big"
 	"net/http"
 	"server/internal/db"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgtype"
 )
@@ -91,6 +92,8 @@ func getListings() (Listings, error) {
 
 		listings = append(listings, pageResponse.Listings...)
 		page++
+
+		time.Sleep(20 * time.Second)
 	}
 
 	var dedupedListings Listings

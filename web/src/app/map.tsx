@@ -523,7 +523,7 @@ function UnionbankOfferButton({ listing }: { listing: Listing }) {
       asChild
     >
       <a href={url.toString()} target="_blank">
-        <ExternalLink /> Submit offer
+        <ExternalLink /> More details
       </a>
     </Button>
   );

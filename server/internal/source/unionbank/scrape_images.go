@@ -2,6 +2,7 @@ package unionbank
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"server/internal/db"
 
@@ -38,10 +39,19 @@ func (j *ScrapeListingImageJob) Run() error {
 		return err
 	}
 
-	imageUrls, err := getListingImages(listing.ExternalID)
-	if err != nil {
+	var payload struct {
+		Thumbnail string `json:"thumbnail"`
+	}
+
+	if err := json.Unmarshal(listing.Payload, &payload); err != nil {
 		return err
 	}
+
+	if payload.Thumbnail == "" {
+		return listingsRepository.UpdateListingsImageLoaded(ctx, j.pool, listing.ID, true)
+	}
+
+	imageUrls := []string{payload.Thumbnail}
 
 	tx, err := j.pool.Begin(ctx)
 	if err != nil {
