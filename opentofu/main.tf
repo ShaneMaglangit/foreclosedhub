@@ -210,14 +210,14 @@ resource "aws_instance" "server" {
   ipv6_address_count = 1
 }
 
-# resource "aws_eip" "server" {
-#   domain = "vpc"
-# }
-#
-# resource "aws_eip_association" "eip_assoc" {
-#   instance_id   = aws_instance.server.id
-#   allocation_id = aws_eip.server.id
-# }
+resource "aws_eip" "server" {
+  domain = "vpc"
+}
+
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = aws_instance.server.id
+  allocation_id = aws_eip.server.id
+}
 
 output "server_id" {
   value = aws_instance.server.id
@@ -284,14 +284,14 @@ resource "cloudflare_r2_custom_domain" "storage" {
   enabled     = true
 }
 
-# resource "cloudflare_dns_record" "api" {
-#   zone_id = var.cloudflare_zone_id
-#   content = aws_eip.server.public_ip
-#   name    = "api"
-#   type    = "A"
-#   ttl     = 1
-#   proxied = true
-# }
+resource "cloudflare_dns_record" "api" {
+  zone_id = var.cloudflare_zone_id
+  content = aws_eip.server.public_ip
+  name    = "api"
+  type    = "A"
+  ttl     = 1
+  proxied = true
+}
 
 output "cloudflare_account_id" {
   value = var.cloudflare_account_id
