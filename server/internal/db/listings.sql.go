@@ -103,19 +103,18 @@ WITH filtered_listings AS (SELECT id, source, external_id, address, floor_area, 
                              AND price BETWEEN $9::bigint AND COALESCE($10, 9223372036854775807)
                              AND status = 'active'
                              AND geocoded_at IS NOT NULL),
-     first_picks AS (SELECT DISTINCT ON (coordinate_grid) id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, coordinate_grid
-                     FROM filtered_listings
-                     ORDER BY coordinate_grid, id),
-
-     remaining_listings AS (SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, coordinate_grid
+     representatives AS (SELECT DISTINCT ON (coordinate_grid) id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, coordinate_grid, 1 as priority
+                         FROM filtered_listings
+                         ORDER BY coordinate_grid, id),
+     remaining_listings AS (SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, coordinate_grid, 2 as priority
                             FROM filtered_listings
-                            WHERE id NOT IN (SELECT id FROM first_picks))
-SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, coordinate_grid
-FROM (SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, coordinate_grid
-      FROM first_picks
-      UNION ALL
-      SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, coordinate_grid
-      FROM remaining_listings) AS combined_results
+                            WHERE id NOT IN (SELECT id FROM representatives))
+SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, coordinate_grid, priority
+FROM representatives
+UNION ALL
+SELECT id, source, external_id, address, floor_area, lot_area, price, image_loaded, occupancy_status, created_at, updated_at, payload, status, geocoded_at, coordinate, coordinate_grid, priority
+FROM remaining_listings
+ORDER BY priority
 LIMIT $1::int
 `
 
@@ -149,6 +148,7 @@ type GetListingsInBoundaryRow struct {
 	GeocodedAt      pgtype.Timestamptz
 	Coordinate      *geos.Geom
 	CoordinateGrid  interface{}
+	Priority        int32
 }
 
 func (q *Queries) GetListingsInBoundary(ctx context.Context, arg GetListingsInBoundaryParams) ([]*GetListingsInBoundaryRow, error) {
@@ -188,6 +188,7 @@ func (q *Queries) GetListingsInBoundary(ctx context.Context, arg GetListingsInBo
 			&i.GeocodedAt,
 			&i.Coordinate,
 			&i.CoordinateGrid,
+			&i.Priority,
 		); err != nil {
 			return nil, err
 		}

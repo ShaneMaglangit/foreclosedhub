@@ -22,18 +22,18 @@ WITH filtered_listings AS (SELECT *
                              AND price BETWEEN @min_price::bigint AND COALESCE(sqlc.narg('max_price'), 9223372036854775807)
                              AND status = 'active'
                              AND geocoded_at IS NOT NULL),
-     first_picks AS (SELECT DISTINCT ON (coordinate_grid) *
-                     FROM filtered_listings
-                     ORDER BY coordinate_grid, id),
-     remaining_listings AS (SELECT *
+     representatives AS (SELECT DISTINCT ON (coordinate_grid) *, 1 as priority
+                         FROM filtered_listings
+                         ORDER BY coordinate_grid, id),
+     remaining_listings AS (SELECT *, 2 as priority
                             FROM filtered_listings
-                            WHERE id NOT IN (SELECT id FROM first_picks))
+                            WHERE id NOT IN (SELECT id FROM representatives))
 SELECT *
-FROM (SELECT *
-      FROM first_picks
-      UNION ALL
-      SELECT *
-      FROM remaining_listings) AS combined_results
+FROM representatives
+UNION ALL
+SELECT *
+FROM remaining_listings
+ORDER BY priority
 LIMIT @page_size::int;
 
 -- name: GetListingByImageNotLoaded :one
